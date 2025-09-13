@@ -8,8 +8,6 @@ const mongo_user = process.env.MONGO_USER || 'admin'
 const mongo_pass = process.env.MONGO_PASS || 'password'
 const db_url = `mongodb://${mongo_user}:${mongo_pass}@${mongo_host}:27017/${db}?authSource=admin`
 
-console.log(mqtt_url)
-
 mongoose.connect(db_url)
 .then(() => console.log(`Connected to MongoDB at URL ${db_url}`))
 .catch((err) => console.error(`Unable to connect to MongoDB at URL ${db_url}. Message:\n${err}`))

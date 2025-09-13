@@ -1,0 +1,10 @@
+const mongoose = require('mongoose');
+const mongo_host = process.env.MONGO_HOST || 'localhost'
+const db = process.env.DB_NAME || 'mqtt-to-mongodb'
+const mongo_user = process.env.MONGO_USER || 'admin'
+const mongo_pass = process.env.MONGO_PASS || 'password'
+const db_url = `mongodb://${mongo_user}:${mongo_pass}@${mongo_host}:27017/${db}?authSource=admin`
+
+const conn = mongoose.createConnection(db_url)
+
+module.exports = conn;
