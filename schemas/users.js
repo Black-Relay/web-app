@@ -20,6 +20,6 @@ const usersSchema = new Schema({
     default: () => Date.now()
   },
   groups: [{ name: String }]
-});
+}, { strict: "throw" }); // Setting to "throw" will cause an error if fields outside of the schema are saved
 
 module.exports = db.model("users", usersSchema)

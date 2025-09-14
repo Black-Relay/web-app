@@ -19,6 +19,7 @@
     "mqtt": "^5.14.1"
   },
   "devDependencies": {
+    "@faker-js/faker": "^10.0.0",
     "nodemon": "^3.1.10"
   }
 }
