@@ -1,6 +1,12 @@
 const mongoose = require('mongoose')
-const users = require('../schemas/users.js')
+const usersModel = require('../schemas/users.js')
 const faker = require('@faker-js/faker')
+
+function getRandomNumber(min, max) {
+  const minCeiled = Math.ceil(min);
+  const maxFloored = Math.floor(max);
+  return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
+}
 
 // TODO - output newly created users to file. STRETCH - create API endpoint that returns fake user logins
 const seedUsers = (numberOfUsers) => {
@@ -12,8 +18,14 @@ const seedUsers = (numberOfUsers) => {
   for (i = 0; i < numberOfUsers; i++){
     let firstName = faker.person.firstName()
     let lastName = faker.person.lastName()
-    let passwordHash = bcrypt.hashSync()
-    users.updateOne(
+    let password = faker.internet.password({ length: 12, memorable: true })
+    let groups = () => {
+
+      for (i = 0; i < getRandomNumber(0, 3); i++){
+
+      }
+    }
+    usersModel.updateOne(
       { username: faker.internet.username({ firstName: firstName }, { lastName: lastName }) }, // filter: find by username
       {
         $set: {

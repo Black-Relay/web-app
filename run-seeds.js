@@ -1,3 +1,5 @@
 const seedUsers = require('./seeds/users.js')
+const seedRbacGroups = require('./seeds/rbacGroups.js')
 
-seedUsers()
+seedRbacGroups(5)
+// seedUsers()
