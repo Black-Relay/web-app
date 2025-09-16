@@ -2,19 +2,21 @@ const mongoose = require('mongoose')
 const rbacGroupsModel = require('../schemas/rbacGroups.js')
 const { faker } = require('@faker-js/faker')
 
-const seedRbacGroups = (numberOfRbacGroups) => {
-  for (i = 0; i < numberOfRbacGroups; i++){
-    let rbacGroupName = faker.hacker.noun()
+const groupNames = ['user', 'admin', 'analyst']
+
+const seedRbacGroups = () => {
+  const promises = groupNames.map((rbacGroupName) => {
     rbacGroupsModel.updateOne(
-      { rbacGroupName: rbacGroupName },
+      { rbacGroupName },
       {
-        $set: {
-          rbacGroupName: rbacGroupName
-        }
+        $set: { rbacGroupName }
       },
-      { uspert: true}
+      { upsert: true}
     )
-  }
+    .then(msg => msg.upsertedId ? console.log(`New RBAC Group with name ${rbacGroupName} created. ${msg.upsertedId}`) : console.log(`Group with name ${rbacGroupName} already exists. Skipping...`))
+    .catch(err => console.error(err.message))
+  })
+  return Promise.all(promises)
 }
 
 module.exports = seedRbacGroups
