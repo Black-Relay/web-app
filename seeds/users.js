@@ -1,48 +1,59 @@
 const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
+const { getRandomNumber } = require('../utils/helpers.js')
+const rbacGroups = require('../schemas/rbacGroups')
 const usersModel = require('../schemas/users.js')
-const faker = require('@faker-js/faker')
-
-function getRandomNumber(min, max) {
-  const minCeiled = Math.ceil(min);
-  const maxFloored = Math.floor(max);
-  return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
-}
+const { faker } = require('@faker-js/faker')
 
 // TODO - output newly created users to file. STRETCH - create API endpoint that returns fake user logins
 const seedUsers = (numberOfUsers) => {
   if (!numberOfUsers){
-    console.error("You must provide parameter 'numberOfUsers' to function 'seedUsers'")
+    console.error("You must provide parameter 'numberOfUsers' to the function 'seedUsers'")
     return;
   }
 
-  for (i = 0; i < numberOfUsers; i++){
-    let firstName = faker.person.firstName()
-    let lastName = faker.person.lastName()
-    let password = faker.internet.password({ length: 12, memorable: true })
-    let groups = () => {
+  // TODO - Groups not being added properly
+  rbacGroups.find().exec()
+  .then((allRbacGroups) => {
 
-      for (i = 0; i < getRandomNumber(0, 3); i++){
-
-      }
+    if(allRbacGroups.length === 0){
+      console.error('No RBAC groups created. Cancelling user creation...')
+      return
     }
-    usersModel.updateOne(
-      { username: faker.internet.username({ firstName: firstName }, { lastName: lastName }) }, // filter: find by username
-      {
-        $set: {
-          firstName: firstName,
-          lastName: lastName,
-          password: "apasswordhashgoeshere",
-          groups: [
-            { name: 'admin' },
-            { name: 'S6' }
-          ]
+
+    for (i = 0; i < numberOfUsers; i++){
+      let getRandomGroups = () => {
+        let groupsUserIsAddedTo = []
+        for (j = 0; j < getRandomNumber(0, 2); j++){
+          groupsUserIsAddedTo.push(allRbacGroups[j]._id)
         }
-      },
-      { upsert: true } // Create if not exists
-    )
-    .then(msg => msg.upsertedId ? console.log(`New user with username ${newUserName} created. ${msg.upsertedId}`) : console.log(`User with username ${newUserName} already exists. Skipping...`))
-    .catch(err => console.error(err.message))
-  }
+        return groupsUserIsAddedTo
+      };
+
+      let groups = getRandomGroups()
+      let firstName = faker.person.firstName()
+      let lastName = faker.person.lastName()
+      let username = faker.internet.username({ firstName: firstName, lastName: lastName})
+      let password = faker.internet.password({ length: 12, memorable: true })
+      let passwordHash = bcrypt.hashSync(password, 10) // Hash password with 10 salt rounds
+
+      // Update user / create if not exists
+      usersModel.updateOne(
+        { username: username }, // filter: find by username
+        {
+          $set: {
+            firstName: firstName,
+            lastName: lastName,
+            password: passwordHash,
+            groups: groups,
+          }
+        },
+        { upsert: true } // Create if not exists
+      )
+      .then(msg => msg.upsertedId ? console.log(`New user with username ${username} created. ${msg.upsertedId}`) : console.log(`User with username ${username} already exists. Skipping...`))
+      .catch(err => console.error(err.message))
+    }
+  })
 }
 
 module.exports = seedUsers

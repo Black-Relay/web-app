@@ -6,7 +6,7 @@ const groupNames = ['user', 'admin', 'analyst']
 
 const seedRbacGroups = () => {
   const promises = groupNames.map((rbacGroupName) => {
-    rbacGroupsModel.updateOne(
+    return rbacGroupsModel.updateOne(
       { rbacGroupName },
       {
         $set: { rbacGroupName }
