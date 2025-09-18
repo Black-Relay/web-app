@@ -1,6 +1,7 @@
 require('dotenv').config()
 const express = require('express');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const app = express();
 const port = process.env.API_PORT || 3001;
 const subscribeRoutes = require('./routes/subscribe.js')
@@ -31,9 +32,9 @@ const authCheck = (req, res, next) => {
   }
 }
 
-app.get('/', (req, res) => res.status(200).send('mqtt-to-mongodb is running.'))
+app.get('/', (req, res) => res.status(200).send('Black-Relay API server is running.'))
 
-app.use('/auth', authRoutes)
+// app.use('/auth', authRoutes)
 app.use('/subscribe', subscribeRoutes)
 
 app.listen(port, () => {
