@@ -1,10 +1,16 @@
+const { faker } = require('@faker-js/faker')
 const { sendDummyData } = require('./sendDummyData.js')
 
-const motionData = {
-  sensorId: "sensor-001",
-  timestamp: new Date().toISOString(),
-  motionDetected: true,
-  location: "Living Room"
-}
+exports.sendMotionData = () => {
+  const motionData = () => {
+    return {
+      sensorId: faker.number.int({ min: 101, max: 999}),
+      timestamp: new Date().toISOString(),
+      motionDetected: true,
+      direction: faker.location.direction({ abbreviated: true }),
+      location: faker.location.nearbyGPSCoordinate()
+    }
+  }
 
-sendDummyData('motion', motionData)
+  sendDummyData('motion', motionData, 3600000) // one hour
+}

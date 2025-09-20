@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "dummy": "nodemon dummy/dummy.js",
+    "dummy": "nodemon dummy/all.js",
     "start": "node app.js",
     "dev": "nodemon app.js"
   },

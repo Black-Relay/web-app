@@ -35,19 +35,18 @@ cd docker-compose/staging && docker compose up -d
   "message": "Successfully subscribed to topic topic-name"
 }
 ```
+The following topics are seeded with dummy data and can be subscribed to:
 
-The following are topics seeded with dummy data that can be subscribed to:
-
-| Topic Name       | Description                                               |
-|------------------|-----------------------------------------------------------|
-| temp             | Timestamped temperature data                              |
-| motion           | Motion events                                             |
-| accelerometer    | Acceleration data                                         |
-| air-quality      | Air quality data measured in PPM                          |
-| gas              | Gas detection events                                      |
-| optical-distance | Distance measured from an object corresponding with motion |
-| light            | Timestamped light data                                    |
-| kismet           | Packet capture data from kismet devices                   |
+| Topic Name        | Description                                               |
+|-------------------|----------------------------------------------------------|
+| digital_temp      | Timestamped temperature data                             |
+| motion            | Motion events                                            |
+| accelerometer     | Acceleration data                                        |
+| air_quality       | Air quality data measured in PPM                         |
+| gas               | Gas detection events                                     |
+| optical_distance  | Distance measured from an object corresponding with motion|
+| proximity_light   | Timestamped light data                                   |
+| kismet            | Packet capture data from kismet devices                  |
 
 
 ## Verifying that MongoDB Collections are being populated

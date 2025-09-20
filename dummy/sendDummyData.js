@@ -3,7 +3,16 @@ const mqtt_url = process.env.MQTT_URL || 'mqtt://localhost:1883'
 const mqtt = require("mqtt");
 const clientPromise = mqtt.connectAsync(mqtt_url);
 
-exports.sendDummyData = (topic, data) => {
+// TODO - find a way to send data at random intervals rather than a fixed, regular interval
+
+/**
+ * Sends dummy data to MQTT at a regular interval
+ * @func sendDummyData
+ * @param {string} topic - the MQTT topic to publish to
+ * @param {function} generateData - a callback function to generate the data to be sent
+ * @param {number} interval - the interval (in milliseconds) in which to send the data
+ */
+exports.sendDummyData = (topic, generateData, interval) => {
 
   clientPromise.then((client) => {
 
@@ -50,8 +59,9 @@ exports.sendDummyData = (topic, data) => {
       }
 
       seedDataIntervalId = setInterval(() => {
+        let data = generateData()
         client.publish(topic, JSON.stringify(data));
-      }, 10000)
+      }, interval)
 
       console.log(`${new Date().toISOString()} - Sending dummy data to topic: ${topic}`)
     }
