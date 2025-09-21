@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const rbacGroupsModel = require('../schemas/rbacGroups.js')
+const rbacGroupsModel = require('../models/rbacGroups.js')
 const { faker } = require('@faker-js/faker')
 
 const groupNames = ['user', 'admin', 'analyst']

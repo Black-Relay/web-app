@@ -1,8 +1,8 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 const { getRandomNumber } = require('../utils/helpers.js')
-const rbacGroupsModel = require('../schemas/rbacGroups.js')
-const usersModel = require('../schemas/users.js')
+const rbacGroupsModel = require('../models/rbacGroups.js')
+const usersModel = require('../models/users.js')
 const { faker } = require('@faker-js/faker')
 
 // TODO - output newly created users to file. STRETCH - create API endpoint that returns fake user logins
@@ -12,7 +12,6 @@ const seedUsers = (numberOfUsers) => {
     return;
   }
 
-  // TODO - return a single promise just like rbacGroups
   return rbacGroupsModel.find().exec()
   .then((allRbacGroups) => {
 
