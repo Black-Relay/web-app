@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 const { getRandomNumber } = require('../utils/helpers.js')
-const rbacGroups = require('../schemas/rbacGroups')
+const rbacGroupsModel = require('../schemas/rbacGroups.js')
 const usersModel = require('../schemas/users.js')
 const { faker } = require('@faker-js/faker')
 
@@ -12,14 +12,16 @@ const seedUsers = (numberOfUsers) => {
     return;
   }
 
-  // TODO - Groups not being added properly
-  rbacGroups.find().exec()
+  // TODO - return a single promise just like rbacGroups
+  return rbacGroupsModel.find().exec()
   .then((allRbacGroups) => {
 
     if(allRbacGroups.length === 0){
       console.error('No RBAC groups created. Cancelling user creation...')
       return
     }
+
+    const promises = [];
 
     for (i = 0; i < numberOfUsers; i++){
       let getRandomGroups = () => {
@@ -38,7 +40,7 @@ const seedUsers = (numberOfUsers) => {
       let passwordHash = bcrypt.hashSync(password, 10) // Hash password with 10 salt rounds
 
       // Update user / create if not exists
-      usersModel.updateOne(
+      let promise = usersModel.updateOne(
         { username: username }, // filter: find by username
         {
           $set: {
@@ -52,7 +54,10 @@ const seedUsers = (numberOfUsers) => {
       )
       .then(msg => msg.upsertedId ? console.log(`New user with username ${username} created. ${msg.upsertedId}`) : console.log(`User with username ${username} already exists. Skipping...`))
       .catch(err => console.error(err.message))
+
+      promises.push(promise)
     }
+    return Promise.all(promises)
   })
 }
 

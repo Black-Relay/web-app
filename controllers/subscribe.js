@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
-const { mqttClient, mqtt_url } = require('../mqtt/mqttClient.js')
-const { mongooseConn, db_url } = require('../mongoose/mongooseConn.js')
+const { mqtt_client, mqtt_url } = require('../mqtt.js')
+const { mongooseConn, db_url } = require('../db.js')
 
 
 // TODO - add error handling for if topic is already subscribed to
@@ -24,7 +24,7 @@ exports.subscribeToTopic = async (req, res) => {
   })
 
   if (!subscribed){
-    mqttClient.subscribe(requestedTopic, (err) => {
+    mqtt_client.subscribe(requestedTopic, (err) => {
       if (err){
         console.error(err)
         res.status(400).json({
@@ -44,7 +44,7 @@ exports.subscribeToTopic = async (req, res) => {
           })
         })
         .catch(err => console.error(`Unable to create collection for ${requestedTopic}. Error:\n${err}`))
-        mqttClient.on("message", (topic, message) => {
+        mqtt_client.on("message", (topic, message) => {
           if(topic === requestedTopic){
             message = JSON.parse(message.toString())
             console.log(message)

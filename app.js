@@ -34,7 +34,7 @@ const authCheck = (req, res, next) => {
 
 app.get('/', (req, res) => res.status(200).send('Black-Relay API server is running.'))
 
-// app.use('/auth', authRoutes)
+app.use('/auth', authRoutes)
 app.use('/subscribe', subscribeRoutes)
 
 app.listen(port, () => {

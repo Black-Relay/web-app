@@ -1,5 +1,5 @@
-const db = require('../db.js') // connection string
 const mongoose = require('mongoose');
+// const { mongooseConn } = require('../db.js') // connection string
 const { Schema, model } = mongoose;
 
 const usersSchema = new Schema({
@@ -26,4 +26,6 @@ const usersSchema = new Schema({
   }
 }, { strict: "throw" }); // Setting to "throw" will cause an error if fields outside of the schema are saved
 
-module.exports = db.model("users", usersSchema)
+const usersModel = mongoose.model("users", usersSchema)
+
+module.exports = usersModel

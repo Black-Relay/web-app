@@ -1,5 +1,5 @@
-const db = require('../db.js') // connection string
 const mongoose = require('mongoose');
+// const { mongooseConn } = require('../db.js') // connection string
 const { Schema, model } = mongoose;
 
 const rbacGroupsSchema = new Schema({
@@ -19,4 +19,6 @@ const rbacGroupsSchema = new Schema({
   },
 }, { strict: "throw" })
 
-module.exports = db.model("rbacGroups", rbacGroupsSchema)
+const rbacGroupsModel = mongoose.model("rbacGroups", rbacGroupsSchema)
+
+module.exports = rbacGroupsModel
