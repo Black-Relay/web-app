@@ -1,5 +1,7 @@
 const bcrypt = require('bcrypt')
-const db = require('../db.js')
+const mongoose = require('mongoose')
+const { mongooseConn } = require('../db.js')
+const usersModel = require('../models/users.js')
 const jwt = require('jsonwebtoken')
 const jwtSecret = process.env.JWT_SECRET
 
@@ -7,29 +9,29 @@ exports.userLogin = (req, res) => {
   if(!req.body){
     res.status(400).send('You must supply a body with this request')
   }
-  else if(!Object.hasOwn(req.body, 'username' || !Object.hasOwn(req.body, 'password'))){
+  else if(!Object.hasOwn(req.body, 'username') || !Object.hasOwn(req.body, 'password')){
     res.status(400).send('Incorrect properties supplied')
   }
   else{
-    // TODO - refactor to use mongoose
-    db.select('*').from('users').where({ username: req.body.username })
+    reqBody = req.body
+    usersModel.findOne({ username: reqBody.username })
     .then(user => {
-      if (user.length === 0){
-        res.status(404).send(`No user found with username ${req.params.username}`)
+      if (!user){
+        // No user found with provided username
+        res.status(401).send(`Login failed`)
       }
-      else if (user.length > 1){
-        res.status(500).send(`Multiple users found with username ${req.params.username}. This should not be possible.`)
+      else if (user.length){
+        res.status(500).send(`Multiple users found with username ${reqBody.username}. This should not be possible.`)
       }
-      else if (user.length === 1){
-        let thisUser = user[0]
-        bcrypt.compare(req.body.password, thisUser.password)
+      else if (user){
+        bcrypt.compare(reqBody.password, user.password)
         .then((correctPassword) => {
           if (correctPassword){
             // generate JWT
             userData = {
-              "first_name": thisUser.first_name,
-              "last_name": thisUser.last_name,
-              "user_id": thisUser.user_id
+              "first_name": user.first_name,
+              "last_name": user.last_name,
+              "user_id": user._id
             }
             let token = jwt.sign(userData, jwtSecret, { expiresIn: '1h' })
 
@@ -42,6 +44,7 @@ exports.userLogin = (req, res) => {
             res.status(200).send(userData)
           }
           else{
+            // Incorrect password provided
             res.status(401).send('Login failed')
           }
         })
