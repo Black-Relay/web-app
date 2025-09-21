@@ -1,20 +1,7 @@
-const mqtt_url = process.env.MQTT_URL || 'mqtt://localhost:1883'
-const mqtt = require("mqtt")
-const mqtt_client = mqtt.connect(mqtt_url)
-const mongoose = require('mongoose');
-const mongo_host = process.env.MONGO_HOST || 'localhost'
-const db = process.env.DB_NAME || 'black-relay'
-const mongo_user = process.env.MONGO_USER || 'admin'
-const mongo_pass = process.env.MONGO_PASS || 'password'
-const db_url = `mongodb://${mongo_user}:${mongo_pass}@${mongo_host}:27017/${db}?authSource=admin`
+const mongoose = require('mongoose')
+const { mqttClient, mqtt_url } = require('../mqtt/mqttClient.js')
+const { mongooseConn, db_url } = require('../mongoose/mongooseConn.js')
 
-mongoose.connect(db_url)
-.then(() => console.log(`Connected to MongoDB at URL ${db_url}`))
-.catch((err) => console.error(`Unable to connect to MongoDB at URL ${db_url}. Message:\n${err}`))
-
-mqtt_client.on("connect", () => {
-  console.log(`Server connected to MQTT server at URL ${mqtt_url}`)
-})
 
 // TODO - add error handling for if topic is already subscribed to
 exports.subscribeToTopic = async (req, res) => {
@@ -37,7 +24,7 @@ exports.subscribeToTopic = async (req, res) => {
   })
 
   if (!subscribed){
-    mqtt_client.subscribe(requestedTopic, (err) => {
+    mqttClient.subscribe(requestedTopic, (err) => {
       if (err){
         console.error(err)
         res.status(400).json({
@@ -57,7 +44,7 @@ exports.subscribeToTopic = async (req, res) => {
           })
         })
         .catch(err => console.error(`Unable to create collection for ${requestedTopic}. Error:\n${err}`))
-        mqtt_client.on("message", (topic, message) => {
+        mqttClient.on("message", (topic, message) => {
           if(topic === requestedTopic){
             message = JSON.parse(message.toString())
             console.log(message)
