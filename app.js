@@ -6,6 +6,7 @@ const app = express();
 const port = process.env.API_PORT || 3001;
 const subscribeRoutes = require('./routes/subscribe.js')
 const authRoutes = require('./routes/auth.js')
+const jwt = require('jsonwebtoken')
 
 app.use(cors());
 app.use(express.json());
@@ -20,12 +21,15 @@ const authCheck = (req, res, next) => {
       jwt.verify(req.signedCookies.authToken, process.env.JWT_SECRET);
       next();
     }
-    catch (error) {
-      if (error.name === 'TokenExpiredError') {
+    catch (err) {
+      if (err.name === 'TokenExpiredError') {
+        console.error(err.message)
         res.status(403).send('Token expired. Please log in again.');
-      } else if (error.name === 'JsonWebTokenError') {
+      } else if (err.name === 'JsonWebTokenError') {
+        console.error(err.message)
         res.status(403).send('Invalid token.');
       } else {
+        console.error(err.message)
         res.status(500).send('Token verification failed.');
       }
     }
@@ -35,7 +39,7 @@ const authCheck = (req, res, next) => {
 app.get('/', (req, res) => res.status(200).send('Black-Relay API server is running.'))
 
 app.use('/auth', authRoutes)
-app.use('/subscribe', subscribeRoutes)
+app.use('/subscribe', authCheck, subscribeRoutes)
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
