@@ -1,0 +1,83 @@
+openapi: 3.0.0
+info:
+  title: Black Relay API - OpenAPI 3.0
+  version: 3.0.0
+  description: The Black Relay API is used as the primary back end for the Black Relay web application. It is capable of subscribing to MQTT topics and storing messages published to those topics in a MongoDB collection.
+  license:
+    name: GPL v3.0
+    url: 'https://www.gnu.org/licenses/gpl-3.0.en.html'
+paths:
+  '/subscribe/{topic}':
+    get:
+      tags:
+        - subscribe
+      summary: Subscribe to an MQTT topic
+      description: Stores published messages to a corresponding MongoDB collection
+      parameters:
+        - name: topic
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The MQTT topic to subscribe to
+      responses:
+        '200':
+          description: Subscribe to topic
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  test:
+                    type: string
+                    example: example
+  /auth/login:
+    get:
+      tags:
+        - auth
+      summary: Log in to the API
+      description: Logs in a user and returns a signed session cookie
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: joe.snuffy
+                password:
+                  type: string
+                  example: P@$$Word123
+              required:
+                - username
+                - password
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  test:
+                    type: string
+                    example: example
+  /auth/logout:
+    get:
+      tags:
+        - auth
+      summary: Log out of the API
+      description: Logs the user out and deletes session cookie
+      responses:
+        '200':
+          description: Successful logout
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  test:
+                    type: string
+                    example: example

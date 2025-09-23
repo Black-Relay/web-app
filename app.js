@@ -7,6 +7,12 @@ const port = process.env.API_PORT || 3001;
 const subscribeRoutes = require('./routes/subscribe.js')
 const authRoutes = require('./routes/auth.js')
 const jwt = require('jsonwebtoken')
+const yaml = require('yaml')
+const swaggerUi = require('swagger-ui-express')
+const fs = require('fs')
+
+const swaggerYamlFile = fs.readFileSync('./swagger.yaml', 'utf8')
+const swaggerDocument = yaml.parse(swaggerYamlFile)
 
 app.use(cors());
 app.use(express.json());
@@ -38,6 +44,7 @@ const authCheck = (req, res, next) => {
 
 app.get('/', (req, res) => res.status(200).send('Black-Relay API server is running.'))
 
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 app.use('/auth', authRoutes)
 app.use('/subscribe', authCheck, subscribeRoutes)
 

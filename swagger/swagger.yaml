@@ -1,0 +1,16 @@
+openapi: 3.0.0
+info:
+  title: Black Relay API - OpenAPI 3.0
+  version: 3.0.0
+  description: |-
+    The Black Relay API is used as the primary back end for the Black Relay web application. It is capable of subscribing to MQTT topics and storing messages published to those topics in a MongoDB collection.
+  license:
+    name: GPL v3.0
+    url: https://www.gnu.org/licenses/gpl-3.0.en.html
+paths:
+  /subscribe/{topic}:
+    $ref: './paths/subscribe/topic.yaml'
+  /auth/login:
+    $ref: './paths/auth/login.yaml'
+  /auth/logout:
+    $ref: './paths/auth/logout.yaml'

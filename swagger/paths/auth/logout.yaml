@@ -1,0 +1,16 @@
+get:
+  tags:
+    - auth
+  summary: Log out of the API
+  description: Logs the user out and deletes session cookie
+  responses:
+    '200':
+      description: Successful logout
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              test:
+                type: string
+                example: "example"

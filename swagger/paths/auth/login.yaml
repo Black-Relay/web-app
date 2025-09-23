@@ -1,0 +1,32 @@
+get:
+  tags:
+    - auth
+  summary: Log in to the API
+  description: Logs in a user and returns a signed session cookie
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            username:
+              type: string
+              example: "joe.snuffy"
+            password:
+              type: string
+              example: "P@$$Word123"
+          required:
+            - username
+            - password
+  responses:
+    '200':
+      description: Successful login
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              test:
+                type: object
+                  

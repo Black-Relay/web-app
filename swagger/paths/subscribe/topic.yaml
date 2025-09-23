@@ -1,0 +1,23 @@
+get:
+  tags:
+    - subscribe
+  summary: Subscribe to an MQTT topic
+  description: Stores published messages to a corresponding MongoDB collection
+  parameters:
+    - name: topic
+      in: path
+      required: true
+      schema:
+        type: string
+      description: The MQTT topic to subscribe to
+  responses:
+    '200':
+      description: Subscribe to topic
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              test:
+                type: string
+                example: "example"
