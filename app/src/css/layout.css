@@ -49,7 +49,12 @@
       background-color: magenta;
     }
 
-
+    footer, .main-footer {
+      margin: 16px;
+      grid-column: 1/13;
+      grid-row: 11/13;
+      background-color: magenta;
+    }
   }
 }
 

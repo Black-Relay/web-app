@@ -10,5 +10,8 @@ export function Dashboard() {
     <aside>
       <div>Page Specific detailed content</div>
     </aside>
+    <footer>
+      <div>Page Specific Footer data</div>
+    </footer>
   </div>)
 }
