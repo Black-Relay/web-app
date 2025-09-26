@@ -1,3 +1,5 @@
+import { MissionClock } from "@/components/mission-clock"
+
 export function Dashboard() {
   return (<div className="layout-main-content">
     <header>
@@ -6,7 +8,7 @@ export function Dashboard() {
     <main>
       <div>Page Specific Main Content i.e. maps/tables</div>
     </main>
-    <div className="mission-clock">Mission Clock</div>
+    <MissionClock/>
     <aside>
       <div>Page Specific detailed content</div>
     </aside>
