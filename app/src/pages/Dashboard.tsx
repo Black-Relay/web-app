@@ -1,3 +1,4 @@
+import { MissionClock } from "@/components/mission-clock"
 import { EventsAside } from "@/components/events-aside";
 
 export function Dashboard() {
@@ -8,8 +9,9 @@ export function Dashboard() {
     <main>
       <div>Page Specific Main Content i.e. maps/tables</div>
     </main>
-    <div className="mission-clock">Mission Clock</div>
+    <MissionClock/>
     <aside>
+      <div className="toggle-switch">Toggle Switch from Sensors to Events</div>
       <EventsAside />
     </aside>
     <footer>
