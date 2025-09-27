@@ -2,7 +2,7 @@ get:
   tags:
     - auth
   summary: Log out of the API
-  description: Logs the user out and deletes session cookie
+  description: Logs the user out and removes session cookie
   responses:
     '200':
       description: Successful logout
@@ -11,6 +11,6 @@ get:
           schema:
             type: object
             properties:
-              test:
-                type: string
-                example: "example"
+              success:
+                type: boolean
+                example: true

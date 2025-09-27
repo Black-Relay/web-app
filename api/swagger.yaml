@@ -36,7 +36,7 @@ paths:
       tags:
         - auth
       summary: Log in to the API
-      description: Logs in a user and returns a signed session cookie
+      description: 'Logs in a user and returns a signed, httpOnly, session cookie'
       requestBody:
         required: true
         content:
@@ -55,21 +55,21 @@ paths:
                 - password
       responses:
         '200':
-          description: Successful login
+          description: Successful login. Returns the user id of the successfully logged in user.
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  test:
+                  user_id:
                     type: string
-                    example: example
+                    example: 68d72e98d951e85cf938a149
   /auth/logout:
     get:
       tags:
         - auth
       summary: Log out of the API
-      description: Logs the user out and deletes session cookie
+      description: Logs the user out and removes session cookie
       responses:
         '200':
           description: Successful logout
@@ -78,6 +78,6 @@ paths:
               schema:
                 type: object
                 properties:
-                  test:
-                    type: string
-                    example: example
+                  success:
+                    type: boolean
+                    example: true
