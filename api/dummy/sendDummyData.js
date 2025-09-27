@@ -15,10 +15,33 @@ const clientPromise = mqtt.connectAsync(mqtt_url);
 exports.sendDummyData = (topic, generateData, interval) => {
 
   clientPromise.then((client) => {
-
     let seedDataIntervalId;
     let connectionActive;
     client.connected ? connectionActive = true : connectionActive = false
+
+    // Helper function for initializing connection and sending data
+    const initialize = () => {
+      console.log(`${new Date().toISOString()} - Connected to MQTT server`)
+
+      if (seedDataIntervalId){
+        clearInterval(seedDataIntervalId)
+      }
+
+      client.publish(topic, JSON.stringify(generateData())) // Send data immediately one time
+
+      // Send data at provided interval
+      seedDataIntervalId = setInterval(() => {
+        client.publish(topic, JSON.stringify(generateData()));
+      }, interval)
+
+      console.log(`${new Date().toISOString()} - Sending dummy data to topic: ${topic}`)
+
+      connectionActive = true;
+    }
+
+    if (client.connected){
+      initialize()
+    }
 
     // Log if connection disconnected (by MQTT server)
     client.on('disconnect', (packet) => {
@@ -38,44 +61,7 @@ exports.sendDummyData = (topic, generateData, interval) => {
 
     // Reset and continue sending data on reconnection
     client.on('connect', () => {
-      console.log(`${new Date().toISOString()} - Connected to MQTT server`)
-
-      if (seedDataIntervalId){
-        clearInterval(seedDataIntervalId)
-      }
-
-      client.publish(topic, JSON.stringify(generateData())) // Send data immediately one time
-
-      // Send data at provided interval
-      seedDataIntervalId = setInterval(() => {
-        client.publish(topic, JSON.stringify(generateData()));
-      }, interval)
-
-      console.log(`${new Date().toISOString()} - Sending dummy data to topic: ${topic}`)
-
-      connectionActive = true;
+      initialize()
     })
-
-    // Begin sending data on initial connection
-    if (client.connected){
-      if (seedDataIntervalId){
-        clearInterval(seedDataIntervalId)
-      }
-
-      client.publish(topic, JSON.stringify(generateData())) // Send data immediately one time
-
-      // Send data at provided interval
-      seedDataIntervalId = setInterval(() => {
-        client.publish(topic, JSON.stringify(generateData()));
-      }, interval)
-
-      console.log(`${new Date().toISOString()} - Sending dummy data to topic: ${topic}`)
-    }
-
-  })
-  .catch(err => {
-    console.error(err)
-  })
-}
-
-
+  }
+)}
