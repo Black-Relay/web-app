@@ -12,5 +12,5 @@ exports.sendMotionData = () => {
     }
   }
 
-  sendDummyData('motion', motionData, 10000) // ten seconds
+  sendDummyData('motion', motionData, 3600000) // ten seconds
 }

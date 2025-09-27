@@ -11,5 +11,5 @@ exports.sendProximityLightData = () => {
     }
   }
 
-  sendDummyData('proximity_light', proximityLightData, 5000) // one hour
+  sendDummyData('proximity_light', proximityLightData, 3600000) // one hour
 }
