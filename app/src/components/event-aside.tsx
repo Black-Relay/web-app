@@ -34,7 +34,7 @@ export function EventsAside(){
       <thead>
         <tr>
           <th>Active</th>
-          <th>Acknowledged</th>
+          <th>Ack</th>
           <th>Message</th>
           <th>Time</th>
         </tr>
