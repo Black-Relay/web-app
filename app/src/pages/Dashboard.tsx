@@ -1,3 +1,5 @@
+import { EventsAside } from "@/components/events-aside";
+
 export function Dashboard() {
   return (<div className="layout-main-content">
     <header>
@@ -8,7 +10,7 @@ export function Dashboard() {
     </main>
     <div className="mission-clock">Mission Clock</div>
     <aside>
-      <div>Page Specific detailed content</div>
+      <EventsAside />
     </aside>
     <footer>
       <div>Page Specific Footer data</div>
