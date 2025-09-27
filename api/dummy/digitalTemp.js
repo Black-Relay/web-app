@@ -4,10 +4,10 @@ const { sendDummyData } = require('./sendDummyData.js')
 exports.sendDigitalTempData = () => {
   const digitalTempData = () => {
     return {
-      sensorId: faker.datatype.uuid(),
+      sensorId: faker.string.uuid(),
       timestamp: new Date().toISOString(),
-      proximity: faker.datatype.number({ min: 0, max: 100 }), // distance in cm
-      lightLevel: faker.datatype.number({ min: 0, max: 1000 }), // lux
+      proximity: faker.number.int({ min: 0, max: 100 }), // distance in cm
+      lightLevel: faker.number.int({ min: 0, max: 1000 }), // lux
     }
   }
 

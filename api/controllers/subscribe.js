@@ -47,8 +47,7 @@ exports.subscribeToTopic = async (req, res) => {
         mqtt_client.on("message", (topic, message) => {
           if(topic === requestedTopic){
             message = JSON.parse(message.toString())
-            console.log(message)
-            Col.create(message)
+            Model.create(message)
             .then(doc => console.log('Document saved: ', doc))
             .catch(err => console.error('Error while saving document: ', err))
           }

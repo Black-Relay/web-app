@@ -1,15 +1,19 @@
 require('dotenv').config()
+
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-const app = express();
-const port = process.env.API_PORT || 3001;
-const subscribeRoutes = require('./routes/subscribe.js')
-const authRoutes = require('./routes/auth.js')
 const jwt = require('jsonwebtoken')
 const yaml = require('yaml')
 const swaggerUi = require('swagger-ui-express')
 const fs = require('fs')
+
+const app = express();
+const port = process.env.API_PORT || 3001;
+
+const subscribeRoutes = require('./routes/subscribe.js')
+const authRoutes = require('./routes/auth.js')
+const topicRoutes = require('./routes/topic.js')
 
 const swaggerYamlFile = fs.readFileSync('./swagger.yaml', 'utf8')
 const swaggerDocument = yaml.parse(swaggerYamlFile)
@@ -47,6 +51,7 @@ app.get('/', (req, res) => res.status(200).send('Black-Relay API server is runni
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 app.use('/auth', authRoutes)
 app.use('/subscribe', authCheck, subscribeRoutes)
+app.use('/topic', authCheck, topicRoutes)
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

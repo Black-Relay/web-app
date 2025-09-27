@@ -44,9 +44,13 @@ exports.sendDummyData = (topic, generateData, interval) => {
         clearInterval(seedDataIntervalId)
       }
 
+      client.publish(topic, JSON.stringify(generateData())) // Send data immediately one time
+
+      // Send data at provided interval
       seedDataIntervalId = setInterval(() => {
-        client.publish(topic, JSON.stringify(data));
-      }, 10000)
+        client.publish(topic, JSON.stringify(generateData()));
+      }, interval)
+
       console.log(`${new Date().toISOString()} - Sending dummy data to topic: ${topic}`)
 
       connectionActive = true;
@@ -58,9 +62,11 @@ exports.sendDummyData = (topic, generateData, interval) => {
         clearInterval(seedDataIntervalId)
       }
 
+      client.publish(topic, JSON.stringify(generateData())) // Send data immediately one time
+
+      // Send data at provided interval
       seedDataIntervalId = setInterval(() => {
-        let data = generateData()
-        client.publish(topic, JSON.stringify(data));
+        client.publish(topic, JSON.stringify(generateData()));
       }, interval)
 
       console.log(`${new Date().toISOString()} - Sending dummy data to topic: ${topic}`)

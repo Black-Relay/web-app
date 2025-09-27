@@ -14,3 +14,5 @@ paths:
     $ref: './paths/auth/login.yaml'
   /auth/logout:
     $ref: './paths/auth/logout.yaml'
+  /topic/{topic}:
+    $ref: './paths/topic/topic.yaml'
