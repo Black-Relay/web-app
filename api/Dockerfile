@@ -1,11 +1,6 @@
-FROM node:24-alpine
-
+FROM node:24-alpine AS dev
 WORKDIR /src/app
-
-COPY ./ /src/app/
-
+COPY . /src/app/
 RUN npm install
-
 ENV API_PORT=3001
-
-CMD ["npm", "start", "&&", "npm", "run", "dummy"]
+CMD npm run seed && npm run dummy & npm run dev

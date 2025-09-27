@@ -6,28 +6,38 @@ Ensure you have the following installed locally:
 - Docker
 
 ## Usage
-1. Clone this repo and cd into the root directory:
+### 1. Clone this repo and cd into the api directory:
 
 ```
-git clone https://github.com/Black-Relay/web-app-backend && cd web-app-backend
+git clone https://github.com/Black-Relay/web-app && cd web-app/api
 ```
 
-2. Install dependencies:
+### 2. Create a .env file:
 
 ```
-npm install
+cp .env.example .env
 ```
 
-3. Run the 'dev' docker compose:
+### 3. Run the docker compose:
 
 ```
-cd docker-compose/staging && docker compose up -d
+docker compose up -d
 ```
 
-3. You can verify that the API server is running by visiting ```http://localhost:3001``` in your browser.
+You can verify that the API server is running by visiting ```http://localhost:3001``` in your browser.
 
+Seeded user credentials will appear in the file ```seedcreds.txt```
 
-4. Subscribe to the a topic by using the ```/subscribe/{topic-name}``` endpoint. Where *topic-name* is the topic you are subscribing to. You should receive the following JSON response:
+### 4. Before calling any other endpoints, you must call the ```/auth/login``` endpoint to receive a session cookie. This will be a ```GET``` request with the following message body:
+
+```JSON
+{
+  "username": "joe.snuffy",
+  "password": "P@$$Word123"
+}
+```
+
+### 5. Subscribe to the a topic by using the ```/subscribe/{topic-name}``` endpoint. Where *topic-name* is the topic you are subscribing to. You should receive the following JSON response:
 
 ```JSON
 {
