@@ -11,7 +11,6 @@ const fs = require('fs')
 const app = express();
 const port = process.env.API_PORT || 3001;
 
-const subscribeRoutes = require('./routes/subscribe.js')
 const authRoutes = require('./routes/auth.js')
 const topicRoutes = require('./routes/topic.js')
 
@@ -50,7 +49,6 @@ app.get('/', (req, res) => res.status(200).send('Black-Relay API server is runni
 
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 app.use('/auth', authRoutes)
-app.use('/subscribe', authCheck, subscribeRoutes)
 app.use('/topic', authCheck, topicRoutes)
 
 app.listen(port, () => {

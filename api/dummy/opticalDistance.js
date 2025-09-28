@@ -11,5 +11,5 @@ exports.sendOpticalDistanceData = () => {
     }
   }
 
-  sendDummyData('optical_distance', opticalDistanceData, 3600000) // one hour
+  sendDummyData('optical_distance', opticalDistanceData, 300000) // 5 minutes
 }

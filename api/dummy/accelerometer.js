@@ -11,5 +11,5 @@ exports.sendAccelerometerData = () => {
     }
   }
 
-  sendDummyData('accelerometer', accelerometerData, 3600000) // one hour
+  sendDummyData('accelerometer', accelerometerData, 300000) // 5 minutes
 }

@@ -1,5 +1,71 @@
 const mongoose = require('mongoose')
+const { mqtt_client, mqtt_url } = require('../mqtt.js')
 const { mongooseConn, db_url } = require('../db.js')
+
+const storeMessagesToMongo = (Model, requestedTopic) => {
+  mqtt_client.on("message", (topic, message) => {
+    if(topic === requestedTopic){
+      message = JSON.parse(message.toString())
+      Model.create(message)
+      .then(doc => console.log('Document saved: ', doc))
+      .catch(err => console.error('Error while saving document: ', err))
+    }
+  })
+}
+
+exports.subscribeToTopic = async (req, res) => {
+
+  const requestedTopic = req.params.topic
+
+  mqtt_client.subscribe(requestedTopic, (err) => {
+    if (err){
+      console.error(err)
+      res.status(400).json({
+        status: "failed",
+        message: `Could not subscribe to topic ${requestedTopic}`
+      })
+    }
+
+    else{
+      mongoose.connection.listCollections()
+      .then((collections) => {
+        let collectionExists = false
+        let Model;
+        if(mongoose.models[requestedTopic]){
+          Model = mongoose.models[requestedTopic]
+        }
+        else{
+          Model = mongoose.model(requestedTopic, new mongoose.Schema({}, { strict: false }), requestedTopic)
+        }
+
+        for (let collection of collections){
+          if (collection.name === requestedTopic){
+            collectionExists = true
+          }
+        }
+
+        if (!collectionExists){
+          Model.createCollection()
+          .then( (collection) => {
+            console.log(`Mongo collection ${collection.name} created`)
+            return
+          })
+          .catch(err => console.error(`Unable to create collection for ${requestedTopic}. Error:\n${err}`))
+        }
+
+        storeMessagesToMongo(Model, requestedTopic)
+        res.status(200).json({
+          status: "success",
+          message: `Successfully subscribed to topic ${requestedTopic}`
+        })
+      })
+      .catch(err => {
+        console.error(err)
+        res.status(500).send('Something went wrong listing MongoDB collections')
+      })
+    }
+  })
+}
 
 exports.getAllTopicData = (req, res) => {
   try {

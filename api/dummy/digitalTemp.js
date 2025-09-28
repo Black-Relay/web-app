@@ -11,5 +11,5 @@ exports.sendDigitalTempData = () => {
     }
   }
 
-  sendDummyData('digital_temp', digitalTempData, 3600000) // one hour
+  sendDummyData('digital_temp', digitalTempData, 300000) // 5 minutes
 }

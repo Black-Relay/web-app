@@ -9,11 +9,11 @@ const clientPromise = mqtt.connectAsync(mqtt_url);
 /**
  * Sends dummy data to MQTT at a regular interval
  * @func sendDummyData
- * @param {string} topic - the MQTT topic to publish to
- * @param {function} generateData - a callback function to generate the data to be sent
- * @param {number} interval - the interval (in milliseconds) in which to randomly generate timeouts to send data. Effectively, this is the shortest interval you would want to wait before receiving data again.
+ * @param {string} topic - The MQTT topic to publish to
+ * @param {function} generateData - A callback function to generate the data to be sent
+ * @param {number} maxInterval - The maximum interval to wait for data to be sent. Data is sent at random intervals between 1 second and this value.
  */
-exports.sendDummyData = (topic, generateData, interval) => {
+exports.sendDummyData = (topic, generateData, maxInterval) => {
 
   clientPromise.then((client) => {
     let connectionActive;
@@ -28,23 +28,23 @@ exports.sendDummyData = (topic, generateData, interval) => {
       }
     }
 
-    // Helper function for initializing connection and sending data
-    const initialize = () => {
-
-      client.publish(topic, JSON.stringify(generateData())) &&
+    const sendData = () => {
+      client.publish(topic, JSON.stringify(generateData()))
       console.log(createLogMessage(`Sending dummy data to topic: ${topic}`)) // Send data immediately one time
+    }
 
-      // At provided interval, create create a random timeout to send data.
-      while(client.connected){
-        setTimeout(() => {
-          let timeout = getRandomNumber(1000, 86400000) // Between one second and 24 hours
-          setTimeout(() => {
-            client.publish(topic, JSON.stringify(generateData())) &&
-            console.log(createLogMessage(`Sending dummy data to topic: ${topic}`))
-          }, timeout)
-        }, interval)
-      }
+    // At provided interval, create create a random timeout to send data.
+    const loop = () => {
+      let randomInterval = getRandomNumber(1000, maxInterval)
+      setTimeout(() => {
+        sendData()
+        loop()
+      }, randomInterval)
+    }
 
+    const initialize = () => {
+      sendData()
+      loop()
       connectionActive = true;
     }
 

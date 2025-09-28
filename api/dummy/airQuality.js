@@ -20,5 +20,5 @@ exports.sendAirQualityData = () => {
     }
   }
 
-  sendDummyData('air_quality', airQualityData, 3600000) // one hour
+  sendDummyData('air_quality', airQualityData, 300000) // 5 minutes
 }
