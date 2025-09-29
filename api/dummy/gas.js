@@ -11,5 +11,5 @@ exports.sendGasData = () => {
     }
   }
 
-  sendDummyData('gas', gasData, 300000) // 5 minutes
+  sendDummyData('gas', gasData, 10000) // 5 minutes
 }

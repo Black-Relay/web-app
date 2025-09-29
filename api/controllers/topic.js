@@ -7,7 +7,7 @@ const storeMessagesToMongo = (Model, requestedTopic) => {
     if(topic === requestedTopic){
       message = JSON.parse(message.toString())
       Model.create(message)
-      .then(doc => console.log('Document saved: ', doc))
+      .then(doc => doc)
       .catch(err => console.error('Error while saving document: ', err))
     }
   })
