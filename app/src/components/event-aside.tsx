@@ -1,4 +1,5 @@
 import { EventMessage, type ShortEvent } from "./event-message";
+import "../css/event-aside.css";
 
 let mockEvents:Array<ShortEvent> = [
   {
@@ -30,7 +31,7 @@ let mockEvents:Array<ShortEvent> = [
 export function EventsAside(){
 
   return (<>
-    <table>
+    <table className="dashboard-event-table">
       <thead>
         <tr>
           <th>Active</th>

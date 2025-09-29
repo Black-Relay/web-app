@@ -1,5 +1,5 @@
 import { MissionClock } from "@/components/mission-clock"
-import { EventsAside } from "@/components/events-aside";
+import { EventsAside } from "@/components/event-aside";
 import { Switch } from "@/components/ui/switch"
 
 export function Dashboard() {
