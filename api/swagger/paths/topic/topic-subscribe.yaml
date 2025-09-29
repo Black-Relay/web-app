@@ -1,6 +1,6 @@
 get:
   tags:
-    - subscribe
+    - topic
   summary: Subscribe to an MQTT topic
   description: Stores published messages to a corresponding MongoDB collection
   parameters:

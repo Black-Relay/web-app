@@ -7,36 +7,12 @@ info:
     name: GPL v3.0
     url: 'https://www.gnu.org/licenses/gpl-3.0.en.html'
 paths:
-  '/subscribe/{topic}':
-    get:
-      tags:
-        - subscribe
-      summary: Subscribe to an MQTT topic
-      description: Stores published messages to a corresponding MongoDB collection
-      parameters:
-        - name: topic
-          in: path
-          required: true
-          schema:
-            type: string
-          description: The MQTT topic to subscribe to
-      responses:
-        '200':
-          description: Subscribe to topic
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  test:
-                    type: string
-                    example: example
   /auth/login:
     get:
       tags:
         - auth
       summary: Log in to the API
-      description: Logs in a user and returns a signed session cookie
+      description: 'Logs in a user and returns a signed, httpOnly, session cookie'
       requestBody:
         required: true
         content:
@@ -55,24 +31,79 @@ paths:
                 - password
       responses:
         '200':
-          description: Successful login
+          description: Successful login. Returns the user id of the successfully logged in user.
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  test:
+                  user_id:
                     type: string
-                    example: example
+                    example: 68d72e98d951e85cf938a149
   /auth/logout:
     get:
       tags:
         - auth
       summary: Log out of the API
-      description: Logs the user out and deletes session cookie
+      description: Logs the user out and removes session cookie
       responses:
         '200':
           description: Successful logout
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+  '/topic/{topic}':
+    get:
+      tags:
+        - topic
+      summary: Get all data from a subscribed topic
+      description: Returns all data stored in a topics associated collection since it was subscribed to
+      responses:
+        '200':
+          description: Example data from a motion sensor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sensorId:
+                    type: integer
+                    example: 1
+                  timestamp:
+                    type: string
+                    example: '2024-06-11T14:23:45.123Z'
+                  motionDetected:
+                    type: boolean
+                    example: true
+                  direction:
+                    type: string
+                    example: 'N'
+                  location:
+                    type: array
+                    example:
+                      - 37.7749
+                      - -122.4194
+  '/topic/{topic}/subscribe':
+    get:
+      tags:
+        - topic
+      summary: Subscribe to an MQTT topic
+      description: Stores published messages to a corresponding MongoDB collection
+      parameters:
+        - name: topic
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The MQTT topic to subscribe to
+      responses:
+        '200':
+          description: Subscribe to topic
           content:
             application/json:
               schema:

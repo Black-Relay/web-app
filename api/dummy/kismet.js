@@ -10,5 +10,5 @@ exports.sendKismetData = () => {
     })
   };
 
-  sendDummyData('kismet', kismetData, 3600000) // one hour
+  sendDummyData('kismet', kismetData, 300000) // 5 minutes
 }

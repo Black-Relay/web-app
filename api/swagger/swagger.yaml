@@ -8,9 +8,11 @@ info:
     name: GPL v3.0
     url: https://www.gnu.org/licenses/gpl-3.0.en.html
 paths:
-  /subscribe/{topic}:
-    $ref: './paths/subscribe/topic.yaml'
   /auth/login:
     $ref: './paths/auth/login.yaml'
   /auth/logout:
     $ref: './paths/auth/logout.yaml'
+  /topic/{topic}:
+    $ref: './paths/topic/topic.yaml'
+  /topic/{topic}/subscribe:
+    $ref: './paths/topic/topic-subscribe.yaml'
