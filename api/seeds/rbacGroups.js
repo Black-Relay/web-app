@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const rbacGroupsModel = require('../models/rbacGroups.js')
 const { faker } = require('@faker-js/faker')
 
-const groupNames = ['user', 'admin', 'analyst']
+const groupNames = ['admin', 'analyst']
 
 const seedRbacGroups = () => {
 
