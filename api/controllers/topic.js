@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const { mqtt_client, mqtt_url } = require('../mqtt.js')
+const { mqtt_client, mqtt_url } = require('../utils/mqtt.js')
 const { mongooseConn, db_url } = require('../db.js')
 
 const storeMessagesToMongo = (Model, requestedTopic) => {
