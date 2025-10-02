@@ -15,7 +15,7 @@ export function Dashboard() {
     </main>
     <MissionClock/>
     <aside>
-      <Switch labels={["Sensor","Events"]} cb={setAside}/>
+      <Switch labels={["Sensor","Events"]} setSwitch={setAside}/>
       {aside == "Sensor" ?
         <></> :
         <EventsAside />

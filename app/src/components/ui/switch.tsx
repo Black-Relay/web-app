@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "../../css/switch.css";
 
-export function Switch({labels, cb}:{labels: Array<string>, cb: Function}){
+export function Switch({labels, setSwitch}:{labels: Array<string>, setSwitch: Function}){
   const [focus, setFocus] = useState(labels[0]);
 
   return (<div className="switch">
@@ -9,7 +9,7 @@ export function Switch({labels, cb}:{labels: Array<string>, cb: Function}){
       return <div
         className={"label" + (focus == label ? " focused" : "")}
         key={index}
-        onClick={()=>{setFocus(label); cb(label);}}>
+        onClick={()=>{setFocus(label); setSwitch(label);}}>
           {label}
       </div>
     })}

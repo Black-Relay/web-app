@@ -28,4 +28,8 @@
       linear-gradient(white) padding-box,
       conic-gradient(red, yellow, red) border-box;
   }
+
+  .focused:hover{
+    cursor: default;
+  }
 }
