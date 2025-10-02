@@ -3,13 +3,24 @@
   max-height: 90%;
   /* padding: 8px; */
   margin-inline: auto;
-  max-width: fit-content;
+  max-width: max-content;
 }
 
 .dashboard-event-table{
   margin: auto;
-  th, td {
+  tr, th, td {
     padding: 2px;
+    text-align: center;
+  }
+  tbody{
+    tr:nth-child(2n+1){
+      background-color: var(--primary);
+      color: var(--primary-foreground);
+    }
+    tr:nth-child(2n+2){
+      background-color: var(--muted-foreground);
+      color: var(--muted);
+    }
   }
   thead{
     position: sticky;
