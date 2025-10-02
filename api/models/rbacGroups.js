@@ -6,6 +6,7 @@ const rbacGroupsSchema = new Schema({
   rbacGroupName: {
     type: String,
     required: true,
+    unique: true
   },
   members: {
     type: Schema.Types.ObjectId,

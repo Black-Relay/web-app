@@ -37,7 +37,7 @@ const seedUsers = (numberOfUsers) => {
             // Helper to randomly assign rbac groups
             let getRandomGroups = () => {
               let groupsUserIsAddedTo = []
-              for (j = 0; j < getRandomNumber(0, 2); j++) {
+              for (j = 0; j < getRandomNumber(0, allRbacGroups.length -1); j++) {
                 groupsUserIsAddedTo.push(allRbacGroups[j]._id)
               }
               return groupsUserIsAddedTo

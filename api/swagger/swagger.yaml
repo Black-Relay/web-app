@@ -16,3 +16,7 @@ paths:
     $ref: './paths/topic/topic.yaml'
   /topic/{topic}/subscribe:
     $ref: './paths/topic/topic-subscribe.yaml'
+  /user:
+    $ref: './paths/user/user.yaml'
+  /user/{userId}:
+    $ref: './paths/user/user-userid.yaml'

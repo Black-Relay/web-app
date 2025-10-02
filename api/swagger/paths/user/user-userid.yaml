@@ -1,0 +1,100 @@
+get:
+  tags:
+    - user
+  summary: Get user info stored in DB by user ID
+  description: Returns an object containing user data
+  parameters:
+    - name: userId
+      in: path
+      required: true
+      schema:
+        type: string
+      example: "68de4b75ee5dce28c22bfb64"
+  responses:
+    '200':
+      description: Example user data
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              userId:
+                type: string
+                example: "68de4b75ee5dce28c22bfb64"
+              firstName:
+                type: string
+                example: "Joe"
+              lastName:
+                type: string
+                example: "Snuffy"
+              username:
+                type: string
+                example: "joe.snuffy"
+              password:
+                type: string
+                example: "$2b$10$EIXZQ1ZQ1ZQ1ZQ1ZQ1ZQ1O$2b$10$OOwh82PRs69t8INcue0fiOKbsLkVVIoe4Ib0DFMDJRn3j0cO0/X5C"
+              createdAt:
+                type: string
+                example: "2024-06-11T14:23:45.123Z"
+
+patch:
+  tags:
+    - user
+  summary: Update user info stored in DB by user ID
+  description: Updates user data in the database
+  parameters:
+  - name: userId
+    in: path
+    required: true
+    schema:
+      type: string
+    example: "68de4b75ee5dce28c22bfb64"
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            firstName:
+              type: string
+              example: "Joe"
+              required: false
+            lastName:
+              type: string
+              example: "Snuffy"
+              required: false
+            username:
+              type: string
+              example: "joe.snuffy"
+              required: false
+            password:
+              type: string
+              example: "$2b$10$EIXZQ1ZQ1ZQ1ZQ1ZQ1O$2b$10$OOwh82PRs69t8INcue0fiOKbsLkVVIoe4Ib0DFMDJRn3j0cO0/X5C"
+              required: false
+  responses:
+    '200':
+      description: Example updated user data
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              userId:
+                type: string
+                example: "68de4b75ee5dce28c22bfb64"
+              firstName:
+                type: string
+                example: "Joe"
+              lastName:
+                type: string
+                example: "Snuffy"
+              username:
+                type: string
+                example: "joe.snuffy"
+              password:
+                type: string
+                example: "$2b$10$EIXZQ1ZQ1ZQ1ZQ1ZQ1O$2b$10$OOwh82PRs69t8INcue0fiOKbsLkVVIoe4Ib0DFMDJRn3j0cO0/X5C"
+              createdAt:
+                type: string
+                example: "2024-06-11T14:23:45.123Z"
