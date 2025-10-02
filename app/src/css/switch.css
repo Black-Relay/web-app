@@ -8,6 +8,8 @@
   justify-self: center;
   margin: 4px;
 
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+
   .label{
     color: black;
     border: 5px solid transparent;

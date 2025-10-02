@@ -1,7 +1,4 @@
 .layout {
-  /* display: grid;
-  grid-template-columns: 1fr 11fr;
-  grid-template-rows: 1fr 11fr; */
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
@@ -24,7 +21,10 @@
     header, .main-header {
       margin: 16px;
       grid-column: 1/9;
+      font-size: xxx-large;
       /* background-color: magenta; */
+
+      font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
     }
 
     main, .main-display{
