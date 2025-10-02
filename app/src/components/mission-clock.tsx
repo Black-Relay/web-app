@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react"
 
-export function MissionClock({zone = 0, title}:{zone?: number, title?: string}){
+export function MissionClock({zone = NaN, title}:{zone?: number, title?: string}){
   const [date, setDate] = useState("DD-MMM-YYY");
   const [time, setTime] = useState("00:00:00");
 
   useEffect(()=>{
     setInterval(()=>{
-      const currentDate = new Date();
-      currentDate.setTime(currentDate.getTime() + zone * 3600000);
+      let currentDate = new Date();
+      if( !isNaN(zone) ) {
+        let offset = zone * 3600000 + currentDate.getTimezoneOffset() * 60000;
+        currentDate.setTime(currentDate.getTime() + offset);
+      }
       setDate(currentDate.toLocaleDateString('en-us', {day: 'numeric', month: 'short', year: 'numeric'}))
       setTime(currentDate.toLocaleTimeString('en-gb'));
     }, 1000)
