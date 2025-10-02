@@ -1,9 +1,21 @@
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: true;
+}
+
+@keyframes rotate {
+  to {
+    --angle: 1turn;
+  }
+}
+
 .switch {
   border: 5px solid transparent;
   border-radius: 100vw;
   background: linear-gradient(grey) padding-box;
   width: fit-content;
-  color: black;
+  color: var(--card-foreground);
   display: flex;
   justify-self: center;
   margin: 4px;
@@ -11,7 +23,7 @@
   font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
 
   .label{
-    color: black;
+    color: var(--secondary);
     border: 5px solid transparent;
     border-radius: 100vw;
     padding-inline: 4px;
@@ -23,15 +35,18 @@
   }
 
   .focused{
-    color: black;
+    color: var(--secondary-foreground);
     border: 5px solid transparent;
     border-radius: 100vw;
     background:
-      linear-gradient(white) padding-box,
-      conic-gradient(red, yellow, red) border-box;
+      linear-gradient(var(--card)) padding-box,
+      conic-gradient(from var(--angle), var(--chart-1), var(--chart-2), var(--chart-1)) border-box;
+    animation: rotate 3s linear infinite;
+    animation-play-state: paused;
   }
 
-  .focused:hover{
+  .focused:hover, .focused:focus-visible{
     cursor: default;
+    animation-play-state: running;
   }
 }
