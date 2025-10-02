@@ -23,7 +23,10 @@ export function Dashboard() {
       }
     </aside>
     <footer>
-      <div>Page Specific Footer data</div>
+      <MissionClock/>
+      <MissionClock/>
+      <MissionClock/>
+      <MissionClock/>
     </footer>
   </div>)
 }

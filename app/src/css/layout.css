@@ -67,6 +67,8 @@
       margin: 16px;
       grid-column: 1/13;
       grid-row: 11/13;
+      display: flex;
+      justify-content: center;
       /* background-color: magenta; */
     }
   }
