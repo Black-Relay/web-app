@@ -30,7 +30,7 @@ exports.sendDummyData = (topic, generateData, maxInterval) => {
 
     const sendData = () => {
       client.publish(topic, JSON.stringify(generateData()))
-      console.log(createLogMessage(`Sending dummy data to topic: ${topic}`)) // Send data immediately one time
+      // console.log(createLogMessage(`Sending dummy data to topic: ${topic}`))
     }
 
     // At provided interval, create create a random timeout to send data.
@@ -49,14 +49,14 @@ exports.sendDummyData = (topic, generateData, maxInterval) => {
     }
 
     if (client.connected){
-      console.log(createLogMessage('Connected to MQTT server'))
+      console.log(createLogMessage(`Client for dummy data ${topic} - connected to MQTT server`))
       initialize()
     }
 
     // Log if connection disconnected (by MQTT server)
     client.on('disconnect', (packet) => {
       if (connectionActive){
-        console.log(createLogMessage(`Disconnected by MQTT server:\n${packet}`))
+        console.log(createLogMessage(`Client for dummy data ${topic} - disconnected by MQTT server:\n${packet}`))
         connectionActive = false;
       }
     })
@@ -64,14 +64,14 @@ exports.sendDummyData = (topic, generateData, maxInterval) => {
     // Log if connection closed
     client.on('close', () => {
       if (connectionActive){
-        console.log(createLogMessage('Connection to MQTT server closed'))
+        console.log(createLogMessage(`Client for dummy data ${topic} - connection to MQTT server closed`))
         connectionActive = false;
       }
     })
 
     // Reset and continue sending data on reconnection
     client.on('connect', () => {
-      console.log(createLogMessage('Reconnected to MQTT server'))
+      console.log(createLogMessage(`Client for dummy data ${topic} - reconnected to MQTT server`))
       initialize()
     })
   }

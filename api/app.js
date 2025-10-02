@@ -6,7 +6,7 @@ const cookieParser = require('cookie-parser');
 const yaml = require('yaml')
 const swaggerUi = require('swagger-ui-express')
 const fs = require('fs')
-const { authCheck } = require('./utils/auth.js')
+const { authCheck, adminCheck } = require('./utils/auth.js')
 const { reSubscribeToTopics } = require('./utils/mongoose.js')
 
 const app = express();
@@ -33,7 +33,7 @@ app.get('/', (req, res) => res.status(200).send('Black-Relay API server is runni
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 app.use('/auth', authRoutes)
 app.use('/topic', authCheck, topicRoutes)
-app.use('/user', authCheck, userRoutes)
+app.use('/user', authCheck, adminCheck, userRoutes)
 
 reSubscribeToTopics(nonTopicCollections)
 

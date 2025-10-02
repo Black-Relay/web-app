@@ -31,12 +31,23 @@ paths:
                 - password
       responses:
         '200':
-          description: Successful login. Returns the user id of the successfully logged in user.
+          description: 'Successful login. Returns first name, last name, member group IDs and user ID.'
           content:
             application/json:
               schema:
                 type: object
                 properties:
+                  firstName:
+                    type: string
+                    example: Joe
+                  lastName:
+                    type: string
+                    example: Snuffy
+                  groups:
+                    type: array
+                    example:
+                      - 68de5378a3cc0665c0bbe3f2
+                      - 68de53a9a3cc0665c0bbe3f3
                   user_id:
                     type: string
                     example: 68d72e98d951e85cf938a149
@@ -112,3 +123,214 @@ paths:
                   test:
                     type: string
                     example: example
+  /user:
+    get:
+      tags:
+        - user
+      summary: Get all users stored in DB
+      description: Returns an array of objects containing user data
+      responses:
+        '200':
+          description: Example user data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    userId:
+                      type: integer
+                      example: 1
+                    firstName:
+                      type: string
+                      example: Joe
+                    lastName:
+                      type: string
+                      example: Snuffy
+                    username:
+                      type: string
+                      example: joe.snuffy
+                    password:
+                      type: string
+                      example: $2b$10$EIXZQ1ZQ1ZQ1ZQ1ZQ1ZQ1O$2b$10$OOwh82PRs69t8INcue0fiOKbsLkVVIoe4Ib0DFMDJRn3j0cO0/X5C
+                    createdAt:
+                      type: string
+                      example: '2024-06-11T14:23:45.123Z'
+    post:
+      tags:
+        - user
+      summary: Create a new user
+      description: Creates a new user in the database
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  example: Joe
+                  required: false
+                lastName:
+                  type: string
+                  example: Snuffy
+                  required: false
+                username:
+                  type: string
+                  example: joe.snuffy
+                  required: true
+                password:
+                  type: string
+                  example: plainTextPassword
+                  required: true
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    type: string
+                    example: 68de4b75ee5dce28c22bfb64
+                  firstName:
+                    type: string
+                    example: Joe
+                  lastName:
+                    type: string
+                    example: Snuffy
+                  username:
+                    type: string
+                    example: joe.snuffy
+                  password:
+                    type: string
+                    example: $2b$10$EIXZQ1ZQ1ZQ1ZQ1ZQ1ZQ1O$2b$10$kX8FxF2fg6toWdHMR2BnLenR1SpmDcNpRi/3g8NB5snbGyYmi4wPi
+                  createdAt:
+                    type: string
+                    example: '2024-06-11T14:23:45.123Z'
+    delete:
+      tags:
+        - user
+      summary: Delete a user by user ID
+      description: Deletes a user from the database
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+          example: 68de4b75ee5dce28c22bfb64
+      responses:
+        '200':
+          description: User deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User deleted successfully
+  '/user/{userId}':
+    get:
+      tags:
+        - user
+      summary: Get user info stored in DB by user ID
+      description: Returns an object containing user data
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+          example: 68de4b75ee5dce28c22bfb64
+      responses:
+        '200':
+          description: Example user data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    type: string
+                    example: 68de4b75ee5dce28c22bfb64
+                  firstName:
+                    type: string
+                    example: Joe
+                  lastName:
+                    type: string
+                    example: Snuffy
+                  username:
+                    type: string
+                    example: joe.snuffy
+                  password:
+                    type: string
+                    example: $2b$10$EIXZQ1ZQ1ZQ1ZQ1ZQ1ZQ1O$2b$10$OOwh82PRs69t8INcue0fiOKbsLkVVIoe4Ib0DFMDJRn3j0cO0/X5C
+                  createdAt:
+                    type: string
+                    example: '2024-06-11T14:23:45.123Z'
+    patch:
+      tags:
+        - user
+      summary: Update user info stored in DB by user ID
+      description: Updates user data in the database
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+          example: 68de4b75ee5dce28c22bfb64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  example: Joe
+                  required: false
+                lastName:
+                  type: string
+                  example: Snuffy
+                  required: false
+                username:
+                  type: string
+                  example: joe.snuffy
+                  required: false
+                password:
+                  type: string
+                  example: $2b$10$EIXZQ1ZQ1ZQ1ZQ1ZQ1O$2b$10$OOwh82PRs69t8INcue0fiOKbsLkVVIoe4Ib0DFMDJRn3j0cO0/X5C
+                  required: false
+      responses:
+        '200':
+          description: Example updated user data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    type: string
+                    example: 68de4b75ee5dce28c22bfb64
+                  firstName:
+                    type: string
+                    example: Joe
+                  lastName:
+                    type: string
+                    example: Snuffy
+                  username:
+                    type: string
+                    example: joe.snuffy
+                  password:
+                    type: string
+                    example: $2b$10$EIXZQ1ZQ1ZQ1ZQ1ZQ1O$2b$10$OOwh82PRs69t8INcue0fiOKbsLkVVIoe4Ib0DFMDJRn3j0cO0/X5C
+                  createdAt:
+                    type: string
+                    example: '2024-06-11T14:23:45.123Z'
