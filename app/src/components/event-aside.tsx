@@ -1,36 +1,11 @@
-import { EventMessage, type ShortEvent } from "./event-message";
+import { EventMessage } from "./event-message";
 import "../css/event-aside.css";
+import { mockEvents } from "@/mockdata/mock-events";
 
-let mockEvents:Array<ShortEvent> = [
-  {
-    active: false,
-    acknowledged: false,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: false,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: false,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-]
 
 export function EventsAside(){
 
-  return (<>
+  return (<div className="table-wrapper">
     <table className="dashboard-event-table">
       <thead>
         <tr>
@@ -44,5 +19,5 @@ export function EventsAside(){
         {mockEvents.map((message, index)=><EventMessage key={index} event={message}/>)}
       </tbody>
     </table>
-  </>)
+  </div>)
 }
