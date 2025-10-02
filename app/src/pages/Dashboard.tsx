@@ -5,10 +5,11 @@ import { useState } from "react";
 
 export function Dashboard() {
   const [aside, setAside] = useState("Sensor");
+  const [mission, setMission] = useState("Test Operation"); // convert to context
 
   return (<div className="layout-main-content">
     <header>
-      <h1>Welcome to the dashboard</h1>
+      <h1>{mission}</h1>
     </header>
     <main>
       <div>Page Specific Main Content i.e. maps/tables</div>
