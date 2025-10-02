@@ -18,8 +18,8 @@ export function MissionClock({zone = NaN, title}:{zone?: number, title?: string}
 
   return (<div className="mission-clock">
     <div className="date-time-wrapper">
-      {title ? <p>{title}</p>:<p>{date}</p>}
-      <p>{time}</p>
+      {title ? <p className="header">{title}</p>:<p className="header">{date}</p>}
+      <p className="time">{time}</p>
     </div>
   </div>)
 }

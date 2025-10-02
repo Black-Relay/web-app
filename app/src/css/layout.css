@@ -60,6 +60,21 @@
       .date-time-wrapper{
         box-sizing: border-box;
         padding: 32px;
+        min-width: 200px;
+        max-width: 300px;
+        margin-inline: auto;
+        border-radius: var(--radius);
+        border: 5px solid transparent;
+        background:
+          linear-gradient(var(--card)) padding-box,
+          conic-gradient(var(--chart-1), var(--chart-2), var(--chart-1)) border-box;
+      }
+
+      .header{
+        color: var(--chart-5);
+      }
+      .time{
+        color: var(--chart-3);
       }
     }
 
