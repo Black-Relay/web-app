@@ -1,0 +1,31 @@
+.switch {
+  border: 5px solid transparent;
+  border-radius: 100vw;
+  background: linear-gradient(grey) padding-box;
+  width: fit-content;
+  color: black;
+  display: flex;
+  justify-self: center;
+  margin: 4px;
+
+  .label{
+    color: black;
+    border: 5px solid transparent;
+    border-radius: 100vw;
+    padding-inline: 4px;
+    padding-block: 4px;
+  }
+
+  .label:hover{
+    cursor: pointer;
+  }
+
+  .focused{
+    color: black;
+    border: 5px solid transparent;
+    border-radius: 100vw;
+    background:
+      linear-gradient(white) padding-box,
+      conic-gradient(red, yellow, red) border-box;
+  }
+}
