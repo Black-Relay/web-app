@@ -1,5 +1,6 @@
 import { MissionClock } from "@/components/mission-clock"
 import { EventsAside } from "@/components/event-aside";
+import { Switch } from "@/components/ui/switch";
 
 export function Dashboard() {
   return (<div className="layout-main-content">
@@ -11,6 +12,7 @@ export function Dashboard() {
     </main>
     <MissionClock/>
     <aside>
+      <Switch labels={["Sensor","Events"]} />
       <EventsAside />
     </aside>
     <footer>
