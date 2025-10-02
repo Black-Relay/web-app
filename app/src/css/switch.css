@@ -13,9 +13,8 @@
 .switch {
   border: 5px solid transparent;
   border-radius: 100vw;
-  background: linear-gradient(grey) padding-box;
+  background: linear-gradient(var(--muted-foreground)) padding-box;
   width: fit-content;
-  color: var(--card-foreground);
   display: flex;
   justify-self: center;
   margin: 4px;
@@ -23,7 +22,7 @@
   font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
 
   .label{
-    color: var(--secondary);
+    color: var(--muted);
     border: 5px solid transparent;
     border-radius: 100vw;
     padding-inline: 4px;
