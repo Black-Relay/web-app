@@ -23,10 +23,10 @@ export function Dashboard() {
       }
     </aside>
     <footer>
-      <MissionClock/>
-      <MissionClock/>
-      <MissionClock/>
-      <MissionClock/>
+      <MissionClock zone={+9} title="Pacific"/>
+      <MissionClock zone={+2} title="Germany"/>
+      <MissionClock zone={-4} title="Eastern"/>
+      <MissionClock zone={-6} title="Mountain"/>
     </footer>
   </div>)
 }
