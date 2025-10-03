@@ -18,7 +18,7 @@ function useUserContext():UserContextType{
 };
 
 export default function UserProvider({children}:{children: React.ReactNode}){
-  const [user, setUser] = useState({username: "none"});
+  const [user, setUser] = useState({username: ""});
   const value = {
     user: user,
     setUser: setUser

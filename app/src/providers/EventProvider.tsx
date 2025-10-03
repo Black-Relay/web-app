@@ -1,15 +1,23 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { useUserContext } from "./UserProvider";
 
 type Event = {
 
 }
 
+type Subscription = {
+  name: string;
+  frequency: number;
+}
+
 interface EventContextType {
   events: Array<Event>;
-  setEvents: React.Dispatch<React.SetStateAction<Array<Event>>>;
+  subscriptions: Array<Subscription>;
 }
 
 const EventContext = createContext<EventContextType|null>(null);
+const baseUrl = "http://localhost";
+const basePort = 3001;
 
 function useEventContext():EventContextType{
   const value:EventContextType|null = useContext(EventContext);
@@ -17,12 +25,30 @@ function useEventContext():EventContextType{
   return value;
 }
 
+async function eventSubscriber(subscription: string){
+  const response = await fetch(`${baseUrl}:${basePort}/topic/${subscription}/subscribe`);
+  console.log(response);
+}
+
+async function eventConsumer(subscription: string){
+  const response = await fetch(`${baseUrl}:${basePort}/topic/${subscription}`);
+  console.log(response);
+}
+
 export default function EventProvider({children}:{children: React.ReactNode}){
   const [events, setEvents] = useState([{}]);
+  const [subscriptions, setSubscriptions] = useState([{name: "gas", frequency: 15000}]);
+  const { user } = useUserContext();
+
   const value = {
     events: events,
-    setEvents: setEvents
+    subscriptions: subscriptions
   };
+
+  useEffect(()=>{
+    if( user.username == "" ) return;
+    subscriptions.forEach(({name}) => eventSubscriber(name));
+  },[user])
 
   return(
     <EventContext.Provider value={value}>
