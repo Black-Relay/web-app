@@ -26,8 +26,9 @@ function useEventContext():EventContextType{
 }
 
 async function eventSubscriber(subscription: string){
-  const response = await fetch(`${baseUrl}:${basePort}/topic/${subscription}/subscribe`);
+  const response = await fetch(`${baseUrl}:${basePort}/topic/${subscription}/subscribe`, {credentials: "include"});
   console.log(response);
+  return response.status == 200 || response.status == 201 ? true : false;
 }
 
 async function eventConsumer(subscription: string){
@@ -46,8 +47,13 @@ export default function EventProvider({children}:{children: React.ReactNode}){
   };
 
   useEffect(()=>{
-    if( user.username == "" ) return;
-    subscriptions.forEach(({name}) => eventSubscriber(name));
+    // if( user.username == "" ) return;
+    subscriptions.forEach(
+      async ({name, frequency}) => {
+        let status = await eventSubscriber(name)
+        if(status) setInterval(()=>{eventConsumer(name)}, frequency)
+      }
+    );
   },[user])
 
   return(
