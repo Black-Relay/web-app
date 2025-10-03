@@ -29,8 +29,9 @@ exports.userLogin = (req, res) => {
           if (correctPassword){
             // generate JWT
             userData = {
-              "first_name": user.first_name,
-              "last_name": user.last_name,
+              "firstName": user.firstName,
+              "lastName": user.lastName,
+              "groups": user.groups,
               "user_id": user._id
             }
             let token = jwt.sign(userData, jwtSecret, { expiresIn: '1h' })
