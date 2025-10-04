@@ -33,9 +33,9 @@ async function eventSubscriber(subscription: string){
 }
 
 async function eventConsumer(subscription: string){
-  const response = await fetch(`${baseUrl}:${basePort}/topic/${subscription}`);
-  console.log(response);
-  return response;
+  const response = await fetch(`${baseUrl}:${basePort}/topic/${subscription}`, {credentials: "include"});
+  const json = await response.json();
+  return json;
 }
 
 export default function EventProvider({children}:{children: React.ReactNode}){
@@ -56,7 +56,7 @@ export default function EventProvider({children}:{children: React.ReactNode}){
         let status = await eventSubscriber(name)
         if(status) setInterval(async ()=>{
           let eventData = await eventConsumer(name)
-          setEvents((currentEvents)=> [...currentEvents, eventData])
+          setEvents([...eventData])
         }, frequency)
       }
     );

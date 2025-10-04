@@ -12,7 +12,7 @@ const { reSubscribeToTopics } = require('./utils/mongoose.js')
 const app = express();
 const port = process.env.API_PORT || 3001;
 const corsConfig = {
-  origin: process.env.DOMAIN ? process.env.DOMAIN : 'localhost:5173',
+  origin: process.env.DOMAIN ? process.env.DOMAIN : 'http://localhost:5173',
   credentials: true,
   methods: ['GET', 'POST', 'PATCH', 'DELETE'],
 }
