@@ -13,6 +13,7 @@ type Subscription = {
 interface EventContextType {
   events: Array<Event>;
   subscriptions: Array<Subscription>;
+  setSubscriptions: React.Dispatch<React.SetStateAction<Array<Subscription>>>;
 }
 
 const EventContext = createContext<EventContextType|null>(null);
@@ -34,6 +35,7 @@ async function eventSubscriber(subscription: string){
 async function eventConsumer(subscription: string){
   const response = await fetch(`${baseUrl}:${basePort}/topic/${subscription}`);
   console.log(response);
+  return response;
 }
 
 export default function EventProvider({children}:{children: React.ReactNode}){
@@ -43,7 +45,8 @@ export default function EventProvider({children}:{children: React.ReactNode}){
 
   const value = {
     events: events,
-    subscriptions: subscriptions
+    subscriptions: subscriptions,
+    setSubscriptions: setSubscriptions
   };
 
   useEffect(()=>{
@@ -51,7 +54,10 @@ export default function EventProvider({children}:{children: React.ReactNode}){
     subscriptions.forEach(
       async ({name, frequency}) => {
         let status = await eventSubscriber(name)
-        if(status) setInterval(()=>{eventConsumer(name)}, frequency)
+        if(status) setInterval(async ()=>{
+          let eventData = await eventConsumer(name)
+          setEvents((currentEvents)=> [...currentEvents, eventData])
+        }, frequency)
       }
     );
   },[user])
