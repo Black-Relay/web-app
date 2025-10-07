@@ -11,6 +11,18 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import type { FormEvent } from "react";
+
+async function submitHandler(event:FormEvent){
+  event.preventDefault();
+  const form = event.target as HTMLFormElement;
+  const payload = {
+    username: (form.elements.namedItem('username') as HTMLInputElement).value,
+    password: (form.elements.namedItem('password') as HTMLInputElement).value
+  }
+  console.log(payload);
+
+}
 
 export function Login() {
   return (
@@ -27,7 +39,7 @@ export function Login() {
         </CardAction>
       </CardHeader>
       <CardContent>
-        <form>
+        <form id="login" onSubmit={(e)=>{submitHandler(e)}}>
           <div className="flex flex-col gap-6">
             <div className="grid gap-2">
               <Label htmlFor="username">Username</Label>
@@ -54,7 +66,7 @@ export function Login() {
         </form>
       </CardContent>
       <CardFooter className="flex-col gap-2">
-        <Button type="submit" className="w-full">
+        <Button type="submit" className="w-full" form="login">
           Login
         </Button>
       </CardFooter>
