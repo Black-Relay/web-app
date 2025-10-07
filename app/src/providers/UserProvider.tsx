@@ -2,6 +2,7 @@ import React, { useContext, createContext, useState } from "react";
 
 type User = {
   username: string;
+  role: string;
 };
 
 interface UserContextType {
@@ -18,7 +19,7 @@ function useUserContext():UserContextType{
 };
 
 export default function UserProvider({children}:{children: React.ReactNode}){
-  const [user, setUser] = useState({username: ""});
+  const [user, setUser] = useState({username: "", role: ""});
   const value = {
     user: user,
     setUser: setUser
