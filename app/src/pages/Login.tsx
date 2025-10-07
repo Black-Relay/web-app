@@ -12,19 +12,26 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { FormEvent } from "react";
+import { postLogin } from "@/utils/fetch-requests";
+import { useUserContext } from "@/providers/UserProvider";
 
-async function submitHandler(event:FormEvent){
-  event.preventDefault();
-  const form = event.target as HTMLFormElement;
-  const payload = {
-    username: (form.elements.namedItem('username') as HTMLInputElement).value,
-    password: (form.elements.namedItem('password') as HTMLInputElement).value
-  }
-  console.log(payload);
-
-}
 
 export function Login() {
+  const {setUser} = useUserContext();
+
+  async function submitHandler(event:FormEvent){
+    event.preventDefault();
+    const form = event.target as HTMLFormElement;
+    const payload = {
+      "username": (form.elements.namedItem('username') as HTMLInputElement).value,
+      "password": (form.elements.namedItem('password') as HTMLInputElement).value
+    }
+    const response = await postLogin(payload);
+    if( response?.status ){ return }
+
+    setUser({...response, role: "user"});
+  }
+
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
