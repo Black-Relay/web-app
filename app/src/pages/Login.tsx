@@ -22,14 +22,16 @@ export function Login() {
   async function submitHandler(event:FormEvent){
     event.preventDefault();
     const form = event.target as HTMLFormElement;
+    const username = (form.elements.namedItem('username') as HTMLInputElement).value
+    const password = (form.elements.namedItem('password') as HTMLInputElement).value
     const payload = {
-      "username": (form.elements.namedItem('username') as HTMLInputElement).value,
-      "password": (form.elements.namedItem('password') as HTMLInputElement).value
+      "username": username,
+      "password": password
     }
     const response = await postLogin(payload);
     if( response?.status ){ return }
 
-    setUser({...response, role: "user"});
+    setUser({username: username, ...response, role: "user"});
   }
 
   return (
