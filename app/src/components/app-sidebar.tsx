@@ -1,35 +1,50 @@
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
-import { Sidebar, SidebarHeader, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
+import { Home, LogInIcon, Settings } from "lucide-react"
+import { Sidebar, SidebarHeader, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
+import { Link } from "react-router"
+import { useUserContext } from "@/providers/UserProvider"
 
-const items = [
+const sidebarLinks = [
   {
     title: "Dashboard",
-    url: "dashboard",
+    url: "app/dashboard",
     icon: Home,
+    role: "user"
   },
-  // {
-  //   title: "Inbox",
-  //   url: "#",
-  //   icon: Inbox,
-  // },
-  // {
-  //   title: "Calendar",
-  //   url: "#",
-  //   icon: Calendar,
-  // },
-  // {
-  //   title: "Search",
-  //   url: "#",
-  //   icon: Search,
-  // },
   {
     title: "Settings",
-    url: "#",
+    url: "app/#",
     icon: Settings,
+    role: "user"
+  },
+  {
+    title: "Dashboard",
+    url: "admin/dashboard",
+    icon: Home,
+    role: "admin"
+  },
+  {
+    title: "Settings",
+    url: "admin/#",
+    icon: Settings,
+    role: "admin"
+  },
+  {
+    title: "Login",
+    url: "login",
+    icon: LogInIcon,
+    role: ""
+  },
+  {
+    title: "Register",
+    url: "register",
+    icon: Settings,
+    role: ""
   },
 ]
 
 export default function AppSidebar() {
+  const {user} = useUserContext();
+
   return (
     <Sidebar className="sidebar">
       <SidebarHeader>Black Relay</SidebarHeader>
@@ -37,16 +52,17 @@ export default function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
+              {sidebarLinks.map((item) => {
+                if(user.role == item.role) return (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <a href={item.url}>
+                    <Link to={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-              ))}
+              )})}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

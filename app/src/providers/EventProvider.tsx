@@ -50,7 +50,7 @@ export default function EventProvider({children}:{children: React.ReactNode}){
   };
 
   useEffect(()=>{
-    // if( user.username == "" ) return;
+    if( user.username == "" ) return;
     subscriptions.forEach(
       async ({name, frequency}) => {
         let status = await eventSubscriber(name)

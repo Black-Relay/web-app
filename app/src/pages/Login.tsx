@@ -11,14 +11,35 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import type { FormEvent } from "react";
+import { postLogin } from "@/utils/fetch-requests";
+import { useUserContext } from "@/providers/UserProvider";
+
 
 export function Login() {
+  const {setUser} = useUserContext();
+
+  async function submitHandler(event:FormEvent){
+    event.preventDefault();
+    const form = event.target as HTMLFormElement;
+    const username = (form.elements.namedItem('username') as HTMLInputElement).value
+    const password = (form.elements.namedItem('password') as HTMLInputElement).value
+    const payload = {
+      "username": username,
+      "password": password
+    }
+    const response = await postLogin(payload);
+    if( response?.status ){ return }
+
+    setUser({username: username, ...response, role: "user"});
+  }
+
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
         <CardTitle>Login to your account</CardTitle>
         <CardDescription>
-          Enter your email below to login to your account
+          Enter your username below to login to your account
         </CardDescription>
         <CardAction>
           <Link to="/register">
@@ -27,14 +48,14 @@ export function Login() {
         </CardAction>
       </CardHeader>
       <CardContent>
-        <form>
+        <form id="login" onSubmit={(e)=>{submitHandler(e)}}>
           <div className="flex flex-col gap-6">
             <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="username">Username</Label>
               <Input
-                id="email"
-                type="email"
-                placeholder="m@example.com"
+                id="username"
+                type="test"
+                placeholder="username"
                 required
               />
             </div>
@@ -54,11 +75,8 @@ export function Login() {
         </form>
       </CardContent>
       <CardFooter className="flex-col gap-2">
-        <Button type="submit" className="w-full">
+        <Button type="submit" className="w-full" form="login">
           Login
-        </Button>
-        <Button variant="outline" className="w-full">
-          Login with Google
         </Button>
       </CardFooter>
     </Card>
