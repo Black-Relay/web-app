@@ -11,21 +11,24 @@ import { Login } from "./pages/Login";
 import { SignUp } from "./pages/SignUp";
 import { Layout } from "./layouts/Layout";
 import { Dashboard } from "./pages/Dashboard";
+import { useUserContext } from "./providers/UserProvider";
 
 export function AppRouter() {
+  const {user} = useUserContext();
+
   const UserRoute = () => {
-    return /* Logged in user */ true ? <Outlet /> : <NoAccess />;
+    return /* Logged in user */ user.role == "user" ? <Outlet /> : <NoAccess />;
   };
 
   const AdminRoute = () => {
-    return /* Admin user logged in */ false ? <Outlet /> : <NoAccess />;
+    return /* Admin user logged in */ user.role == "admin" ? <Outlet /> : <NoAccess />;
   };
 
   const AnonymousRoute = () => {
-    return /* Guest user condition */ false ? (
-      <Navigate to="/" replace />
-    ) : (
+    return /* Guest user condition */ user.role == "" ? (
       <Outlet />
+    ) : (
+      <Navigate to="/" replace />
     );
   };
 
@@ -36,13 +39,13 @@ export function AppRouter() {
           {/* Anyone can access */}
           <Route path="*" element={<NoPage />} />
           {/* Private Routes = Must be authenticated */}
-          <Route element={<UserRoute />}>
+          <Route path="app" element={<UserRoute />}>
             <Route path="dashboard" element={<Dashboard />} />
             <Route index element={<Dashboard />} />
           </Route>
 
           {/* Admin Routes = Must be authenticated and admin */}
-          <Route element={<AdminRoute />}>
+          <Route path="admin" element={<AdminRoute />}>
             <Route path="dashboard" element={<Dashboard />} />
             <Route index element={<Dashboard />} />
           </Route>
@@ -50,7 +53,7 @@ export function AppRouter() {
           {/* Anonymous Routes = Must be unathenticated to access */}
           <Route element={<AnonymousRoute />}>
             <Route path="login" element={<Login />} />
-            <Route index element={<Login />} />
+            {/* <Route index element={<Login />} /> */}
             <Route path="register" element={<SignUp />} />
           </Route>
         </Route>
