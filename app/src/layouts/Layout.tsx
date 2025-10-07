@@ -5,9 +5,7 @@ import AppSidebar from "@/components/app-sidebar";
 import AppBreadcrumb from "@/components/app-breadcrumb";
 import "../css/layout.css";
 
-export function Layout(/*{ children }: { children: React.ReactNode }*/) {
-
-
+export function Layout() {
   return (
       <SidebarProvider>
         <AppSidebar />
@@ -15,7 +13,6 @@ export function Layout(/*{ children }: { children: React.ReactNode }*/) {
           <AppBreadcrumb />
           <Outlet />
         </div>
-        {/* {children} */}
       </SidebarProvider>
   );
 }
