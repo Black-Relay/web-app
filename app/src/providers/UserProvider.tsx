@@ -2,6 +2,10 @@ import React, { useContext, createContext, useState } from "react";
 
 type User = {
   username: string;
+  firstName?: string;
+  lastName?: string;
+  groups?: [string];
+  user_id?: string;
   role: string;
 };
 
