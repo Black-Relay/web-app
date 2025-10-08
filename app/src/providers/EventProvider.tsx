@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useUserContext } from "./UserProvider";
+import subs from '../configs/subscriptions.json';
 
 type Event = {
 
@@ -40,7 +41,7 @@ async function eventConsumer(subscription: string){
 
 export default function EventProvider({children}:{children: React.ReactNode}){
   const [events, setEvents] = useState({});
-  const [subscriptions, setSubscriptions] = useState([{name: "gas", frequency: 15000}]);
+  const [subscriptions, setSubscriptions] = useState(subs);
   const { user } = useUserContext();
 
   const value = {
