@@ -87,6 +87,21 @@
       /* background-color: magenta; */
     }
   }
+
+  .layout-public-content{
+    flex-grow: 1;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: repeat(12, 1fr);
+    max-height: 95vh;
+
+    .main-display{
+      grid-column: 4/10;
+      grid-row: 4/10;
+      max-height: fit-content;
+      margin: auto;
+    }
+  }
 }
 
 
