@@ -1,8 +1,9 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useUserContext } from "./UserProvider";
+import subs from '../configs/subscriptions.json';
 
 type Event = {
-
+  // TODO: Define Event Type
 }
 
 type Subscription = {
@@ -11,7 +12,7 @@ type Subscription = {
 }
 
 interface EventContextType {
-  events: Array<Event>;
+  events: {[key: string]:Array<Event>};
   subscriptions: Array<Subscription>;
   setSubscriptions: React.Dispatch<React.SetStateAction<Array<Subscription>>>;
 }
@@ -39,9 +40,11 @@ async function eventConsumer(subscription: string){
 }
 
 export default function EventProvider({children}:{children: React.ReactNode}){
-  const [events, setEvents] = useState([{}]);
-  const [subscriptions, setSubscriptions] = useState([{name: "gas", frequency: 15000}]);
+  const [events, setEvents] = useState<{[key: string]: Array<Event>}>({});
+  const [subscriptions, setSubscriptions] = useState<Array<Subscription>>(subs);
   const { user } = useUserContext();
+  const intervalIDs = useRef<NodeJS.Timeout[]>([]);
+
 
   const value = {
     events: events,
@@ -50,17 +53,25 @@ export default function EventProvider({children}:{children: React.ReactNode}){
   };
 
   useEffect(()=>{
+    intervalIDs.current.forEach(id => { clearInterval(id) })
+    intervalIDs.current = [];
+
     if( user.username == "" ) return;
     subscriptions.forEach(
       async ({name, frequency}) => {
         let status = await eventSubscriber(name)
-        if(status) setInterval(async ()=>{
-          let eventData = await eventConsumer(name)
-          setEvents([...eventData])
-        }, frequency)
+        if(status) {
+          const consumeData = async () => {
+            let eventData = await eventConsumer(name)
+            setEvents(current => ({...current,[name]: [...eventData.slice(Math.max(0,eventData.length - 100),eventData.length)]}))
+          }
+          consumeData();
+          const id = setInterval(consumeData, frequency)
+          intervalIDs.current.push(id);
+        }
       }
     );
-  },[user])
+  },[user, subscriptions])
 
   return(
     <EventContext.Provider value={value}>
