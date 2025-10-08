@@ -55,10 +55,14 @@ export default function EventProvider({children}:{children: React.ReactNode}){
     subscriptions.forEach(
       async ({name, frequency}) => {
         let status = await eventSubscriber(name)
-        if(status) setInterval(async ()=>{
-          let eventData = await eventConsumer(name)
-          setEvents(current => Object.assign(current,{[name]: [...eventData]}))
-        }, frequency)
+        if(status) {
+          const consumeData = async () => {
+            let eventData = await eventConsumer(name)
+            setEvents(current => Object.assign(current,{[name]: [...eventData]}))
+          }
+          consumeData();
+          setInterval(async ()=>{consumeData}, frequency)
+        }
       }
     );
   },[user])
