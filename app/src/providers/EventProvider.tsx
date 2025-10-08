@@ -65,7 +65,7 @@ export default function EventProvider({children}:{children: React.ReactNode}){
         }
       }
     );
-  },[user])
+  },[user, subscriptions])
 
   return(
     <EventContext.Provider value={value}>
