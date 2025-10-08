@@ -34,8 +34,8 @@ export function Login() {
     setUser({username: username, ...response, role: "user"});
   }
 
-  return (
-    <Card className="w-full max-w-sm">
+  return (<div className="layout-public-content">
+    <Card className="w-full max-w-sm main-display">
       <CardHeader>
         <CardTitle>Login to your account</CardTitle>
         <CardDescription>
@@ -80,5 +80,5 @@ export function Login() {
         </Button>
       </CardFooter>
     </Card>
-  );
+  </div>);
 }
