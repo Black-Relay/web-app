@@ -40,9 +40,11 @@ async function eventConsumer(subscription: string){
 }
 
 export default function EventProvider({children}:{children: React.ReactNode}){
-  const [events, setEvents] = useState({});
-  const [subscriptions, setSubscriptions] = useState(subs);
+  const [events, setEvents] = useState<{[key: string]: Array<Event>}>({});
+  const [subscriptions, setSubscriptions] = useState<Array<Subscription>>(subs);
   const { user } = useUserContext();
+
+  const intervalIDs: NodeJS.Timeout[] = [];
 
   const value = {
     events: events,
@@ -51,6 +53,9 @@ export default function EventProvider({children}:{children: React.ReactNode}){
   };
 
   useEffect(()=>{
+    intervalIDs.forEach(id => { clearInterval(id) })
+    intervalIDs.length = 0;
+
     if( user.username == "" ) return;
     subscriptions.forEach(
       async ({name, frequency}) => {
@@ -61,7 +66,8 @@ export default function EventProvider({children}:{children: React.ReactNode}){
             setEvents(current => Object.assign(current,{[name]: [...eventData]}))
           }
           consumeData();
-          setInterval(consumeData, frequency)
+          const id = setInterval(consumeData, frequency)
+          intervalIDs.push(id);
         }
       }
     );
