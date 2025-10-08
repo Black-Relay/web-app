@@ -11,7 +11,7 @@ type Subscription = {
 }
 
 interface EventContextType {
-  events: Array<Event>;
+  events: {[key: string]:Array<Event>};
   subscriptions: Array<Subscription>;
   setSubscriptions: React.Dispatch<React.SetStateAction<Array<Subscription>>>;
 }
@@ -39,7 +39,7 @@ async function eventConsumer(subscription: string){
 }
 
 export default function EventProvider({children}:{children: React.ReactNode}){
-  const [events, setEvents] = useState([{}]);
+  const [events, setEvents] = useState({});
   const [subscriptions, setSubscriptions] = useState([{name: "gas", frequency: 15000}]);
   const { user } = useUserContext();
 
@@ -56,7 +56,7 @@ export default function EventProvider({children}:{children: React.ReactNode}){
         let status = await eventSubscriber(name)
         if(status) setInterval(async ()=>{
           let eventData = await eventConsumer(name)
-          setEvents([...eventData])
+          setEvents(current => Object.assign(current,{[name]: [...eventData]}))
         }, frequency)
       }
     );
