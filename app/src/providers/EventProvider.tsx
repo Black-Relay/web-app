@@ -1,9 +1,9 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useUserContext } from "./UserProvider";
 import subs from '../configs/subscriptions.json';
 
 type Event = {
-
+  // TODO: Define Event Type
 }
 
 type Subscription = {
@@ -43,8 +43,8 @@ export default function EventProvider({children}:{children: React.ReactNode}){
   const [events, setEvents] = useState<{[key: string]: Array<Event>}>({});
   const [subscriptions, setSubscriptions] = useState<Array<Subscription>>(subs);
   const { user } = useUserContext();
+  const intervalIDs = useRef<NodeJS.Timeout[]>([]);
 
-  const intervalIDs: NodeJS.Timeout[] = [];
 
   const value = {
     events: events,
@@ -53,8 +53,8 @@ export default function EventProvider({children}:{children: React.ReactNode}){
   };
 
   useEffect(()=>{
-    intervalIDs.forEach(id => { clearInterval(id) })
-    intervalIDs.length = 0;
+    intervalIDs.current.forEach(id => { clearInterval(id) })
+    intervalIDs.current = [];
 
     if( user.username == "" ) return;
     subscriptions.forEach(
@@ -63,11 +63,11 @@ export default function EventProvider({children}:{children: React.ReactNode}){
         if(status) {
           const consumeData = async () => {
             let eventData = await eventConsumer(name)
-            setEvents(current => Object.assign(current,{[name]: [...eventData]}))
+            setEvents(current => ({...current,[name]: [...eventData]}))
           }
           consumeData();
           const id = setInterval(consumeData, frequency)
-          intervalIDs.push(id);
+          intervalIDs.current.push(id);
         }
       }
     );
