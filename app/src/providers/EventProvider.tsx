@@ -63,7 +63,7 @@ export default function EventProvider({children}:{children: React.ReactNode}){
         if(status) {
           const consumeData = async () => {
             let eventData = await eventConsumer(name)
-            setEvents(current => ({...current,[name]: [...eventData]}))
+            setEvents(current => ({...current,[name]: [...eventData.slice(0,100)]}))
           }
           consumeData();
           const id = setInterval(consumeData, frequency)
