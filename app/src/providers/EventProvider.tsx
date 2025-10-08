@@ -61,7 +61,7 @@ export default function EventProvider({children}:{children: React.ReactNode}){
             setEvents(current => Object.assign(current,{[name]: [...eventData]}))
           }
           consumeData();
-          setInterval(async ()=>{consumeData}, frequency)
+          setInterval(consumeData, frequency)
         }
       }
     );
