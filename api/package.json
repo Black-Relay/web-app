@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "enter-mongo": "docker exec -it mongodb mongosh -u admin -p password",
-    "reboot-dev": "docker compose down --rmi local && docker compose up -d",
+    "docker-down": "docker compose down --rmi local && docker volume rm api_mongodb_data",
+    "docker-reset": "docker compose down --rmi local && docker volume rm api_mongodb_data &&docker compose up -d",
     "update-swagger": "npx swagger-cli bundle swagger/swagger.yaml --outfile ./swagger.yaml --type yaml",
     "seed": "node seeder.js",
     "dummy": "nodemon dummy/all.js",

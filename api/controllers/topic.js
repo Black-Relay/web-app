@@ -1,13 +1,22 @@
 const mongoose = require('mongoose')
 const { mqtt_client, mqtt_url } = require('../utils/mqtt.js')
 const { mongooseConn, db_url } = require('../db.js')
+const eventsModel = require('../models/events.js')
 
 const storeMessagesToMongo = (Model, requestedTopic) => {
   mqtt_client.on("message", (topic, message) => {
     if(topic === requestedTopic){
       message = JSON.parse(message.toString())
       Model.create(message)
-      .then(doc => doc)
+      .then(messageDoc => {
+        eventsModel(requestedTopic).create({
+          category: "DETECT",
+          data: messageDoc._id
+        })
+        .then(eventDoc => eventDoc)
+        .catch(err => console.error('Error while saving event document: ', err))
+        return messageDoc
+      })
       .catch(err => console.error('Error while saving document: ', err))
     }
   })
