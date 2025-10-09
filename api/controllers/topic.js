@@ -9,8 +9,9 @@ const storeMessagesToMongo = (Model, requestedTopic) => {
       message = JSON.parse(message.toString())
       Model.create(message)
       .then(messageDoc => {
-        eventsModel(requestedTopic).create({
+        eventsModel.create({
           category: "DETECT",
+          topic: topic,
           data: messageDoc._id
         })
         .then(eventDoc => eventDoc)
@@ -86,4 +87,8 @@ exports.getAllTopicData = (req, res) => {
   catch{
     res.status(500).send(`Unable to get data from topic ${req.params.topic}. Has it been subscribed to?`)
   }
+}
+
+exports.getTopicById = (req, res) => {
+  // TODO
 }
