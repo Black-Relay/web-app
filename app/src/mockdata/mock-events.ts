@@ -1,268 +1,44 @@
-import { type ShortEvent } from "@/components/event-message"
+import { type Event } from "@/providers/EventProvider"
 
-export const mockEvents:Array<ShortEvent> = [
+export const mockEvents:Array<Event> = [
   {
-    active: false,
+    _id: 'abc',
+    category: "DETECT",
+    topic: "gas",
+    data: {},
+    createdAt: "18:43:52",
     acknowledged: false,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: false,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
     active: false,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
+    __v: 0
   },
   {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
+    _id: 'abc',
+    category: "ALERT",
+    topic: "gas",
+    data: {},
+    createdAt: "18:43:52",
+    acknowledged: false,
+    active: false,
+    __v: 0
   },
   {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
+    _id: 'abc',
+    category: "ALARM",
+    topic: "gas",
+    data: {},
+    createdAt: "18:43:52",
+    acknowledged: false,
+    active: false,
+    __v: 0
   },
   {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
-  },
-  {
-    active: true,
-    acknowledged: true,
-    message: "DETECT: AMCIT by SENSOR -- 35°1'N x 45°38'E | DISTANCE: 450ft",
-    time: "18:43:52"
+    _id: 'abc',
+    category: "THREAT",
+    topic: "gas",
+    data: {},
+    createdAt: "18:43:52",
+    acknowledged: false,
+    active: false,
+    __v: 0
   },
 ]
