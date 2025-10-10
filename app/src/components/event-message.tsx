@@ -1,56 +1,51 @@
-export interface ShortEvent {
-  active: boolean;
-  acknowledged: boolean;
-  message: string;
-  time: string;
+import { type Event } from "@/providers/EventProvider";
+import "../css/event-message.css";
+
+export function EventMessage({event}:{event: Event}){
+  const { active, acknowledged, category, data, createdAt } = event;
+
+  return (<div className="event-tile">
+    <div className="event-lamps">
+      <div className={"lamp" + (active ? " active" : "")}></div>
+      <div className={"lamp" + (acknowledged ? " ack" : " unack")}></div>
+    </div>
+    <div className="timestamp">{createdAt}</div>
+    <div className="event-message">
+      {`[Sensor Name] - `}
+      <span className={category.toLowerCase()}>{category}</span>
+      {`\n[Some message]`}
+    </div>
+  </div>)
+
+
+  // <tr>
+  //   <td>{active ? "Yes" : "No"}</td>
+  //   <td>{acknowledged ? "Yes" : "No"}</td>
+  //   <td>{`[Sensor Name] - ${category}\n[Some message]`}</td>
+  //   <td>{createdAt}</td>
+  // </tr>
+
 }
 
-export interface LongEvent{
-  active: boolean;
-  acknowledged: boolean;
-  message: string;
-  date: string;
-  time: string;
-  category: string;
-  sensor: string;
-  latitude: string;
-  longitude: string;
-}
+// export function LongEventMessage({event}:{event: Event}){
+//   const { active, acknowledged, data, category } = event;
 
-export interface DetailedEvent{
+//   return (<tr>
+//     <td>{active ? "Yes" : "No"}</td>
+//     <td>{acknowledged ? "Yes" : "No"}</td>
+//     <td>{}</td>
+//     <td>{}</td>
+//     <td>{category}</td>
+//     <td>{""}</td>
+//     <td>{"Lat"} x {"Long"}</td>
+//     <td>{"Some message"}</td>
+//   </tr>)
+// }
 
-}
+// export function EventDetails({event}:{event: Event}){
+//   const {} = event;
 
-export function EventMessage({event}:{event: ShortEvent}){
-  const { active, acknowledged, message, time } = event;
+//   return (<>
 
-  return (<tr>
-    <td>{active ? "Yes" : "No"}</td>
-    <td>{acknowledged ? "Yes" : "No"}</td>
-    <td>{message}</td>
-    <td>{time}</td>
-  </tr>)
-}
-
-export function LongEventMessage({event}:{event: LongEvent}){
-  const { active, acknowledged, message, date, time, category, sensor, latitude, longitude } = event;
-
-  return (<tr>
-    <td>{active ? "Yes" : "No"}</td>
-    <td>{acknowledged ? "Yes" : "No"}</td>
-    <td>{date}</td>
-    <td>{time}</td>
-    <td>{category}</td>
-    <td>{sensor}</td>
-    <td>{latitude} x {longitude}</td>
-    <td>{message}</td>
-  </tr>)
-}
-
-export function EventDetail({event}:{event: DetailedEvent}){
-  const {} = event;
-
-  return (<>
-
-  </>)
-}
+//   </>)
+// }

@@ -1,23 +1,11 @@
 import { EventMessage } from "./event-message";
-import "../css/event-aside.css";
 import { mockEvents } from "@/mockdata/mock-events";
+import "../css/event-message.css";
 
 
 export function EventsAside(){
 
-  return (<div className="table-wrapper">
-    <table className="dashboard-event-table">
-      <thead>
-        <tr>
-          <th>Active</th>
-          <th>Ack</th>
-          <th>Message</th>
-          <th>Time</th>
-        </tr>
-      </thead>
-      <tbody>
-        {mockEvents.map((message, index)=><EventMessage key={index} event={message}/>)}
-      </tbody>
-    </table>
+  return (<div className="event-wrapper">
+    {mockEvents.map((message, index)=><EventMessage key={index} event={message}/>)}
   </div>)
 }

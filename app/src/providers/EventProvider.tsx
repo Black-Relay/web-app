@@ -1,9 +1,18 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useUserContext } from "./UserProvider";
-import subs from '../configs/subscriptions.json';
+import subs from "../configs/subscriptions.json";
 
 type Event = {
-  // TODO: Define Event Type
+  _id: string
+  category: "DETECT" | "ALERT" | "ALARM" | "THREAT" | "Invalid event category"
+  topic: string;
+  data: {
+    [key:string]: string|number|boolean
+  }
+  createdAt: string;
+  acknowledged: boolean;
+  active?: boolean;
+  __v: number;
 }
 
 type Subscription = {

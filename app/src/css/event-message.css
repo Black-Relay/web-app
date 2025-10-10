@@ -1,0 +1,63 @@
+.event-wrapper{
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  box-sizing: content-box;
+  padding-bottom: -20px;
+  max-height: calc(100% - 60px);
+  border-radius: var(--radius);
+}
+
+.event-wrapper::-webkit-scrollbar{
+  display: none;
+}
+
+.event-tile{
+  display: grid;
+  grid-template-columns: 7% 20% 73%;
+  align-items: center;
+  background-color: var(--card);
+  margin-block: 4px;
+  border-radius: var(--radius);
+  border: 2px solid var(--border);
+
+  .event-lamps, .timestamp, .event-message{
+    padding: 4px;
+  }
+
+  .lamp{
+    border-radius: 100%;
+    border: 3px solid rgb(72, 72, 72);
+    height: 20px;
+    width: 20px;
+    margin-block: 4px;
+  }
+
+  .active {
+    background-color: rgb(0, 220, 0);
+  }
+
+  .unack{
+    background-color: rgb(254, 154, 0);
+  }
+  .ack{
+    background-color: rgb(0, 220, 0);
+  }
+
+  .detect{
+    color: rgb(0, 157, 254);
+  }
+
+  .alert{
+    color: rgb(254, 250, 0);
+  }
+
+  .alarm{
+    color: rgb(254, 0, 0);
+  }
+
+  .threat{
+    color: rgb(254, 154, 0);
+  }
+}
