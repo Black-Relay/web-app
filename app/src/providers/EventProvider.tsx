@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useUserContext } from "./UserProvider";
-import subs from '../configs/subscriptions.json';
+import subs from "../configs/subscriptions.json";
 
 type Event = {
   // TODO: Define Event Type
