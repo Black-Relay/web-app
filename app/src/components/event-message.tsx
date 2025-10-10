@@ -1,56 +1,35 @@
-export interface ShortEvent {
-  active: boolean;
-  acknowledged: boolean;
-  message: string;
-  time: string;
-}
+import { type Event } from "@/providers/EventProvider";
 
-export interface LongEvent{
-  active: boolean;
-  acknowledged: boolean;
-  message: string;
-  date: string;
-  time: string;
-  category: string;
-  sensor: string;
-  latitude: string;
-  longitude: string;
-}
-
-export interface DetailedEvent{
-
-}
-
-export function EventMessage({event}:{event: ShortEvent}){
-  const { active, acknowledged, message, time } = event;
+export function EventMessage({event}:{event: Event}){
+  const { active, acknowledged, category, data, createdAt } = event;
 
   return (<tr>
     <td>{active ? "Yes" : "No"}</td>
     <td>{acknowledged ? "Yes" : "No"}</td>
-    <td>{message}</td>
-    <td>{time}</td>
+    <td>{`[Sensor Name] - ${category}\n[Some message]`}</td>
+    <td>{createdAt}</td>
   </tr>)
 }
 
-export function LongEventMessage({event}:{event: LongEvent}){
-  const { active, acknowledged, message, date, time, category, sensor, latitude, longitude } = event;
+// export function LongEventMessage({event}:{event: Event}){
+//   const { active, acknowledged, data, category } = event;
 
-  return (<tr>
-    <td>{active ? "Yes" : "No"}</td>
-    <td>{acknowledged ? "Yes" : "No"}</td>
-    <td>{date}</td>
-    <td>{time}</td>
-    <td>{category}</td>
-    <td>{sensor}</td>
-    <td>{latitude} x {longitude}</td>
-    <td>{message}</td>
-  </tr>)
-}
+//   return (<tr>
+//     <td>{active ? "Yes" : "No"}</td>
+//     <td>{acknowledged ? "Yes" : "No"}</td>
+//     <td>{}</td>
+//     <td>{}</td>
+//     <td>{category}</td>
+//     <td>{""}</td>
+//     <td>{"Lat"} x {"Long"}</td>
+//     <td>{"Some message"}</td>
+//   </tr>)
+// }
 
-export function EventDetail({event}:{event: DetailedEvent}){
-  const {} = event;
+// export function EventDetails({event}:{event: Event}){
+//   const {} = event;
 
-  return (<>
+//   return (<>
 
-  </>)
-}
+//   </>)
+// }
