@@ -7,8 +7,8 @@ export const mockEvents:Array<Event> = [
     topic: "gas",
     data: {},
     createdAt: "18:43:52",
-    acknowledged: false,
-    active: false,
+    acknowledged: true,
+    active: true,
     __v: 0
   },
   {
@@ -18,7 +18,7 @@ export const mockEvents:Array<Event> = [
     data: {},
     createdAt: "18:43:52",
     acknowledged: false,
-    active: false,
+    active: true,
     __v: 0
   },
   {
