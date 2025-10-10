@@ -27,7 +27,8 @@ const swaggerDocument = yaml.parse(swaggerYamlFile)
 
 const nonTopicCollections = [
   "users",
-  "rbacgroups"
+  "rbacgroups",
+  "events"
 ]
 
 app.use(cors(corsConfig));

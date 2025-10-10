@@ -14,15 +14,17 @@ eventsSchema = new Schema({
     type: String,
     required: true
   },
-  data: {
-    type: Schema.Types.ObjectId,
-    required: true
-  },
+  data: {},
   createdAt: {
     type: Date,
     required: true,
     immutable: true,
     default: () => Date.now()
+  },
+  acknowledged: {
+    type: Boolean,
+    required: true,
+    default: false
   },
 }, { strict: "throw" })
 

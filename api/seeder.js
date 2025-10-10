@@ -12,7 +12,6 @@ adminUser = {
 
 }
 
-// TODO - FIX: Admin user created with no groups
 mongooseConn
 .then(() => {
   return seedRbacGroups()
