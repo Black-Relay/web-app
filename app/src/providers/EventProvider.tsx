@@ -3,7 +3,15 @@ import { useUserContext } from "./UserProvider";
 import subs from "../configs/subscriptions.json";
 
 type Event = {
-  // TODO: Define Event Type
+  _id: string
+  category: "DETECT" | "ALERT" | "ALARM" | "THREAT" | "Invalid event category"
+  topic: string;
+  data: {
+    [key:string]: string|number|boolean
+  }
+  createdAt: Date;
+  acknowledged: boolean;
+  __v: number;
 }
 
 type Subscription = {
