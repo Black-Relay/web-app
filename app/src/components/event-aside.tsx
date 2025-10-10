@@ -1,5 +1,4 @@
 import { EventMessage } from "./event-message";
-import "../css/event-aside.css";
 import { mockEvents } from "@/mockdata/mock-events";
 
 
