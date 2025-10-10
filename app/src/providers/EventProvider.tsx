@@ -11,6 +11,7 @@ type Event = {
   }
   createdAt: Date;
   acknowledged: boolean;
+  active?: boolean;
   __v: number;
 }
 
