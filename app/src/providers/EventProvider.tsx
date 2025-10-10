@@ -9,7 +9,7 @@ type Event = {
   data: {
     [key:string]: string|number|boolean
   }
-  createdAt: Date;
+  createdAt: string;
   acknowledged: boolean;
   active?: boolean;
   __v: number;
