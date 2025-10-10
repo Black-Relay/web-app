@@ -10,7 +10,11 @@ export function EventMessage({event}:{event: Event}){
       <div className={"lamp" + (acknowledged ? " ack" : " unack")}></div>
     </div>
     <div className="timestamp">{createdAt}</div>
-    <div className="event-message">{`[Sensor Name] - ${category}\n[Some message]`}</div>
+    <div className="event-message">
+      {`[Sensor Name] - `}
+      <span className={category.toLowerCase()}>{category}</span>
+      {`\n[Some message]`}
+    </div>
   </div>)
 
 
