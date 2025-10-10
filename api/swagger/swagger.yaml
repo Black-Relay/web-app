@@ -12,6 +12,8 @@ paths:
     $ref: './paths/auth/login.yaml'
   /auth/logout:
     $ref: './paths/auth/logout.yaml'
+  /event:
+    $ref: './paths/event/event.yaml'
   /topic/{topic}:
     $ref: './paths/topic/topic.yaml'
   /topic/{topic}/subscribe:

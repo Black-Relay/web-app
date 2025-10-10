@@ -68,6 +68,69 @@ paths:
                   success:
                     type: boolean
                     example: true
+  /event:
+    get:
+      tags:
+        - event
+      summary: Get all events stored in DB
+      description: Returns an array of objects containing event data from the MQTT topics
+      responses:
+        '200':
+          description: Array of event objects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                      example: 671234567890abcdef123456
+                    category:
+                      type: string
+                      enum:
+                        - DETECT
+                        - ALERT
+                        - ALARM
+                        - THREAT
+                      example: DETECT
+                      description: Event severity category
+                    topic:
+                      type: string
+                      example: sensors/accelerometer/device01
+                      description: MQTT topic where the event originated
+                    data:
+                      type: object
+                      description: Event payload data - structure varies by topic
+                      example:
+                        x: 0.123
+                        'y': -0.456
+                        z: 9.789
+                        timestamp: '2024-10-10T15:30:45.123Z'
+                    createdAt:
+                      type: string
+                      format: date-time
+                      example: '2024-10-10T15:30:45.123Z'
+                      description: When the event was created in the database
+                    acknowledged:
+                      type: boolean
+                      example: false
+                      description: Whether the event has been acknowledged by a user
+                    __v:
+                      type: integer
+                      example: 0
+                      description: MongoDB version field
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Events model not found
   '/topic/{topic}':
     get:
       tags:
