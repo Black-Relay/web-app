@@ -5,7 +5,7 @@ type sensor = {
   group: string;
 }
 
-export const sensors: sensor[] = [
+export const mockSensors: sensor[] = [
   {
     sensorName: "A_Park",
     sensorId: "123",
