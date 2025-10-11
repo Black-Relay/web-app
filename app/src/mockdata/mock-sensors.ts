@@ -1,11 +1,6 @@
-type sensor = {
-  sensorName: string;
-  sensorId: string;
-  topic: string;
-  group: string;
-}
+import { type Sensor } from "@/components/sensor-group";
 
-export const mockSensors: sensor[] = [
+export const mockSensors: Sensor[] = [
   {
     sensorName: "A_Park",
     sensorId: "123",
