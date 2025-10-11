@@ -2,6 +2,7 @@ import { MissionClock } from "@/components/mission-clock"
 import { EventsAside } from "@/components/event-aside";
 import { Switch } from "@/components/ui/switch";
 import { useState } from "react";
+import { SensorsAside } from "@/components/sensor-aside";
 
 export function Dashboard() {
   const [aside, setAside] = useState("Sensor");
@@ -18,7 +19,7 @@ export function Dashboard() {
     <aside>
       <Switch labels={["Sensor","Events"]} setSwitch={setAside}/>
       {aside == "Sensor" ?
-        <></> :
+        <SensorsAside></SensorsAside> :
         <EventsAside />
       }
     </aside>

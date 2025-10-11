@@ -1,0 +1,35 @@
+.sensor-group{
+  margin: 8px;
+
+  .collapsible{
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .active, .collapsible:hover{
+
+  }
+
+  .collapsible:before {
+    content: '\002B';
+    float: left;
+    margin-right: 4px;
+  }
+
+  .active:before {
+    content: '\2212';
+    float: left;
+    margin-right: 4px;
+  }
+
+  .content {
+    margin-left: 24px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+  }
+
+  .collapsible.active + .content {
+    max-height: unset;
+  }
+}
