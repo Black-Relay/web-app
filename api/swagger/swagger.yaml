@@ -14,6 +14,14 @@ paths:
     $ref: './paths/auth/logout.yaml'
   /event:
     $ref: './paths/event/event.yaml'
+  /event/id/{eventId}:
+    $ref: './paths/event/event-id.yaml'
+  /event/topic/{topic}:
+    $ref: './paths/event/event-topic.yaml'
+  /event/before:
+    $ref: './paths/event/event-before.yaml'
+  /event/after:
+    $ref: './paths/event/event-after.yaml'
   /topic/{topic}:
     $ref: './paths/topic/topic.yaml'
   /topic/{topic}/subscribe:

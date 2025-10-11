@@ -113,6 +113,11 @@ paths:
                       format: date-time
                       example: '2024-10-10T15:30:45.123Z'
                       description: When the event was created in the database
+                    updatedAt:
+                      type: string
+                      format: date-time
+                      example: '2024-10-10T16:45:30.456Z'
+                      description: When the event was last updated in the database
                     acknowledged:
                       type: boolean
                       example: false
@@ -121,6 +126,647 @@ paths:
                       type: integer
                       example: 0
                       description: MongoDB version field
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Events model not found
+    post:
+      tags:
+        - event
+      summary: Create a new event
+      description: Creates a new event in the database with the provided data
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - category
+                - topic
+              properties:
+                category:
+                  type: string
+                  enum:
+                    - DETECT
+                    - ALERT
+                    - ALARM
+                    - THREAT
+                  description: Event severity category
+                  example: DETECT
+                topic:
+                  type: string
+                  description: MQTT topic where the event originated
+                  example: sensors/accelerometer/device01
+                data:
+                  type: object
+                  description: Event payload data - structure varies by topic
+                  example:
+                    x: 0.123
+                    'y': -0.456
+                    z: 9.789
+                    timestamp: '2024-10-10T15:30:45.123Z'
+      responses:
+        '201':
+          description: Event created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    example: 671234567890abcdef123456
+                  category:
+                    type: string
+                    enum:
+                      - DETECT
+                      - ALERT
+                      - ALARM
+                      - THREAT
+                    example: DETECT
+                    description: Event severity category
+                  topic:
+                    type: string
+                    example: sensors/accelerometer/device01
+                    description: MQTT topic where the event originated
+                  data:
+                    type: object
+                    description: Event payload data - structure varies by topic
+                    example:
+                      x: 0.123
+                      'y': -0.456
+                      z: 9.789
+                      timestamp: '2024-10-10T15:30:45.123Z'
+                  createdAt:
+                    type: string
+                    format: date-time
+                    example: '2024-10-10T15:30:45.123Z'
+                    description: When the event was created in the database
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    example: '2024-10-10T15:30:45.123Z'
+                    description: When the event was last updated in the database
+                  acknowledged:
+                    type: boolean
+                    example: false
+                    description: Whether the event has been acknowledged by a user (always false on creation)
+                  __v:
+                    type: integer
+                    example: 0
+                    description: MongoDB version field
+        '400':
+          description: Bad request - Invalid input data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    examples:
+                      missing_fields:
+                        value: Category and topic are required fields
+                      invalid_category:
+                        value: 'Invalid event category. Must be one of: DETECT, ALERT, ALARM, THREAT'
+                      validation_error:
+                        value: Validation error
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Events model not found
+  '/event/id/{eventId}':
+    get:
+      tags:
+        - event
+      summary: Get event by ID
+      description: Returns a specific event by its MongoDB ObjectId
+      parameters:
+        - in: path
+          name: eventId
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{24}$'
+          description: MongoDB ObjectId of the event
+          example: 671234567890abcdef123456
+      responses:
+        '200':
+          description: Event object
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    example: 671234567890abcdef123456
+                  category:
+                    type: string
+                    enum:
+                      - DETECT
+                      - ALERT
+                      - ALARM
+                      - THREAT
+                    example: DETECT
+                    description: Event severity category
+                  topic:
+                    type: string
+                    example: sensors/accelerometer/device01
+                    description: MQTT topic where the event originated
+                  data:
+                    type: object
+                    description: Event payload data - structure varies by topic
+                    example:
+                      x: 0.123
+                      'y': -0.456
+                      z: 9.789
+                      timestamp: '2024-10-10T15:30:45.123Z'
+                  createdAt:
+                    type: string
+                    format: date-time
+                    example: '2024-10-10T15:30:45.123Z'
+                    description: When the event was created in the database
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    example: '2024-10-10T16:45:30.456Z'
+                    description: When the event was last updated in the database
+                  acknowledged:
+                    type: boolean
+                    example: false
+                    description: Whether the event has been acknowledged by a user
+                  __v:
+                    type: integer
+                    example: 0
+                    description: MongoDB version field
+        '400':
+          description: Bad request - Invalid event ID format
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid event ID format
+        '404':
+          description: Event not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Event not found
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Events model not found
+    patch:
+      tags:
+        - event
+      summary: Update event by ID
+      description: Updates an existing event by its MongoDB ObjectId. Commonly used to acknowledge events or modify event data.
+      parameters:
+        - in: path
+          name: eventId
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{24}$'
+          description: MongoDB ObjectId of the event to update
+          example: 671234567890abcdef123456
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                category:
+                  type: string
+                  enum:
+                    - DETECT
+                    - ALERT
+                    - ALARM
+                    - THREAT
+                  description: Event severity category
+                  example: ALERT
+                topic:
+                  type: string
+                  description: MQTT topic where the event originated
+                  example: sensors/accelerometer/device01
+                data:
+                  type: object
+                  description: Event payload data - structure varies by topic
+                  example:
+                    x: 0.123
+                    'y': -0.456
+                    z: 9.789
+                    timestamp: '2024-10-10T15:30:45.123Z'
+                acknowledged:
+                  type: boolean
+                  description: Whether the event has been acknowledged by a user
+                  example: true
+              example:
+                acknowledged: true
+      responses:
+        '200':
+          description: Event updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    example: 671234567890abcdef123456
+                  category:
+                    type: string
+                    enum:
+                      - DETECT
+                      - ALERT
+                      - ALARM
+                      - THREAT
+                    example: DETECT
+                    description: Event severity category
+                  topic:
+                    type: string
+                    example: sensors/accelerometer/device01
+                    description: MQTT topic where the event originated
+                  data:
+                    type: object
+                    description: Event payload data - structure varies by topic
+                    example:
+                      x: 0.123
+                      'y': -0.456
+                      z: 9.789
+                      timestamp: '2024-10-10T15:30:45.123Z'
+                  createdAt:
+                    type: string
+                    format: date-time
+                    example: '2024-10-10T15:30:45.123Z'
+                    description: When the event was created in the database (immutable)
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    example: '2024-10-10T17:15:22.789Z'
+                    description: When the event was last updated in the database (automatically set)
+                  acknowledged:
+                    type: boolean
+                    example: true
+                    description: Whether the event has been acknowledged by a user
+                  __v:
+                    type: integer
+                    example: 0
+                    description: MongoDB version field
+        '400':
+          description: Bad request - Invalid input data or event ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    examples:
+                      missing_id:
+                        value: Event ID parameter is required
+                      invalid_id:
+                        value: Invalid event ID format
+                      invalid_category:
+                        value: 'Invalid event category. Must be one of: DETECT, ALERT, ALARM, THREAT'
+                      validation_error:
+                        value: Validation error
+        '404':
+          description: Event not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Event not found
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Events model not found
+  '/event/topic/{topic}':
+    get:
+      tags:
+        - event
+      summary: Get events by topic
+      description: Returns all events filtered by a specific MQTT topic
+      parameters:
+        - in: path
+          name: topic
+          required: true
+          schema:
+            type: string
+          description: MQTT topic to filter events by
+          example: sensors/accelerometer/device01
+      responses:
+        '200':
+          description: Array of event objects matching the topic
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                      example: 671234567890abcdef123456
+                    category:
+                      type: string
+                      enum:
+                        - DETECT
+                        - ALERT
+                        - ALARM
+                        - THREAT
+                      example: DETECT
+                      description: Event severity category
+                    topic:
+                      type: string
+                      example: sensors/accelerometer/device01
+                      description: MQTT topic where the event originated
+                    data:
+                      type: object
+                      description: Event payload data - structure varies by topic
+                      example:
+                        x: 0.123
+                        'y': -0.456
+                        z: 9.789
+                        timestamp: '2024-10-10T15:30:45.123Z'
+                    createdAt:
+                      type: string
+                      format: date-time
+                      example: '2024-10-10T15:30:45.123Z'
+                      description: When the event was created in the database
+                    updatedAt:
+                      type: string
+                      format: date-time
+                      example: '2024-10-10T16:45:30.456Z'
+                      description: When the event was last updated in the database
+                    acknowledged:
+                      type: boolean
+                      example: false
+                      description: Whether the event has been acknowledged by a user
+                    __v:
+                      type: integer
+                      example: 0
+                      description: MongoDB version field
+        '400':
+          description: Bad request - Missing topic parameter
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Topic parameter is required
+        '404':
+          description: No events found for this topic
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: No events found for this topic
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Events model not found
+  /event/before:
+    get:
+      tags:
+        - event
+      summary: Get events before timestamp
+      description: 'Returns all events created before a specific timestamp, sorted by creation time (most recent first)'
+      parameters:
+        - in: query
+          name: timestamp
+          required: true
+          schema:
+            type: string
+            format: date-time
+          description: Timestamp to filter events before (ISO 8601 format recommended)
+          example: '2024-10-10T15:30:45.123Z'
+      responses:
+        '200':
+          description: Array of event objects created before the specified timestamp
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                      example: 671234567890abcdef123456
+                    category:
+                      type: string
+                      enum:
+                        - DETECT
+                        - ALERT
+                        - ALARM
+                        - THREAT
+                      example: DETECT
+                      description: Event severity category
+                    topic:
+                      type: string
+                      example: sensors/accelerometer/device01
+                      description: MQTT topic where the event originated
+                    data:
+                      type: object
+                      description: Event payload data - structure varies by topic
+                      example:
+                        x: 0.123
+                        'y': -0.456
+                        z: 9.789
+                        timestamp: '2024-10-10T15:30:45.123Z'
+                    createdAt:
+                      type: string
+                      format: date-time
+                      example: '2024-10-10T15:30:45.123Z'
+                      description: When the event was created in the database
+                    updatedAt:
+                      type: string
+                      format: date-time
+                      example: '2024-10-10T16:45:30.456Z'
+                      description: When the event was last updated in the database
+                    acknowledged:
+                      type: boolean
+                      example: false
+                      description: Whether the event has been acknowledged by a user
+                    __v:
+                      type: integer
+                      example: 0
+                      description: MongoDB version field
+        '400':
+          description: Bad request - Missing or invalid timestamp
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    examples:
+                      missing:
+                        value: Timestamp query parameter is required
+                      invalid:
+                        value: Invalid timestamp format
+        '404':
+          description: No events found before this timestamp
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: No events found before this timestamp
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Events model not found
+  /event/after:
+    get:
+      tags:
+        - event
+      summary: Get events after timestamp
+      description: 'Returns all events created after a specific timestamp, sorted by creation time (most recent first)'
+      parameters:
+        - in: query
+          name: timestamp
+          required: true
+          schema:
+            type: string
+            format: date-time
+          description: Timestamp to filter events after (ISO 8601 format recommended)
+          example: '2024-10-10T15:30:45.123Z'
+      responses:
+        '200':
+          description: Array of event objects created after the specified timestamp
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                      example: 671234567890abcdef123456
+                    category:
+                      type: string
+                      enum:
+                        - DETECT
+                        - ALERT
+                        - ALARM
+                        - THREAT
+                      example: DETECT
+                      description: Event severity category
+                    topic:
+                      type: string
+                      example: sensors/accelerometer/device01
+                      description: MQTT topic where the event originated
+                    data:
+                      type: object
+                      description: Event payload data - structure varies by topic
+                      example:
+                        x: 0.123
+                        'y': -0.456
+                        z: 9.789
+                        timestamp: '2024-10-10T15:30:45.123Z'
+                    createdAt:
+                      type: string
+                      format: date-time
+                      example: '2024-10-10T15:30:45.123Z'
+                      description: When the event was created in the database
+                    updatedAt:
+                      type: string
+                      format: date-time
+                      example: '2024-10-10T16:45:30.456Z'
+                      description: When the event was last updated in the database
+                    acknowledged:
+                      type: boolean
+                      example: false
+                      description: Whether the event has been acknowledged by a user
+                    __v:
+                      type: integer
+                      example: 0
+                      description: MongoDB version field
+        '400':
+          description: Bad request - Missing or invalid timestamp
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    examples:
+                      missing:
+                        value: Timestamp query parameter is required
+                      invalid:
+                        value: Invalid timestamp format
+        '404':
+          description: No events found after this timestamp
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: No events found after this timestamp
         '500':
           description: Server error
           content:

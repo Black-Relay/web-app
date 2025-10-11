@@ -15,18 +15,15 @@ eventsSchema = new Schema({
     required: true
   },
   data: {},
-  createdAt: {
-    type: Date,
-    required: true,
-    immutable: true,
-    default: () => Date.now()
-  },
   acknowledged: {
     type: Boolean,
     required: true,
     default: false
-  },
-}, { strict: "throw" })
+  }
+}, {
+  strict: "throw",
+  timestamps: true
+})
 
 const eventsModel = mongoose.model("events", eventsSchema)
 
