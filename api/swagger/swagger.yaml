@@ -22,8 +22,6 @@ paths:
     $ref: './paths/event/event-before.yaml'
   /event/after:
     $ref: './paths/event/event-after.yaml'
-  /topic/{topic}:
-    $ref: './paths/topic/topic.yaml'
   /topic/{topic}/subscribe:
     $ref: './paths/topic/topic-subscribe.yaml'
   /user:

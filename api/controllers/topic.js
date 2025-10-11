@@ -25,19 +25,3 @@ exports.subscribeToTopic = (req, res) => {
     }
   })
 }
-
-exports.getAllTopicData = (req, res) => {
-  try {
-    eventsModel.find({ topic: req.params.topic })
-    .then(data => res.status(200).send(data))
-    .catch(err => res.status(400).send(err))
-  }
-  catch{
-    res.status(500).send(`Unable to get data from topic ${req.params.topic}. Has it been subscribed to?`)
-  }
-}
-
-exports.getTopicById = (req, res) => {
-  // TODO
-  res.status(501).send("Not implemented")
-}
