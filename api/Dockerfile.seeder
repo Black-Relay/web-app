@@ -1,0 +1,17 @@
+FROM node:24-alpine
+
+WORKDIR /app
+
+COPY package.json package-lock.json* ./
+
+RUN npm install
+
+COPY ./ ./
+
+ENV MQTT_URL=mqtt://mqtt:1883
+ENV DB_NAME=black-relay
+ENV MONGO_HOST=db
+ENV MONGO_USER=admin
+ENV MONGO_PASS=password
+
+CMD ["node", "seeder.js"]

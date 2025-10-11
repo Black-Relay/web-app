@@ -20,13 +20,15 @@ const corsConfig = {
 const authRoutes = require('./routes/auth.js')
 const topicRoutes = require('./routes/topic.js')
 const userRoutes = require('./routes/user.js')
+const eventRoutes = require('./routes/event.js')
 
 const swaggerYamlFile = fs.readFileSync('./swagger.yaml', 'utf8')
 const swaggerDocument = yaml.parse(swaggerYamlFile)
 
 const nonTopicCollections = [
   "users",
-  "rbacgroups"
+  "rbacgroups",
+  "events"
 ]
 
 app.use(cors(corsConfig));
@@ -39,6 +41,7 @@ app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 app.use('/auth', authRoutes)
 app.use('/topic', authCheck, topicRoutes)
 app.use('/user', authCheck, adminCheck, userRoutes)
+app.use('/event', authCheck, eventRoutes)
 
 reSubscribeToTopics(nonTopicCollections)
 
