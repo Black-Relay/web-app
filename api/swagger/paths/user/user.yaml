@@ -47,19 +47,18 @@ post:
             firstName:
               type: string
               example: "Joe"
-              required: false
             lastName:
               type: string
               example: "Snuffy"
-              required: false
             username:
               type: string
               example: "joe.snuffy"
-              required: true
             password:
               type: string
               example: "plainTextPassword"
-              required: true
+          required:
+            - username
+            - password
   responses:
     '201':
       description: User created successfully

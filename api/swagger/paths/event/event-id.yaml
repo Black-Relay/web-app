@@ -188,15 +188,7 @@ patch:
             properties:
               error:
                 type: string
-                examples:
-                  missing_id:
-                    value: "Event ID parameter is required"
-                  invalid_id:
-                    value: "Invalid event ID format"
-                  invalid_category:
-                    value: "Invalid event category. Must be one of: DETECT, ALERT, ALARM, THREAT"
-                  validation_error:
-                    value: "Validation error"
+                example: "Event ID parameter is required"
     '404':
       description: Event not found
       content:

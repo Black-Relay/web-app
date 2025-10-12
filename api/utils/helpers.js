@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const { mqtt_client } = require('./mqtt.js')
 const eventsModel = require('../models/events.js')
+const topicsModel = require('../models/topics.js')
 
 exports.getRandomNumber = (min, max) => {
   const minCeiled = Math.ceil(min);
@@ -31,7 +32,7 @@ exports.reSubscribeToTopics = async (skippedCollections) => {
   }
 
   try {
-    const subscribedTopics = await eventsModel.distinct('topic') // Need to replace with a dedicated 'subscribedTopics' collection later
+    const subscribedTopics = await topicsModel.distinct("topicName")
     subscribedTopics.forEach(topic => {
       if(!skippedCollections.includes(topic)){
         mqtt_client.subscribe(topic, err => {

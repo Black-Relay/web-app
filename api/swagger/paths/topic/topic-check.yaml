@@ -1,0 +1,49 @@
+get:
+  tags:
+    - topic
+  summary: Check if a topic is subscribed
+  description: Checks whether the server is currently subscribed to a specific MQTT topic
+  parameters:
+    - name: topic
+      in: path
+      required: true
+      schema:
+        type: string
+      description: The MQTT topic name to check
+      example: "sensors/accelerometer/device01"
+  responses:
+    '200':
+      description: Topic is subscribed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              subscribed:
+                type: boolean
+                example: true
+                description: "True if the server is subscribed to the topic"
+    '404':
+      description: Topic is not subscribed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              subscribed:
+                type: boolean
+                example: false
+                description: "False if the server is not subscribed to the topic"
+    '500':
+      description: Server error checking subscription
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "failed"
+              message:
+                type: string
+                example: "Error checking subscription for topic sensors/accelerometer/device01"

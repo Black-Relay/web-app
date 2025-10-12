@@ -20,10 +20,7 @@ eventsSchema = new Schema({
     required: true,
     default: false
   }
-}, {
-  strict: "throw",
-  timestamps: true
-})
+}, { strict: "throw", timestamps: true })
 
 const eventsModel = mongoose.model("events", eventsSchema)
 

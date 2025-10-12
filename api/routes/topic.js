@@ -2,6 +2,10 @@ const express = require("express")
 const router = express.Router()
 const topicCtl = require('../controllers/topic.js')
 
-router.get('/:topic/subscribe', topicCtl.subscribeToTopic)
+router.get('/', topicCtl.getAllSubscribedTopics)
+
+router.get('/:topic/check', topicCtl.checkSubscribedTopic)
+
+router.post('/:topic/subscribe', topicCtl.subscribeToTopic)
 
 module.exports = router
