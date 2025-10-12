@@ -69,11 +69,7 @@ get:
             properties:
               error:
                 type: string
-                examples:
-                  missing:
-                    value: "Timestamp query parameter is required"
-                  invalid:
-                    value: "Invalid timestamp format"
+                example: "Timestamp query parameter is required"
     '404':
       description: No events found after this timestamp
       content:

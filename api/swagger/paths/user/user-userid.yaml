@@ -59,19 +59,15 @@ patch:
             firstName:
               type: string
               example: "Joe"
-              required: false
             lastName:
               type: string
               example: "Snuffy"
-              required: false
             username:
               type: string
               example: "joe.snuffy"
-              required: false
             password:
               type: string
               example: "$2b$10$EIXZQ1ZQ1ZQ1ZQ1ZQ1O$2b$10$OOwh82PRs69t8INcue0fiOKbsLkVVIoe4Ib0DFMDJRn3j0cO0/X5C"
-              required: false
   responses:
     '200':
       description: Example updated user data

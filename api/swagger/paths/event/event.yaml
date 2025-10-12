@@ -149,13 +149,7 @@ post:
             properties:
               error:
                 type: string
-                examples:
-                  missing_fields:
-                    value: "Category and topic are required fields"
-                  invalid_category:
-                    value: "Invalid event category. Must be one of: DETECT, ALERT, ALARM, THREAT"
-                  validation_error:
-                    value: "Validation error"
+                example: "Category and topic are required fields"
     '500':
       description: Server error
       content:
