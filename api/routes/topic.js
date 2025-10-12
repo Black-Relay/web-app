@@ -6,6 +6,6 @@ router.get('/', topicCtl.getAllSubscribedTopics)
 
 router.get('/:topic/check', topicCtl.checkSubscribedTopic)
 
-router.post('/:topic/subscribe', topicCtl.subscribeToTopic)
+router.get('/:topic/subscribe', topicCtl.subscribeToTopic)
 
 module.exports = router
