@@ -7,7 +7,7 @@ const yaml = require('yaml')
 const swaggerUi = require('swagger-ui-express')
 const fs = require('fs')
 const { authCheck, adminCheck } = require('./utils/auth.js')
-const { reSubscribeToTopics } = require('./utils/mongoose.js')
+const { reSubscribeToTopics } = require('./utils/helpers.js')
 
 const app = express();
 const port = process.env.API_PORT || 3001;

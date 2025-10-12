@@ -1,6 +1,6 @@
 # Backend code for the Black Relay Web App.
 
-![](docs/img/backend-diag.excalidraw.svg)
+![](./img/backend-diag.excalidraw.svg)
 
 ## Building a Dev Environment
 See [DEVELOPMENT.md](../docs/DEVELOPMENT.md)
