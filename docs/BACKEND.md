@@ -1,9 +1,9 @@
 # Backend code for the Black Relay Web App.
 
-![](docs/img/backend-diag.excalidraw.svg)
+![](./img/backend-diag.excalidraw.svg)
 
 ## Building a Dev Environment
-See [DEVELOPMENT.md](../docs/DEVELOPMENT.md)
+See [DEVELOPMENT.md](./DEVELOPMENT.md)
 
 ## Generating Swagger Docs
 ```
@@ -11,6 +11,7 @@ npx swagger-cli bundle swagger/swagger.yaml --outfile ./swagger.yaml --type yaml
 ```
 
 ## ERD
+> ***NOTE:*** NEEDS UPDATE
 ```mermaid
 erDiagram
 direction LR
@@ -31,12 +32,6 @@ rbac_groups{
   ObjectId __id PK
   String name
 }
-messages{
-  ObjectId sender FK
-  ObjectId recipient FK
-  String message
-  Timestamp sent_at
-}
 alerts{
   ObjectId __id PK
   Object alert_data
@@ -53,6 +48,5 @@ example_sensor_data{
 }
 users ||--o{ rbac_groups : member-of
 users |o--o{ chat_groups : member-of
-messages ||--|| users : sender-recipient
 alerts ||--o| example_sensor_data : contains
 ```
