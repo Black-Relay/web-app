@@ -1,6 +1,6 @@
-const baseUrl = "http://localhost"
-const port = "3001"
-const url = `${baseUrl}:${port}/`
+import config from "../configs/config.json";
+const {baseUrl, basePort} = config;
+const url = `${baseUrl}:${basePort}/`
 
 export async function postLogin(payload:{username: string, password: string}){
   const response = await fetch(`${url}auth/login`, {method: "POST", headers:{"Content-Type": "application/json"}, body: JSON.stringify(payload), credentials: "include"})
