@@ -1,10 +1,11 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useUserContext } from "./UserProvider";
-import subs from "../configs/subscriptions.json";
+import config from "../configs/config.json";
+const { baseUrl, basePort, pollingIntervalMs } = config;
 
 type Event = {
   _id: string
-  category: "DETECT" | "ALERT" | "ALARM" | "THREAT" | "Invalid event category"
+  category: "DETECT" | "ALERT" | "ALARM" | "THREAT"
   topic: string;
   data: {
     [key:string]: string|number|boolean
@@ -15,20 +16,11 @@ type Event = {
   __v: number;
 }
 
-type Subscription = {
-  name: string;
-  frequency: number;
-}
-
 interface EventContextType {
-  events: {[key: string]:Array<Event>};
-  subscriptions: Array<Subscription>;
-  setSubscriptions: React.Dispatch<React.SetStateAction<Array<Subscription>>>;
+  events: Event[];
 }
 
 const EventContext = createContext<EventContextType|null>(null);
-const baseUrl = "http://localhost";
-const basePort = 3001;
 
 function useEventContext():EventContextType{
   const value:EventContextType|null = useContext(EventContext);
@@ -36,51 +28,51 @@ function useEventContext():EventContextType{
   return value;
 }
 
-async function eventSubscriber(subscription: string){
-  const response = await fetch(`${baseUrl}:${basePort}/topic/${subscription}/subscribe`, {credentials: "include"});
-  console.log(response);
-  return response.status == 200 || response.status == 201 ? true : false;
-}
-
-async function eventConsumer(subscription: string){
-  const response = await fetch(`${baseUrl}:${basePort}/topic/${subscription}`, {credentials: "include"});
-  const json = await response.json();
-  return json;
+async function eventConsumer(){
+  try{
+    const response = await fetch(`${baseUrl}:${basePort}/event`, {credentials: "include"})
+    const json = await response.json();
+    return Array.isArray(json) ? json : [json];
+  }
+  catch{
+    return [{
+      _id: "",
+      category: "ALARM",
+      topic: "client_connection",
+      data: {
+        "message": "client server connnection lost or invalid credentials"
+      },
+      createdAt: new Date().toISOString(),
+      acknowledged: false,
+      active: true,
+      __v: 0
+    }]
+  }
 }
 
 export default function EventProvider({children}:{children: React.ReactNode}){
-  const [events, setEvents] = useState<{[key: string]: Array<Event>}>({});
-  const [subscriptions, setSubscriptions] = useState<Array<Subscription>>(subs);
+  const [events, setEvents] = useState<Event[]>([]);
   const { user } = useUserContext();
-  const intervalIDs = useRef<NodeJS.Timeout[]>([]);
+  const pollingReference = useRef<NodeJS.Timeout | null>(null);
 
+  const consumeData = async () => {
+    let eventData = await eventConsumer();
+    setEvents(eventData);
+  }
 
   const value = {
-    events: events,
-    subscriptions: subscriptions,
-    setSubscriptions: setSubscriptions
+    events: events
   };
 
   useEffect(()=>{
-    intervalIDs.current.forEach(id => { clearInterval(id) })
-    intervalIDs.current = [];
-
     if( user.username == "" ) return;
-    subscriptions.forEach(
-      async ({name, frequency}) => {
-        let status = await eventSubscriber(name)
-        if(status) {
-          const consumeData = async () => {
-            let eventData = await eventConsumer(name)
-            setEvents(current => ({...current,[name]: [...eventData.slice(Math.max(0,eventData.length - 100),eventData.length)]}))
-          }
-          consumeData();
-          const id = setInterval(consumeData, frequency)
-          intervalIDs.current.push(id);
-        }
-      }
-    );
-  },[user, subscriptions])
+    consumeData();
+    pollingReference.current = setInterval(consumeData,pollingIntervalMs);
+
+    return () => {
+      if (pollingReference.current) clearInterval(pollingReference.current);
+    }
+  },[user])
 
   return(
     <EventContext.Provider value={value}>
