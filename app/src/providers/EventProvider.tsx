@@ -57,7 +57,7 @@ export default function EventProvider({children}:{children: React.ReactNode}){
 
   const consumeData = async () => {
     let eventData = await eventConsumer();
-    setEvents(eventData);
+    setEvents(eventData.reverse());
   }
 
   const value = {
