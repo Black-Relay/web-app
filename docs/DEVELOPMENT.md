@@ -26,18 +26,22 @@ docker compose up -d
 
 You can verify that the API server is running by visiting ```http://localhost:3001``` in your browser.
 
-Seeded user credentials will appear in the file ```seedcreds.txt```
+Seeded user credentials will appear in the file ```seedcreds.txt``` located *inside of the ```br-seeder``` container*. You can view them with the command:
 
-### 4. Before calling any other endpoints, you must call the ```/auth/login``` endpoint to receive a session cookie. This will be a ```GET``` request with the following message body:
+```
+npm run view-seedcreds
+```
+
+### 4. Before calling any other endpoints, you must call the ```/auth/login``` endpoint to receive a session cookie. A default admin user is provided with the seed data. This will be a ```POST``` request with the following message body:
 
 ```JSON
 {
-  "username": "joe.snuffy",
-  "password": "P@$$Word123"
+  "username": "admin",
+  "password": "admin"
 }
 ```
 
-### 5. Subscribe to the a topic by using the ```/subscribe/{topic-name}``` endpoint. Where *topic-name* is the topic you are subscribing to. You should receive the following JSON response:
+### 5. Subscribe to the a topic by using the ```/topic/{topic-name}/subscribe``` endpoint. Where *topic-name* is the topic you are subscribing to. You should receive the following JSON response:
 
 ```JSON
 {
@@ -59,52 +63,54 @@ The following topics are seeded with dummy data and can be subscribed to:
 | kismet            | Packet capture data from kismet devices                  |
 
 
-## Verifying that MongoDB Collections are being populated
+## Verifying that data is being populated in MongoDB
 
-1. Exec into the MongoDB shell
+#### 1. Exec into the MongoDB shell
 
 ```
-docker exec -it mongodb mongosh -u admin -p password
+npm run enter-mongo
 ```
 
-2. Connect to the database
+#### 2. Connect to the database
 
 ```mongosh
 test> use black-relay
 ```
 
-3. Check that the collection was created. (It will be the topic name + an 's' since MongoDB attempts to pluralize collection names)
+#### 3. Check for data in the *events* collection
 
 ```mongosh
-mqtt-to-mongodb> show collections
-temps
-motions
-accelerometers
-air-qualitys
-gass
-optical-distances
-lights
-kismets
+black-relay> db.events.find()
 ```
 
-4. Check that data is being pushed into the collection:
+You should see something similar to the following output:
 
-```
-db.temps.find()
-```
-
-You should see the following output:
-
-```mongosh
-// TODO - replace with example data
+```JSON
+[
+  {
+    _id: ObjectId('68eb7f829cb55736a3d9edae'),
+    category: 'DETECT',
+    topic: 'gas',
+    data: {
+      timestamp: 1760264066232,
+      sensorId: 'f8b10280-34f6-4389-a38d-adb00dea1b54',
+      co2: 1692,
+      voc: 211
+    },
+    acknowledged: false,
+    createdAt: ISODate('2025-10-12T10:14:26.233Z'),
+    updatedAt: ISODate('2025-10-12T10:14:26.233Z'),
+    __v: 0
+  }
+]
 ```
 
 ## Cleanup
 
-Ensure you are in the ```docker-compose/staging``` directory and run:
+Ensure you are in the ```api``` directory and run:
 
 ```
-docker compose down --rmi local
+npm run docker-down
 ```
 
 This will stop and remove all three containers and remove the locally built express image from your system.
