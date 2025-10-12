@@ -1,25 +1,46 @@
+.sensor-wrapper{
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  box-sizing: content-box;
+  padding-bottom: -20px;
+  max-height: calc(100% - 60px);
+  border-radius: var(--radius);
+}
+
+.sensor-wrapper::-webkit-scrollbar{
+  display: none;
+}
+
 .sensor-group{
-  margin: 8px;
 
   .collapsible{
+    text-align: left;
+    background-color: var(--card);
+    margin-block: 4px;
+    padding: 8px;
+    border-bottom: 2px solid var(--border);
+    border-radius: var(--radius);
+    width: 100%;
+    box-sizing: border-box;
     cursor: pointer;
-    padding: 0;
   }
 
   .active, .collapsible:hover{
-
+    background-color: var(--muted)
   }
 
   .collapsible:before {
     content: '\002B';
     float: left;
-    margin-right: 4px;
+    margin-inline: 8px;
   }
 
   .active:before {
     content: '\2212';
     float: left;
-    margin-right: 4px;
+    margin-inline: 8px;
   }
 
   .content {
@@ -31,5 +52,13 @@
 
   .collapsible.active + .content {
     max-height: unset;
+  }
+
+  p{
+    background-color: var(--card);
+    border-radius: var(--radius);
+    margin-block: 4px;
+    padding: 4px;
+    padding-left: 16px;
   }
 }

@@ -25,7 +25,7 @@ export function SensorsAside(){
   const sensorGroups = groupSensors(mockSensors);
   const sensorTopics = groupSensorsByTopic(mockSensors);
 
-  return (<div>
+  return (<div className="sensor-wrapper">
     {Object.keys(sensorTopics).map((group, index) => <SensorGroup key={`sensor_group-${index}`} name={group} sensors={sensorTopics[group]} />)}
     {Object.keys(sensorGroups).map((group, index) => <SensorGroup key={`sensor_group-${index}`} name={group} sensors={sensorGroups[group]} />)}
   </div>)
