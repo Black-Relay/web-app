@@ -1,6 +1,10 @@
 import { MissionClock } from "@/components/mission-clock"
+import { Switch } from "@/components/ui/switch"
+import { useState } from "react";
 
 export function Events(){
+  const [table, setTable] = useState("All");
+
   return <div className="layout-main-content no-footer">
     <header>
       <div>create event</div>
@@ -8,7 +12,7 @@ export function Events(){
     </header>
     <MissionClock />
     <main>
-      <div>Toggle table</div>
+      <Switch labels={["All","Detects","Alerts","Threats","Alarms"]} setSwitch={setTable}/>
       <div>Main sortable table</div>
       <div>pagination functions</div>
     </main>
