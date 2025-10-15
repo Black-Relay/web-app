@@ -26,25 +26,6 @@
     padding: 4px;
   }
 
-  .lamp{
-    border-radius: 100%;
-    border: 3px solid rgb(72, 72, 72);
-    height: 20px;
-    width: 20px;
-    margin-block: 4px;
-  }
-
-  .active {
-    background-color: rgb(0, 220, 0);
-  }
-
-  .unack{
-    background-color: rgb(254, 154, 0);
-  }
-  .ack{
-    background-color: rgb(0, 220, 0);
-  }
-
   .detect{
     color: rgb(0, 157, 254);
   }
