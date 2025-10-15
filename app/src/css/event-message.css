@@ -25,20 +25,20 @@
   .timestamp, .event-message{
     padding: 4px;
   }
+}
 
-  .detect{
-    color: rgb(0, 157, 254);
-  }
+.detect{
+  color: rgb(0, 157, 254);
+}
 
-  .alert{
-    color: rgb(254, 250, 0);
-  }
+.alert{
+  color: rgb(254, 250, 0);
+}
 
-  .alarm{
-    color: rgb(254, 0, 0);
-  }
+.alarm{
+  color: rgb(254, 0, 0);
+}
 
-  .threat{
-    color: rgb(254, 154, 0);
-  }
+.threat{
+  color: rgb(254, 154, 0);
 }
