@@ -42,3 +42,25 @@
 .threat{
   color: rgb(254, 154, 0);
 }
+
+.event-detail-wrapper{
+
+  h2{
+    text-align: center;
+    font-size: revert;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .bold {
+    font-weight: 600;
+  }
+
+  .section{
+    background-color: var(--card);
+    margin-block: min(4px, 4%);
+    padding: min(8px, 8%);
+    border-radius: var(--radius);
+  }
+
+  .detail-dialog{}
+}
