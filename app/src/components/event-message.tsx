@@ -1,6 +1,6 @@
 import { type Event } from "@/providers/EventProvider";
 import "../css/event-message.css";
-import { Lamp } from "./ui/lamp";
+import { Lamp, VerticalLamps } from "./ui/lamp";
 
 function convertISODateString(isoDate:string){
   const date = new Date(isoDate);
@@ -11,10 +11,10 @@ export function EventMessage({event}:{event: Event}){
   const { active, acknowledged, category, data, createdAt } = event;
 
   return (<div className="event-tile">
-    <div className="event-lamps">
+    <VerticalLamps>
       <Lamp state={active ? "active" : ""} />
       <Lamp state={acknowledged ? "ack" : "unack"} />
-    </div>
+    </VerticalLamps>
     <div className="timestamp">{convertISODateString(createdAt)}</div>
     <div className="event-message">
       {`[Sensor Name] - `}

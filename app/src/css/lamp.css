@@ -1,4 +1,14 @@
+.vertical-lamps, .horizontal-lamps{
+  padding: 4px;
+}
 
+.vertical-lamps{
+
+}
+
+.horizontal-lamps{
+
+}
 
 .lamp{
   border-radius: 100%;
