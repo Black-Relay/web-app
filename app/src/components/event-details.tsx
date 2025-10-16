@@ -55,15 +55,16 @@ function EventUISection({dialogControl}:{dialogControl:React.Dispatch<React.SetS
   )
 }
 
-function EventDetailDialog({data, dialogControl}:{data: {[key:string]:any},dialogControl:React.Dispatch<React.SetStateAction<boolean>>}){
+function EventDetailDialog({data, dialogControl}:{data: {[key:string]:string|number},dialogControl:React.Dispatch<React.SetStateAction<boolean>>}){
   const labels = Object.keys(data);
+  const values = Object.values(data);
 
   return (
     <div className="detail-dialog">
       <IconButton Icon={X} label="" method={()=>{dialogControl(false)}} />
       {
         labels.length == 0 ? <p className="bold centered">No Data Present</p> :
-        labels.map(label => <p key={label}><span className="bold">{label}</span> &nbsp;{data[label]}</p>)
+        labels.map((label,index) => <p key={label}><span className="bold">{label}</span> &nbsp;{values[index]}</p>)
       }
     </div>
   )
