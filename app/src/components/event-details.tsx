@@ -55,16 +55,30 @@ function EventUISection({dialogControl}:{dialogControl:React.Dispatch<React.SetS
   )
 }
 
-function EventDetailDialog({data, dialogControl}:{data: {[key:string]:string|number|boolean},dialogControl:React.Dispatch<React.SetStateAction<boolean>>}){
-  const labels = Object.keys(data);
-  const values = Object.values(data);
+function EventDetailDialog({data, dialogControl}:{data: Record<string, unknown>,dialogControl:React.Dispatch<React.SetStateAction<boolean>>}){
+  const entries = Object.entries(data);
 
   return (
     <div className="detail-dialog">
       <IconButton Icon={X} label="" method={()=>{dialogControl(false)}} />
       {
-        labels.length == 0 ? <p className="bold centered">No Data Present</p> :
-        labels.map((label,index) => <p key={label}><span className="bold">{label}</span> &nbsp;{values[index]}</p>)
+        entries.length === 0 ? <div className="bold centered">No Data Present</div> :
+        entries.map(([label, value]) => {
+        let normalizedValue:React.ReactNode;
+        if ( typeof value === "object" ){
+          try{
+            normalizedValue = <pre className="detail-json">{JSON.stringify(value, null, 2)}</pre>;
+          } catch {
+            normalizedValue = String(value);
+          }
+        } else if ( label === "timestamp"){
+          normalizedValue = new Date(value as number).toLocaleString();
+        } else {
+          normalizedValue = String(value);
+        }
+
+        return <div key={label}><span className="bold">{label}</span> &nbsp;{normalizedValue}</div>
+      })
       }
     </div>
   )
