@@ -55,7 +55,7 @@ function EventUISection({dialogControl}:{dialogControl:React.Dispatch<React.SetS
   )
 }
 
-function EventDetailDialog({data, dialogControl}:{data: {[key:string]:string|number},dialogControl:React.Dispatch<React.SetStateAction<boolean>>}){
+function EventDetailDialog({data, dialogControl}:{data: {[key:string]:string|number|boolean},dialogControl:React.Dispatch<React.SetStateAction<boolean>>}){
   const labels = Object.keys(data);
   const values = Object.values(data);
 
