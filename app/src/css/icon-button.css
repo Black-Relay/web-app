@@ -1,0 +1,8 @@
+.icon-button{
+  display: block;
+  padding: min(8px, 8%);
+
+  svg {
+    display: inline;
+  }
+}
