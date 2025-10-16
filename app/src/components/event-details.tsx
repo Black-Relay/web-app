@@ -1,9 +1,9 @@
 import type { Event } from "@/providers/EventProvider";
 import { HorizontalLamps, LampLabel, Lamp } from "./ui/lamp";
 import "../css/event-message.css";
-import { useState } from "react";
+import React, { useState } from "react";
 import { NoteList, type NoteData } from "./ui/note";
-import { Notebook, Pin, Search } from "lucide-react"
+import { Notebook, Pin, Search, X } from "lucide-react"
 
 import { mockNotes } from "@/mockdata/mock-notes";
 import { IconButton } from "./ui/icon-button";
@@ -18,11 +18,11 @@ function EventMetaSection({event}:{event:Event}) {
 
   return (
     <div className="section">
-      <p><span className="bold">ID:</span>&nbsp;&nbsp;{_id}</p>
-      <p><span className="bold">Time:</span>&nbsp;&nbsp;{createdAt}</p>
-      <p><span className="bold">Type:</span>&nbsp;&nbsp;<span className={category.toLowerCase()}>{category}</span></p>
-      <p><span className="bold">Topic:</span>&nbsp;&nbsp;{topic}</p>
-      <p><span className="bold">Status:</span>&nbsp;&nbsp;
+      <p><span className="bold">ID:</span> &nbsp;{_id}</p>
+      <p><span className="bold">Time:</span> &nbsp;{createdAt}</p>
+      <p><span className="bold">Type:</span> &nbsp;<span className={category.toLowerCase()}>{category}</span></p>
+      <p><span className="bold">Topic:</span> &nbsp;{topic}</p>
+      <p><span className="bold">Status:</span> &nbsp;
         <HorizontalLamps>
           <LampLabel label="Ack'd">
             <Lamp state={acknowledged ? "ack" : "unack"} />
@@ -45,18 +45,28 @@ function EventNoteSection({eventNotes}:{eventNotes:EventNotes}){
   )
 }
 
-function EventUISection(){
+function EventUISection({dialogControl}:{dialogControl:React.Dispatch<React.SetStateAction<boolean>>}){
   return (
     <div className="section">
-      <IconButton Icon={Search} label="View Event Data" method={()=>{}} />
+      <IconButton Icon={Search} label="View Event Data" method={()=>{dialogControl(true)}} />
       <IconButton Icon={Notebook} label="Add Note" method={()=>{}} />
       <IconButton Icon={Pin} label="Pin Event" method={()=>{}} />
     </div>
   )
 }
 
-function EventDetailDialog(){
-  return <></>
+function EventDetailDialog({data, dialogControl}:{data: {[key:string]:any},dialogControl:React.Dispatch<React.SetStateAction<boolean>>}){
+  const labels = Object.keys(data);
+
+  return (
+    <div className="detail-dialog">
+      <IconButton Icon={X} label="" method={()=>{dialogControl(false)}} />
+      {
+        labels.length == 0 ? <p className="bold centered">No Data Present</p> :
+        labels.map(label => <p key={label}><span className="bold">{label}</span> &nbsp;{data[label]}</p>)
+      }
+    </div>
+  )
 }
 
 export function EventDetailsPane({event}:{event:Event}){
@@ -65,7 +75,7 @@ export function EventDetailsPane({event}:{event:Event}){
     <h2>Event Details</h2>
     <EventMetaSection event={event} />
     <EventNoteSection eventNotes={mockNotes[0]}/>
-    <EventUISection />
-    {dialogOpen ? <EventDetailDialog /> : <></>}
+    <EventUISection dialogControl={setDialogOpen}/>
+    {dialogOpen ? <EventDetailDialog data={event.data} dialogControl={setDialogOpen} /> : <></>}
   </div>)
 }
