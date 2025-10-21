@@ -1,6 +1,8 @@
+import { EventDetailsPane } from "@/components/event-details";
 import { MissionClock } from "@/components/mission-clock"
 import { Switch } from "@/components/ui/switch"
 import { useState } from "react";
+import { mockEvents } from "@/mockdata/mock-events";
 
 export function Events(){
   const [table, setTable] = useState("All");
@@ -16,11 +18,6 @@ export function Events(){
       <div>Main sortable table</div>
       <div>pagination functions</div>
     </main>
-    <aside>
-      <div>Details Header</div>
-      <div>Meta Data</div>
-      <div>Notes Section</div>
-      <div>UI Components</div>
-    </aside>
+    <EventDetailsPane event={mockEvents[0]}/>
   </div>
 }
