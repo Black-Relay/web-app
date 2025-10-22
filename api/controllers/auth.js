@@ -13,7 +13,7 @@ exports.userLogin = (req, res) => {
     res.status(400).send('Incorrect properties supplied')
   }
   else{
-    reqBody = req.body
+    const reqBody = req.body
     usersModel.findOne({ username: reqBody.username })
     .then(user => {
       if (!user){

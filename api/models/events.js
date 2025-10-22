@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { Schema, model } = mongoose;
 
-eventsSchema = new Schema({
+const eventsSchema = new Schema({
   category: {
     type: String,
     enum: {
