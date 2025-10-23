@@ -185,21 +185,6 @@ body,
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
-.cesium-viewer-toolbar {
-  display: block;
-  position: absolute;
-  top: 94px; /* ADJUST VIEWER TOOLBAR Y POSITION HERE */
-  right: 5px; /* ADJUST VIEWER TOOLBAR X POSITION HERE */
-}
-
-.cesium-infoBox {
-  position: absolute;
-  display: block;
-  y: 50;
-  x: 50;
-  z-index: 10;
-}
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -208,4 +193,25 @@ body,
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Fix tooltip arrow colors */
+[data-radix-popper-arrow] {
+  fill: white !important;
+  color: white !important;
+  background-color: white !important;
+}
+
+/* More specific tooltip arrow override */
+[data-radix-tooltip-arrow] {
+  fill: white !important;
+  color: white !important;
+  background-color: white !important;
+}
+
+/* Override the bg-primary class specifically */
+.bg-primary[data-radix-tooltip-arrow],
+.bg-primary[data-radix-popper-arrow] {
+  background-color: white !important;
+  fill: white !important;
 }
