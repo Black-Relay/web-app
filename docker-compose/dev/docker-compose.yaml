@@ -1,0 +1,110 @@
+services:
+  br-db:
+    image: mongo:latest
+    container_name: mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - br-net
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  br-mqtt:
+    image: eclipse-mosquitto:latest
+    container_name: mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_logs:/mosquitto/log
+    networks:
+      - br-net
+    healthcheck:
+      test: ["CMD", "mosquitto_pub", "-h", "localhost", "-t", "healthcheck", "-m", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  br-dummy-data:
+    build:
+      context: ../../api
+      dockerfile: Dockerfile.dummy
+    container_name: br-dummy-data
+    restart: unless-stopped
+    networks:
+      - br-net
+    environment:
+      - MQTT_URL=br-mqtt://br-mqtt:1883
+    depends_on:
+      - br-mqtt
+
+  br-api:
+    build:
+      context: ../../api
+      dockerfile: Dockerfile
+      target: devenv
+    container_name: br-api
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    networks:
+      - br-net
+    volumes:
+      - ../../api:/src/app
+      - /src/app/node_modules # Prevents overwriting node_modules
+    depends_on:
+      - br-db
+      - br-mqtt
+    environment:
+      - API_PORT=3001
+      - MQTT_URL=mqtt://mqtt:1883
+      - JWT_SECRET=your_jwt_secret
+      - COOKIE_SECRET=your_cookie_secret
+      - MONGO_HOST=br-db
+      - MONGO_USER=admin
+      - MONGO_PASSWORD=password
+
+  br-app:
+    build:
+      context: ../../app
+      dockerfile: Dockerfile
+      target: devenv
+    container_name: br-app
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    networks:
+      - br-net
+    volumes:
+      - ../../app:/src/app
+      - /src/app/node_modules # Prevents overwriting node_modules
+    environment:
+      - API_URL=http://localhost
+      - API_PORT=3001
+    depends_on:
+      - br-api
+      - br-mqtt
+      - br-db
+      - br-dummy-data
+
+networks:
+  br-net:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+  mosquitto_data:
+  mosquitto_logs:

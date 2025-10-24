@@ -1,13 +1,11 @@
-FROM node:24-alpine
-
-WORKDIR /app
-
-COPY package.json package-lock.json* ./
-
+FROM node:24-alpine AS install-deps
+WORKDIR /src/app
+COPY package*.json ./
 RUN npm install
 
-COPY ./ ./
-
+FROM node:24-alpine AS runtime
+WORKDIR /src/app
+COPY --from=install-deps /src/app/node_modules ./node_modules
+COPY dummy utils ./
 ENV MQTT_URL=mqtt://mqtt:1883
-
 CMD ["node", "dummy/all.js"]
