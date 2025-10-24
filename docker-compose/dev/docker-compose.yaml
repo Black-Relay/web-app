@@ -12,6 +12,12 @@ services:
       - mongodb_data:/data/db
     networks:
       - br-net
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   br-mqtt:
     image: eclipse-mosquitto:latest
@@ -26,6 +32,11 @@ services:
       - mosquitto_logs:/mosquitto/log
     networks:
       - br-net
+    healthcheck:
+      test: ["CMD", "mosquitto_pub", "-h", "localhost", "-t", "healthcheck", "-m", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   br-dummy-data:
     build:
@@ -36,7 +47,7 @@ services:
     networks:
       - br-net
     environment:
-      - MQTT_URL=mqtt://mqtt:1883
+      - MQTT_URL=br-mqtt://br-mqtt:1883
     depends_on:
       - br-mqtt
 
@@ -62,7 +73,7 @@ services:
       - MQTT_URL=mqtt://mqtt:1883
       - JWT_SECRET=your_jwt_secret
       - COOKIE_SECRET=your_cookie_secret
-      - MONGO_HOST=mongodb
+      - MONGO_HOST=br-db
       - MONGO_USER=admin
       - MONGO_PASSWORD=password
 
