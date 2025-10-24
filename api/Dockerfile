@@ -1,7 +1,7 @@
 FROM node:24-alpine AS install-deps
 WORKDIR /src/app
 COPY package*.json ./
-RUN npm install --loglevel verbose
+RUN npm install
 
 FROM install-deps AS seeder
 WORKDIR /src/app

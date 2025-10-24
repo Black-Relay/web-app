@@ -1,7 +1,7 @@
 FROM node:24-alpine AS install-deps
 WORKDIR /src/app
 COPY package*.json ./
-RUN npm install --loglevel verbose
+RUN npm install
 
 FROM node:24-alpine AS devenv
 WORKDIR /src/app
@@ -13,7 +13,7 @@ CMD ["npm", "run", "docker-dev"]
 FROM node:24-alpine AS build
 WORKDIR /src/app
 COPY --from=install-deps /src/app/node_modules ./node_modules
-COPY app/* ./
+COPY . ./
 ENV API_PORT_URL=http://localhost
 ENV API_PORT=3001
 RUN npm run build
