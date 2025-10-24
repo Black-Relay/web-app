@@ -5,7 +5,12 @@ export const mockEvents:Array<Event> = [
     _id: 'abc',
     category: "DETECT",
     topic: "gas",
-    data: {},
+    data: {
+      timestamp: 1760648385691,
+      sensorID: "ba5c748f-f651-415a-b32e-e51eca27c2a5",
+      co2: 357,
+      voc: 137
+    },
     createdAt: "18:43:52",
     acknowledged: true,
     active: true,

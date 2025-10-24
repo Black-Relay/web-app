@@ -88,6 +88,15 @@
     }
   }
 
+  .layout-main-content.no-footer{
+    main, .main-display{
+      grid-row: 2/13;
+    }
+    aside, .main-subcontent{
+      grid-row: 3/12;
+    }
+  }
+
   .layout-public-content{
     flex-grow: 1;
     display: grid;

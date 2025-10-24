@@ -22,42 +22,62 @@
   border-radius: var(--radius);
   border: 2px solid var(--border);
 
-  .event-lamps, .timestamp, .event-message{
+  .timestamp, .event-message{
     padding: 4px;
   }
+}
 
-  .lamp{
-    border-radius: 100%;
-    border: 3px solid rgb(72, 72, 72);
-    height: 20px;
-    width: 20px;
-    margin-block: 4px;
+.detect{
+  color: rgb(0, 157, 254);
+}
+
+.alert{
+  color: rgb(254, 250, 0);
+}
+
+.alarm{
+  color: rgb(254, 0, 0);
+}
+
+.threat{
+  color: rgb(254, 154, 0);
+}
+
+.event-detail-wrapper{
+  position: relative;
+
+  h2{
+    text-align: center;
+    font-size: revert;
+    border-bottom: 1px solid var(--border);
   }
 
-  .active {
-    background-color: rgb(0, 220, 0);
+  .bold {
+    font-weight: 600;
   }
 
-  .unack{
-    background-color: rgb(254, 154, 0);
-  }
-  .ack{
-    background-color: rgb(0, 220, 0);
+  .centered {
+    text-align: center;
   }
 
-  .detect{
-    color: rgb(0, 157, 254);
+  .section{
+    background-color: var(--card);
+    margin-block: min(4px, 4%);
+    padding: min(8px, 8%);
+    border-radius: var(--radius);
   }
 
-  .alert{
-    color: rgb(254, 250, 0);
-  }
+  .detail-dialog{
+    position: absolute;
+    top: 3rem;
+    left: 0.5rem;
+    bottom: 3rem;
+    right: 0.5rem;
+    background-color: var(--card);
+    border-radius: var(--radius);
 
-  .alarm{
-    color: rgb(254, 0, 0);
-  }
-
-  .threat{
-    color: rgb(254, 154, 0);
+    p{
+      margin-inline: min(8px, 8%);
+    }
   }
 }
