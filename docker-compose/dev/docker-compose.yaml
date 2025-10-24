@@ -60,6 +60,8 @@ services:
     environment:
       - API_PORT=3001
       - MQTT_URL=mqtt://mqtt:1883
+      - JWT_SECRET=your_jwt_secret
+      - COOKIE_SECRET=your_cookie_secret
       - MONGO_HOST=mongodb
       - MONGO_USER=admin
       - MONGO_PASSWORD=password
