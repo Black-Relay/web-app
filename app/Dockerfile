@@ -6,12 +6,18 @@ RUN npm install
 FROM node:24-alpine AS devenv
 WORKDIR /src/app
 COPY --from=install-deps /src/app/node_modules ./node_modules
+ENV API_PORT_URL=http://localhost
 ENV API_PORT=3001
-CMD ["sh", "-c", "npm run seed && npm run dev"]
+CMD ["npm", "run", "docker-dev"]
 
-FROM node:24-alpine AS runtime
+FROM node:24-alpine AS build
 WORKDIR /src/app
 COPY --from=install-deps /src/app/node_modules ./node_modules
 COPY . ./
+ENV API_PORT_URL=http://localhost
 ENV API_PORT=3001
-CMD ["sh", "-c", "npm run seed && npm start"]
+RUN npm run build
+
+FROM nginx:1.29.2 AS runtime
+COPY --from=build /src/app/dist /usr/share/nginx/html
+EXPOSE 80

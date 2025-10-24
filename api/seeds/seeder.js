@@ -1,12 +1,12 @@
-const { mongooseConn } = require('./db.js')
+const { mongooseConn } = require('../db.js')
 const bcrypt = require('bcrypt')
 const mongoose = require('mongoose')
-const seedUsers = require('./seeds/users.js')
-const seedRbacGroups = require('./seeds/rbacGroups.js')
-const rbacGroupsModel = require('./models/rbacGroups.js')
-const usersModel = require('./models/users.js')
+const seedUsers = require('./users.js')
+const seedRbacGroups = require('./rbacGroups.js')
+const rbacGroupsModel = require('../models/rbacGroups.js')
+const usersModel = require('../models/users.js')
 
-adminUser = {
+const adminUser = {
   username: "admin",
   password: "admin",
 

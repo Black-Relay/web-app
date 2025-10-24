@@ -2,9 +2,6 @@
 
 ![](./img/backend-diag.excalidraw.svg)
 
-## Building a Dev Environment
-See [DEVELOPMENT.md](./DEVELOPMENT.md)
-
 ## Generating Swagger Docs
 ```
 npx swagger-cli bundle swagger/swagger.yaml --outfile ./swagger.yaml --type yaml

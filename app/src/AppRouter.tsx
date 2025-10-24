@@ -11,6 +11,7 @@ import { Login } from "./pages/Login";
 import { SignUp } from "./pages/SignUp";
 import { Layout } from "./layouts/Layout";
 import { Dashboard } from "./pages/Dashboard";
+import { Events } from "./pages/Events";
 import { useUserContext } from "./providers/UserProvider";
 
 export function AppRouter() {
@@ -42,6 +43,7 @@ export function AppRouter() {
           <Route path="app" element={<UserRoute />}>
             <Route path="dashboard" element={<Dashboard />} />
             <Route index element={<Dashboard />} />
+            <Route path="events" element={<Events />} />
           </Route>
 
           {/* Admin Routes = Must be authenticated and admin */}
