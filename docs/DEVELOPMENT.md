@@ -6,33 +6,34 @@ Ensure you have the following installed locally:
 - Docker
 
 ## Usage
-### 1. Clone this repo and cd into the api directory:
+### 1. Clone this repo and cd into the ```docker-compose/dev``` directory:
 
 ```
-git clone https://github.com/Black-Relay/web-app && cd web-app/api
+git clone https://github.com/Black-Relay/web-app && cd web-app/docker-compose/dev
 ```
 
-### 2. Create a .env file:
-
-```
-cp .env.example .env
-```
-
-### 3. Run the docker compose:
+### 2. Run the docker compose:
 
 ```
 docker compose up -d
 ```
 
-You can verify that the API server is running by visiting ```http://localhost:3001``` in your browser.
+### 3. Verify all containers were built and are running:
 
-Seeded user credentials will appear in the file ```seedcreds.txt``` located *inside of the ```br-seeder``` container*. You can view them with the command:
+![](/docs/img/dev-containers.png)
+
+### 4. Log in as default admin
+Visit ```http://localhost:5173``` in your browser and log in with credentials ```admin/admin```.
+
+Seeded user credentials will appear in the file ```seedcreds.txt``` located *inside of the ```br-api``` container*. You can view them with the command:
 
 ```
-npm run view-seedcreds
+docker exec -it br-api cat seedcreds.txt
 ```
 
-### 4. Before calling any other endpoints, you must call the ```/auth/login``` endpoint to receive a session cookie. A default admin user is provided with the seed data. This will be a ```POST``` request with the following message body:
+## Using the API
+
+### 1. Before calling any other endpoints, you must call the ```/auth/login``` endpoint to receive a session cookie. A default admin user is provided with the seed data. This will be a ```POST``` request with the following message body:
 
 ```JSON
 {
@@ -41,7 +42,7 @@ npm run view-seedcreds
 }
 ```
 
-### 5. Subscribe to the a topic by using the ```/topic/{topic-name}/subscribe``` endpoint. Where *topic-name* is the topic you are subscribing to. You should receive the following JSON response:
+### 2. Subscribe to the a topic by using the ```/topic/{topic-name}/subscribe``` endpoint. Where *topic-name* is the topic you are subscribing to. You should receive the following JSON response:
 
 ```JSON
 {
