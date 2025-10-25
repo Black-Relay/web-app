@@ -1,7 +1,9 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useUserContext } from "./UserProvider";
-import config from "../configs/config.json";
-const { baseUrl, basePort, pollingIntervalMs } = config;
+const { apiUrl, pollingIntervalMs } = {
+  apiUrl: import.meta.env.VITE_API_URL || "http://localhost:3001",
+  pollingIntervalMs: Number(import.meta.env.VITE_POLLING_INTERVAL_MS) || 1000
+};
 
 type Event = {
   _id: string
@@ -30,7 +32,7 @@ function useEventContext():EventContextType{
 
 async function eventConsumer(){
   try{
-    const response = await fetch(`${baseUrl}:${basePort}/event`, {credentials: "include"})
+    const response = await fetch(`${apiUrl}/event`, {credentials: "include"})
     const json = await response.json();
     return Array.isArray(json) ? json : [json];
   }
@@ -40,7 +42,7 @@ async function eventConsumer(){
       category: "ALARM",
       topic: "client_connection",
       data: {
-        "message": "client server connnection lost or invalid credentials"
+        "message": "client server connection lost or invalid credentials"
       },
       createdAt: new Date().toISOString(),
       acknowledged: false,

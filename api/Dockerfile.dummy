@@ -6,6 +6,9 @@ RUN npm install
 FROM node:24-alpine AS runtime
 WORKDIR /src/app
 COPY --from=install-deps /src/app/node_modules ./node_modules
-COPY dummy utils ./
+COPY dummy/ ./dummy
+COPY models/ ./models
+COPY utils/ ./utils
+COPY db.js ./
 ENV MQTT_URL=mqtt://mqtt:1883
 CMD ["node", "dummy/all.js"]
