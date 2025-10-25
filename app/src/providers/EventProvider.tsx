@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useUserContext } from "./UserProvider";
 import config from "../configs/config.json";
-const { baseUrl, basePort, pollingIntervalMs } = config;
+const { baseUrl, basePort, pollingIntervalMs, subscriptions } = config;
+
 
 type Event = {
   _id: string
@@ -26,6 +27,12 @@ function useEventContext():EventContextType{
   const value:EventContextType|null = useContext(EventContext);
   if (!value) throw new Error('useEventContext hook used without EventContext');
   return value;
+}
+
+async function eventSubscriber(subscription: string){
+  const response = await fetch(`${baseUrl}:${basePort}/topic/${subscription}/subscribe`, {credentials: "include"});
+  console.log(response);
+  return response.status == 200 || response.status == 201 ? true : false;
 }
 
 async function eventConsumer(){
@@ -63,6 +70,11 @@ export default function EventProvider({children}:{children: React.ReactNode}){
   const value = {
     events: events
   };
+
+  useEffect(()=>{
+    if( user.username == "" ) return;
+    subscriptions.forEach(sub => eventSubscriber(sub));
+  }, [user, subscriptions])
 
   useEffect(()=>{
     if( user.username == "" ) return;
