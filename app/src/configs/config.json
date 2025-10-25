@@ -1,4 +1,5 @@
 {
+<<<<<<< Updated upstream
   "baseUrl": "http://localhost",
   "basePort": 3001,
   "pollingIntervalMs": 1000,

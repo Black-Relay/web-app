@@ -1,8 +1,10 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useUserContext } from "./UserProvider";
-const { apiUrl, pollingIntervalMs } = {
-  apiUrl: import.meta.env.VITE_API_URL || "http://localhost:3001",
-  pollingIntervalMs: Number(import.meta.env.VITE_POLLING_INTERVAL_MS) || 1000
+import config from "../configs/config.json";
+const { apiUrl, pollingIntervalMs, subscriptions } = {
+  apiUrl: import.meta.env.VITE_API_URL || config.apiUrl,
+  pollingIntervalMs: Number(import.meta.env.VITE_POLLING_INTERVAL_MS) || 1000,
+  subscriptions: config.subscriptions
 };
 
 type Event = {
