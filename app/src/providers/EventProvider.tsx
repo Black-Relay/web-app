@@ -3,7 +3,7 @@ import { useUserContext } from "./UserProvider";
 import config from "../configs/config.json";
 const { apiUrl, pollingIntervalMs, subscriptions } = {
   apiUrl: import.meta.env.VITE_API_URL || config.apiUrl,
-  pollingIntervalMs: Number(import.meta.env.VITE_POLLING_INTERVAL_MS) || 1000,
+  pollingIntervalMs: Number(import.meta.env.VITE_POLLING_INTERVAL_MS) || config.pollingIntervalMs,
   subscriptions: config.subscriptions
 };
 
@@ -33,7 +33,7 @@ function useEventContext():EventContextType{
 }
 
 async function eventSubscriber(subscription: string){
-  const response = await fetch(`${baseUrl}:${basePort}/topic/${subscription}/subscribe`, {credentials: "include"});
+  const response = await fetch(`${apiUrl}/topic/${subscription}/subscribe`, {credentials: "include"});
   console.log(response);
   return response.status == 200 || response.status == 201 ? true : false;
 }
