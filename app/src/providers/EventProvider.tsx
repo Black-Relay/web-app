@@ -30,6 +30,12 @@ function useEventContext():EventContextType{
   return value;
 }
 
+async function eventSubscriber(subscription: string){
+  const response = await fetch(`${baseUrl}:${basePort}/topic/${subscription}/subscribe`, {credentials: "include"});
+  console.log(response);
+  return response.status == 200 || response.status == 201 ? true : false;
+}
+
 async function eventConsumer(){
   try{
     const response = await fetch(`${apiUrl}/event`, {credentials: "include"})
@@ -65,6 +71,11 @@ export default function EventProvider({children}:{children: React.ReactNode}){
   const value = {
     events: events
   };
+
+  useEffect(()=>{
+    if( user.username == "" ) return;
+    subscriptions.forEach(sub => eventSubscriber(sub));
+  }, [user, subscriptions])
 
   useEffect(()=>{
     if( user.username == "" ) return;
