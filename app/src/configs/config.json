@@ -1,6 +1,5 @@
 {
-  "baseUrl": "http://localhost",
-  "basePort": 3001,
+  "apiUrl": "http://localhost:3001",
   "pollingIntervalMs": 1000,
   "subscriptions": ["gas","accelerometer","proximity_light","digital_light","air_quality","motion","optical_distance","kismet"]
 }

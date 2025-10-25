@@ -14,8 +14,10 @@ FROM node:24-alpine AS build
 WORKDIR /src/app
 COPY --from=install-deps /src/app/node_modules ./node_modules
 COPY . ./
-ENV API_PORT_URL=http://localhost
-ENV API_PORT=3001
+ARG VITE_API_URL=http://localhost
+ARG VITE_API_PORT=3001
+ENV VITE_API_URL=${VITE_API_URL}
+ENV VITE_API_PORT=${VITE_API_PORT}
 RUN npm run build
 
 FROM nginx:1.29.2 AS runtime

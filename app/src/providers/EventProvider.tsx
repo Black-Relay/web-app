@@ -1,8 +1,11 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useUserContext } from "./UserProvider";
 import config from "../configs/config.json";
-const { baseUrl, basePort, pollingIntervalMs, subscriptions } = config;
-
+const { apiUrl, pollingIntervalMs, subscriptions } = {
+  apiUrl: import.meta.env.VITE_API_URL || config.apiUrl,
+  pollingIntervalMs: Number(import.meta.env.VITE_POLLING_INTERVAL_MS) || config.pollingIntervalMs,
+  subscriptions: config.subscriptions
+};
 
 type Event = {
   _id: string
@@ -30,14 +33,14 @@ function useEventContext():EventContextType{
 }
 
 async function eventSubscriber(subscription: string){
-  const response = await fetch(`${baseUrl}:${basePort}/topic/${subscription}/subscribe`, {credentials: "include"});
+  const response = await fetch(`${apiUrl}/topic/${subscription}/subscribe`, {credentials: "include"});
   console.log(response);
   return response.status == 200 || response.status == 201 ? true : false;
 }
 
 async function eventConsumer(){
   try{
-    const response = await fetch(`${baseUrl}:${basePort}/event`, {credentials: "include"})
+    const response = await fetch(`${apiUrl}/event`, {credentials: "include"})
     const json = await response.json();
     return Array.isArray(json) ? json : [json];
   }
@@ -47,7 +50,7 @@ async function eventConsumer(){
       category: "ALARM",
       topic: "client_connection",
       data: {
-        "message": "client server connnection lost or invalid credentials"
+        "message": "client server connection lost or invalid credentials"
       },
       createdAt: new Date().toISOString(),
       acknowledged: false,
