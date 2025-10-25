@@ -12,17 +12,22 @@ import { SignUp } from "./pages/SignUp";
 import { Layout } from "./layouts/Layout";
 import { Dashboard } from "./pages/Dashboard";
 import { Events } from "./pages/Events";
+import { Network } from "./pages/Network";
 import { useUserContext } from "./providers/UserProvider";
 
 export function AppRouter() {
-  const {user} = useUserContext();
+  const { user } = useUserContext();
 
   const UserRoute = () => {
     return /* Logged in user */ user.role == "user" ? <Outlet /> : <NoAccess />;
   };
 
   const AdminRoute = () => {
-    return /* Admin user logged in */ user.role == "admin" ? <Outlet /> : <NoAccess />;
+    return /* Admin user logged in */ user.role == "admin" ? (
+      <Outlet />
+    ) : (
+      <NoAccess />
+    );
   };
 
   const AnonymousRoute = () => {
@@ -44,6 +49,7 @@ export function AppRouter() {
             <Route path="dashboard" element={<Dashboard />} />
             <Route index element={<Dashboard />} />
             <Route path="events" element={<Events />} />
+            <Route path="network" element={<Network />} />
           </Route>
 
           {/* Admin Routes = Must be authenticated and admin */}
