@@ -1,0 +1,101 @@
+services:
+  br-db:
+    image: mongo:latest
+    container_name: mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - br-net
+
+  br-mqtt:
+    image: eclipse-mosquitto:latest
+    container_name: mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_logs:/mosquitto/log
+    networks:
+      - br-net
+
+  br-api:
+    build:
+      context: ../../api
+      dockerfile: Dockerfile
+      target: runtime
+    container_name: br-api
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    networks:
+      - br-net
+    depends_on:
+      - br-db
+      - br-mqtt
+    environment:
+      - API_PORT=3001
+      - FRONTEND_URL=https://web.blackrelay.joshrnoll.com
+      - MQTT_URL=mqtt://br-mqtt:1883
+      - JWT_SECRET=${JWT_SECRET}
+      - COOKIE_SECRET=${COOKIE_SECRET}
+      - MONGO_HOST=mongodb
+      - MONGO_USER=${MONGO_USER}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
+
+  br-app:
+    build:
+      context: ../../app
+      dockerfile: Dockerfile
+      target: runtime
+      args:
+        - VITE_API_URL=https://api.blackrelay.joshrnoll.com
+    container_name: br-app
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    networks:
+      - br-net
+    depends_on:
+      - br-api
+      - br-mqtt
+      - br-db
+
+  caddy:
+    image: ghcr.io/caddybuilds/caddy-cloudflare:latest
+    container_name: br-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./caddyfile:/etc/caddy
+      - caddy_data:/data
+      - caddy_config:/config
+    environment:
+      - CLOUDFLARE_API_TOKEN=${CLOUDFLARE_API_TOKEN}
+    networks:
+      - br-net
+    depends_on:
+      - br-app
+      - br-api
+      - br-mqtt
+      - br-db
+
+networks:
+  br-net:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+  mosquitto_data:
+  mosquitto_logs:
+  caddy_data:
+  caddy_config:
