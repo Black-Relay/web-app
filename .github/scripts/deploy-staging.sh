@@ -3,8 +3,16 @@ set -e
 
 echo "==> Setting up SSH..."
 mkdir -p $HOME/.ssh
-echo -e "$SSH_PRIVATE_KEY" > $HOME/.ssh/id_rsa
+
+# Write SSH key - handle both literal \n and actual newlines
+printf "%b" "$SSH_PRIVATE_KEY" > $HOME/.ssh/id_rsa
 chmod 600 $HOME/.ssh/id_rsa
+
+# Verify the key format
+if ! grep -q "BEGIN.*PRIVATE KEY" $HOME/.ssh/id_rsa || ! grep -q "END.*PRIVATE KEY" $HOME/.ssh/id_rsa; then
+  echo "ERROR: SSH key appears malformed"
+  exit 1
+fi
 echo "✓ SSH key written"
 
 echo "Running ssh-keyscan for $STAGING_SERVER_IP..."
