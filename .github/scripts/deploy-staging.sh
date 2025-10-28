@@ -3,9 +3,11 @@ set -e
 
 echo "==> Setting up SSH..."
 mkdir -p $HOME/.ssh
-echo "$SSH_PRIVATE_KEY" > $HOME/.ssh/id_rsa
+echo -e "$SSH_PRIVATE_KEY" > $HOME/.ssh/id_rsa
 chmod 600 $HOME/.ssh/id_rsa
+echo "✓ SSH key written"
 ssh-keyscan -H "$STAGING_SERVER_IP" >> $HOME/.ssh/known_hosts
+echo "✓ Known hosts updated"
 
 echo "==> Cloning repository to remote server..."
 ssh -i $HOME/.ssh/id_rsa "$STAGING_SERVER_USER@$STAGING_SERVER_IP" << 'ENDSSH'
