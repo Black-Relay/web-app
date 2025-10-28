@@ -1,0 +1,97 @@
+name: Deploy to Staging
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - staging
+  pull_request:
+    types: [closed]
+    branches:
+      - staging
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Connect to Tailscale
+        id: tailscale-login
+        uses: tailscale/github-action@v2
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+          args: --login-server=https://hs.litts.xyz
+
+      - name: Verify connectivity to server
+        id: tailscale-ping
+        uses: tailscale/github-action@v4
+        with:
+          ping: 10.0.50.231
+
+      - name: Confirm connectivity
+        id: tailscale-up
+        run: echo "✓ Successfully connected to remote server via Tailscale"
+        if: steps.tailscale-ping.outcome == 'success'
+
+      - name: Copy staging files to remote server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: 10.0.50.231
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          source: "docker-compose/staging/*"
+          target: "/root/web-app-staging"
+          strip_components: 2
+        if: steps.tailscale-up.outcome == 'success'
+
+      - name: Confirm file copy
+        run: echo "✓ Successfully copied staging files to remote server"
+
+      - name: Prune Docker images and volumes
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 10.0.50.231
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          script: |
+            echo "Pruning Docker images and volumes..."
+            docker system prune -af
+            docker volume prune -af
+            echo "✓ Docker cleanup completed"
+
+      - name: Create .env file on remote server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 10.0.50.231
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          script: |
+            cd /root/web-app-staging
+            echo "Creating .env file..."
+            cat > .env << 'EOF'
+            MONGO_USER=${{ secrets.MONGO_USER }}
+            MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }}
+            JWT_SECRET=${{ secrets.JWT_SECRET }}
+            COOKIE_SECRET=${{ secrets.COOKIE_SECRET }}
+            EOF
+            echo "✓ Environment file created"
+
+      - name: Deploy with Docker Compose
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 10.0.50.231
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          script: |
+            cd /root/web-app-staging
+            echo "Starting Docker Compose services..."
+            docker compose up -d
+            echo "✓ Docker Compose services started successfully"
+            echo "✓ Deployment finished"
