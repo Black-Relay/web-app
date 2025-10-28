@@ -1,6 +1,6 @@
 services:
   br-db:
-    image: mongo:latest
+    image: mongo:4.4.6
     container_name: mongodb
     restart: unless-stopped
     environment:
@@ -12,7 +12,7 @@ services:
       - br-net
 
   br-mqtt:
-    image: eclipse-mosquitto:latest
+    image: eclipse-mosquitto:2.0.22
     container_name: mosquitto
     restart: unless-stopped
     ports:
