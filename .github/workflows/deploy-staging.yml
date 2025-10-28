@@ -27,20 +27,6 @@ jobs:
           tags: tag:ci
           ping: ${{ vars.STAGING_SERVER_IP }}
 
-      - name: Confirm connectivity
-        run: |
-          echo "Waiting for Tailscale connectivity..."
-          for i in {1..30}; do
-            if tailscale ping ${{ vars.STAGING_SERVER_IP }} > /dev/null 2>&1; then
-              echo "✓ Successfully connected to remote server via Tailscale"
-              exit 0
-            fi
-            echo "Attempt $i/30: Still waiting for connectivity..."
-            sleep 2
-          done
-          echo "✗ Failed to establish Tailscale connectivity"
-          exit 1
-
       - name: Clone repository to remote server
         uses: appleboy/ssh-action@master
         with:
