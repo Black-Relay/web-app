@@ -27,59 +27,16 @@ jobs:
           tags: tag:ci
           ping: ${{ vars.STAGING_SERVER_IP }}
 
-      - name: Setup SSH
+      - name: Deploy to staging server
         env:
-          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          STAGING_SERVER_IP: ${{ vars.STAGING_SERVER_IP }}
+          STAGING_SERVER_USER: ${{ vars.STAGING_SERVER_USER }}
+          MONGO_USER: ${{ secrets.MONGO_USER }}
+          MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          COOKIE_SECRET: ${{ secrets.COOKIE_SECRET }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
-          mkdir -p ~/.ssh
-          echo "$SSH_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ vars.STAGING_SERVER_IP }} >> ~/.ssh/known_hosts
-
-      - name: Clone repository to remote server
-        run: |
-          ssh -i ~/.ssh/id_rsa ${{ vars.STAGING_SERVER_USER }}@${{ vars.STAGING_SERVER_IP }} << 'ENDSSH'
-            cd /home/josh
-            echo "Removing existing repository if present..."
-            rm -rf web-app
-            echo "Cloning repository..."
-            git clone https://github.com/Black-Relay/web-app.git
-            cd web-app
-            echo "Checking out staging branch..."
-            git checkout staging
-            echo "✓ Repository cloned and staging branch checked out successfully"
-          ENDSSH
-
-      - name: Prune Docker images and volumes
-        run: |
-          ssh -i ~/.ssh/id_rsa ${{ vars.STAGING_SERVER_USER }}@${{ vars.STAGING_SERVER_IP }} << 'ENDSSH'
-            echo "Pruning Docker images and volumes..."
-            docker system prune -af
-            docker volume prune -af
-            echo "✓ Docker cleanup completed"
-          ENDSSH
-
-      - name: Create .env file on remote server
-        run: |
-          ssh -i ~/.ssh/id_rsa ${{ vars.STAGING_SERVER_USER }}@${{ vars.STAGING_SERVER_IP }} << 'ENDSSH'
-            cd /home/josh/web-app/docker-compose/staging
-            echo "Creating .env file..."
-            cat > .env << 'EOF'
-          MONGO_USER=${{ secrets.MONGO_USER }}
-          MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }}
-          JWT_SECRET=${{ secrets.JWT_SECRET }}
-          COOKIE_SECRET=${{ secrets.COOKIE_SECRET }}
-          CLOUDFLARE_API_TOKEN=${{ secrets.CLOUDFLARE_API_TOKEN }}
-          EOF
-            echo "✓ Environment file created"
-          ENDSSH
-
-      - name: Deploy with Docker Compose
-        run: |
-          ssh -i ~/.ssh/id_rsa ${{ vars.STAGING_SERVER_USER }}@${{ vars.STAGING_SERVER_IP }} << 'ENDSSH'
-            cd /home/josh/web-app/docker-compose/staging
-            echo "Starting Docker Compose services..."
-            docker compose up -d
-            echo "✓ Docker Compose services started successfully"
-            echo "✓ Deployment finished"
-          ENDSSH
+          chmod +x .github/scripts/deploy-staging.sh
+          .github/scripts/deploy-staging.sh
