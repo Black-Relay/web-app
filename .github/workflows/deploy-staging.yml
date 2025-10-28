@@ -31,7 +31,7 @@ jobs:
         run: |
           echo "Waiting for Tailscale connectivity..."
           for i in {1..30}; do
-            if ping -c 1 -W 2 ${{ vars.STAGING_SERVER_IP }} > /dev/null 2>&1; then
+            if tailscale ping ${{ vars.STAGING_SERVER_IP }} > /dev/null 2>&1; then
               echo "✓ Successfully connected to remote server via Tailscale"
               exit 0
             fi
