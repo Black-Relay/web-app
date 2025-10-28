@@ -2,13 +2,13 @@
 set -e
 
 echo "==> Setting up SSH..."
-mkdir -p ~/.ssh
-echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-chmod 600 ~/.ssh/id_rsa
-ssh-keyscan -H "$STAGING_SERVER_IP" >> ~/.ssh/known_hosts
+mkdir -p $HOME/.ssh
+echo "$SSH_PRIVATE_KEY" > $HOME/.ssh/id_rsa
+chmod 600 $HOME/.ssh/id_rsa
+ssh-keyscan -H "$STAGING_SERVER_IP" >> $HOME/.ssh/known_hosts
 
 echo "==> Cloning repository to remote server..."
-ssh -i ~/.ssh/id_rsa "$STAGING_SERVER_USER@$STAGING_SERVER_IP" << 'ENDSSH'
+ssh -i $HOME/.ssh/id_rsa "$STAGING_SERVER_USER@$STAGING_SERVER_IP" << 'ENDSSH'
   cd /home/josh
   echo "Removing existing repository if present..."
   rm -rf web-app
@@ -21,7 +21,7 @@ ssh -i ~/.ssh/id_rsa "$STAGING_SERVER_USER@$STAGING_SERVER_IP" << 'ENDSSH'
 ENDSSH
 
 echo "==> Pruning Docker images and volumes..."
-ssh -i ~/.ssh/id_rsa "$STAGING_SERVER_USER@$STAGING_SERVER_IP" << 'ENDSSH'
+ssh -i $HOME/.ssh/id_rsa "$STAGING_SERVER_USER@$STAGING_SERVER_IP" << 'ENDSSH'
   echo "Pruning Docker images and volumes..."
   docker system prune -af
   docker volume prune -af
@@ -29,7 +29,7 @@ ssh -i ~/.ssh/id_rsa "$STAGING_SERVER_USER@$STAGING_SERVER_IP" << 'ENDSSH'
 ENDSSH
 
 echo "==> Creating .env file on remote server..."
-ssh -i ~/.ssh/id_rsa "$STAGING_SERVER_USER@$STAGING_SERVER_IP" << ENDSSH
+ssh -i $HOME/.ssh/id_rsa "$STAGING_SERVER_USER@$STAGING_SERVER_IP" << ENDSSH
   cd /home/josh/web-app/docker-compose/staging
   echo "Creating .env file..."
   cat > .env << 'EOF'
@@ -43,7 +43,7 @@ EOF
 ENDSSH
 
 echo "==> Deploying with Docker Compose..."
-ssh -i ~/.ssh/id_rsa "$STAGING_SERVER_USER@$STAGING_SERVER_IP" << 'ENDSSH'
+ssh -i $HOME/.ssh/id_rsa "$STAGING_SERVER_USER@$STAGING_SERVER_IP" << 'ENDSSH'
   cd /home/josh/web-app/docker-compose/staging
   echo "Starting Docker Compose services..."
   docker compose up -d
