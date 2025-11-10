@@ -3,6 +3,7 @@ import { EventsAside } from "@/components/event-aside";
 import { Switch } from "@/components/ui/switch";
 import { useState } from "react";
 import { SensorsAside } from "@/components/sensor-aside";
+import { Map } from "@/components/ui/map";
 
 export function Dashboard() {
   const [aside, setAside] = useState("Sensor");
@@ -13,7 +14,7 @@ export function Dashboard() {
       <h1>{mission}</h1>
     </header>
     <main>
-      <div>Page Specific Main Content i.e. maps/tables</div>
+      <Map />
     </main>
     <MissionClock/>
     <aside>

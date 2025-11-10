@@ -1,0 +1,11 @@
+{
+  acme_dns cloudflare {$CLOUDFLARE_API_TOKEN}
+}
+
+web.blackrelay.joshrnoll.com {
+  reverse_proxy br-app:80
+}
+
+api.blackrelay.joshrnoll.com {
+  reverse_proxy br-api:3001
+}

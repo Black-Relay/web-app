@@ -4,20 +4,12 @@ services:
     container_name: mongodb
     restart: unless-stopped
     environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: password
-    ports:
-      - "27017:27017"
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
     volumes:
       - mongodb_data:/data/db
     networks:
       - br-net
-    healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
 
   br-mqtt:
     image: eclipse-mosquitto:2.0.22
@@ -32,11 +24,6 @@ services:
       - mosquitto_logs:/mosquitto/log
     networks:
       - br-net
-    healthcheck:
-      test: ["CMD", "mosquitto_pub", "-h", "localhost", "-t", "healthcheck", "-m", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   br-dummy-data:
     build:
@@ -47,7 +34,7 @@ services:
     networks:
       - br-net
     environment:
-      - MQTT_URL=mqtt://br-mqtt:1883
+      - MQTT_URL=mqtt://mqtt.blackrelay.joshrnoll.com:1883
     depends_on:
       - br-mqtt
 
@@ -55,49 +42,65 @@ services:
     build:
       context: ../../api
       dockerfile: Dockerfile
-      target: devenv
+      target: runtime
     container_name: br-api
     restart: unless-stopped
     ports:
       - "3001:3001"
     networks:
       - br-net
-    volumes:
-      - ../../api:/src/app
-      - /src/app/node_modules # Prevents overwriting node_modules
     depends_on:
       - br-db
       - br-mqtt
     environment:
       - API_PORT=3001
+      - FRONTEND_URL=https://web.blackrelay.joshrnoll.com
       - MQTT_URL=mqtt://br-mqtt:1883
-      - JWT_SECRET=your_jwt_secret
-      - COOKIE_SECRET=your_cookie_secret
-      - MONGO_HOST=br-db
-      - MONGO_USER=admin
-      - MONGO_PASSWORD=password
+      - JWT_SECRET=${JWT_SECRET}
+      - COOKIE_SECRET=${COOKIE_SECRET}
+      - MONGO_HOST=mongodb
+      - MONGO_USER=${MONGO_USER}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
 
   br-app:
     build:
       context: ../../app
       dockerfile: Dockerfile
-      target: devenv
+      target: runtime
+      args:
+        - VITE_API_URL=https://api.blackrelay.joshrnoll.com
     container_name: br-app
     restart: unless-stopped
     ports:
-      - "5173:5173"
+      - "8080:80"
     networks:
       - br-net
-    volumes:
-      - ../../app:/src/app
-      - /src/app/node_modules # Prevents overwriting node_modules
-    environment:
-      - VITE_API_URL=http://localhost:3001
     depends_on:
       - br-api
       - br-mqtt
       - br-db
-      - br-dummy-data
+
+  caddy:
+    image: ghcr.io/caddybuilds/caddy-cloudflare:latest
+    container_name: br-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./caddyfile:/etc/caddy
+      - caddy_data:/data
+      - caddy_config:/config
+    environment:
+      - CLOUDFLARE_API_TOKEN=${CLOUDFLARE_API_TOKEN}
+    networks:
+      - br-net
+    depends_on:
+      - br-app
+      - br-api
+      - br-mqtt
+      - br-db
 
 networks:
   br-net:
@@ -107,3 +110,5 @@ volumes:
   mongodb_data:
   mosquitto_data:
   mosquitto_logs:
+  caddy_data:
+  caddy_config:
