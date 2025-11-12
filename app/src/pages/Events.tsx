@@ -11,6 +11,7 @@ export function Events(){
   const [ selectedEvent, setSelectedEvent ] = useState<any>(events[0]);
   const columnNames = [
     { key: "_id", header: "ID", sortable: true },
+    { key: "acknowledged", header: "ACKNOWLEDGED", sortable: true},
     { key: "createdAt", header: "TIME", sortable: true },
     { key: "category", header: "TYPE", sortable: true },
     { key: "data.sensorId", header: "SENSOR", sortable: true },
