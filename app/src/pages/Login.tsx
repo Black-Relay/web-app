@@ -39,13 +39,8 @@ export function Login() {
       <CardHeader>
         <CardTitle>Login to your account</CardTitle>
         <CardDescription>
-          Enter your username below to login to your account
+          Enter your username and password below to login to your account
         </CardDescription>
-        <CardAction>
-          <Link to="/register">
-            <Button variant="link">Sign Up</Button>
-          </Link>
-        </CardAction>
       </CardHeader>
       <CardContent>
         <form id="login" onSubmit={(e)=>{submitHandler(e)}}>
@@ -62,12 +57,6 @@ export function Login() {
             <div className="grid gap-2">
               <div className="flex items-center">
                 <Label htmlFor="password">Password</Label>
-                <a
-                  href="#"
-                  className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                >
-                  Forgot your password?
-                </a>
               </div>
               <Input id="password" type="password" required />
             </div>
