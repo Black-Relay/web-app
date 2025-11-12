@@ -8,7 +8,7 @@ function convertISODateString(isoDate:string){
 }
 
 export function EventMessage({event}:{event: Event}){
-  const { active, acknowledged, category, data, createdAt } = event;
+  const { active, acknowledged, topic, category, data, createdAt } = event;
 
   return (<div className="event-tile">
     <VerticalLamps>
@@ -17,9 +17,9 @@ export function EventMessage({event}:{event: Event}){
     </VerticalLamps>
     <div className="timestamp">{convertISODateString(createdAt)}</div>
     <div className="event-message">
-      {`[Sensor Name] - `}
-      <span className={category.toLowerCase()}>{category}</span>
-      {`\n[Some message]`}
+      <span className={category.toLowerCase()}>{category}</span>:
+      {` ${data.sensorId} - `}
+      {`${topic.replace("_"," ")}`}
     </div>
   </div>)
 }
