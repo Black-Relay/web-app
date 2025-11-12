@@ -6,3 +6,18 @@
     display: inline;
   }
 }
+
+.inline-icon{
+  display: inline-block;
+  height: 1em;
+  margin: 0;
+  padding: 0;
+}
+
+.red{
+  color: red;
+}
+
+.green{
+  color: green;
+}

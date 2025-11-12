@@ -12,7 +12,7 @@ export function EventMessage({event}:{event: Event}){
 
   return (<div className="event-tile">
     <VerticalLamps>
-      <Lamp state={active ? "active" : ""} />
+      {/* <Lamp state={active ? "active" : ""} /> */}
       <Lamp state={acknowledged ? "ack" : "unack"} />
     </VerticalLamps>
     <div className="timestamp">{convertISODateString(createdAt)}</div>

@@ -3,10 +3,10 @@ import { HorizontalLamps, LampLabel, Lamp } from "./ui/lamp";
 import "../css/event-message.css";
 import React, { useState } from "react";
 import { NoteList, type NoteData } from "./ui/note";
-import { Notebook, Pin, Search, X } from "lucide-react"
+import { Check, Notebook, Pin, Search, X } from "lucide-react"
 
 import { mockNotes } from "@/mockdata/mock-notes";
-import { IconButton } from "./ui/icon-button";
+import { IconButton, InlineIcon } from "./ui/icon-button";
 
 interface EventNotes {
   eventID: string;
@@ -22,15 +22,15 @@ function EventMetaSection({event}:{event:Event}) {
       <p><span className="bold">Time:</span> &nbsp;{createdAt}</p>
       <p><span className="bold">Type:</span> &nbsp;<span className={category.toLowerCase()}>{category}</span></p>
       <p><span className="bold">Topic:</span> &nbsp;{topic}</p>
-      <p><span className="bold">Status:</span> &nbsp;
-        <HorizontalLamps>
+      <p><span className="bold">Acknowledged:</span> {acknowledged ? <InlineIcon Icon={Check} color={"green"} /> : <InlineIcon Icon={X} color={"red"}/>}
+        {/* <HorizontalLamps>
           <LampLabel label="Ack'd">
             <Lamp state={acknowledged ? "ack" : "unack"} />
           </LampLabel>
           <LampLabel label="Active">
             <Lamp state={active ? "active" : ""} />
           </LampLabel>
-        </HorizontalLamps>
+        </HorizontalLamps> */}
       </p>
     </div>
   )
