@@ -19,14 +19,12 @@ export function Events(){
 
   return <div className="layout-main-content no-footer">
     <header>
-      <div>create event</div>
-      <div>pin bar</div>
+      <h1>Events</h1>
     </header>
     <MissionClock />
     <main>
       <Switch labels={["All","Detects","Alerts","Threats","Alarms"]} setSwitch={setTable}/>
       <EventTable columns={columnNames} data={events} setEvent={setSelectedEvent} />
-      <div>pagination functions</div>
     </main>
     <EventDetailsPane event={selectedEvent}/>
   </div>
