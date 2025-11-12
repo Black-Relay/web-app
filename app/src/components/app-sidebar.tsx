@@ -17,33 +17,15 @@ const sidebarLinks = [
     role: "user"
   },
   {
-    title: "Settings",
-    url: "app/#",
-    icon: Settings,
-    role: "user"
-  },
-  {
     title: "Dashboard",
     url: "admin/dashboard",
     icon: Home,
     role: "admin"
   },
   {
-    title: "Settings",
-    url: "admin/#",
-    icon: Settings,
-    role: "admin"
-  },
-  {
     title: "Login",
     url: "login",
     icon: LogInIcon,
-    role: ""
-  },
-  {
-    title: "Register",
-    url: "register",
-    icon: Settings,
     role: ""
   },
 ]
