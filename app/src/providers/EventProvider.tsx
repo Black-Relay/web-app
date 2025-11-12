@@ -46,7 +46,7 @@ async function eventConsumer(){
   }
   catch{
     return [{
-      _id: "",
+      _id: "0",
       category: "ALARM",
       topic: "Server Connection",
       data: {
