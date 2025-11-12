@@ -48,8 +48,9 @@ async function eventConsumer(){
     return [{
       _id: "",
       category: "ALARM",
-      topic: "client_connection",
+      topic: "Server Connection",
       data: {
+        "sensorId": "Client",
         "message": "client server connection lost or invalid credentials"
       },
       createdAt: new Date().toISOString(),
