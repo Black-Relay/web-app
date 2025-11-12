@@ -18,7 +18,7 @@ export function EventMessage({event}:{event: Event}){
     <div className="timestamp">{convertISODateString(createdAt)}</div>
     <div className="event-message">
       <span className={category.toLowerCase()}>{category}</span>:
-      {` ${data.sensorId} - `}
+      {` ${data.sensorId ?? "Unnamed Sensor"} - `}
       {`${topic.replace("_"," ")}`}
     </div>
   </div>)
