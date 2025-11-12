@@ -80,3 +80,23 @@
   color: var(--accent-foreground);
   font-weight: bold;
 }
+
+.csv-export-btn {
+  background: var(--muted-foreground);
+  color: var(--primary-foreground);
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 6px 14px;
+  font-family: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-bottom: 4px;
+  margin-right: 8px;
+  transition: background 0.2s;
+  box-shadow: 0 2px 8px 0 oklch(0.14 0.005 285.823 / 5%);
+}
+
+.csv-export-btn:hover {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}

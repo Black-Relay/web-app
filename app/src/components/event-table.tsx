@@ -32,6 +32,57 @@ function sortData<T>(data: T[], sort: SortState<T>): T[] {
   });
 }
 
+function exportCSV<T>(columns: Column<T>[], rows: T[], filename = "export.csv") {
+  // Helpers to escape CSV values
+  const escape = (val: any) => {
+    if (val == null) return "";
+    const str = typeof val === "string" ? val : String(val);
+    return `"${str.replace(/"/g, '""')}"`;
+  };
+  // Get header row
+  const header = columns.map((col) => escape(col.header)).join(",");
+  // Get body rows
+  const body = rows
+    .map((row) =>
+      columns
+        .map((col) => escape(col.render ? col.render(getValueByPath(row, col.key), row) : getValueByPath(row, col.key)))
+        .join(",")
+    )
+    .join("\n");
+  // Compose CSV/output
+  const csvContent = header + "\n" + body;
+  const blob = new Blob([csvContent], { type: "text/csv" });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  window.URL.revokeObjectURL(url);
+  document.body.removeChild(a);
+}
+
+function exportCSVRaw<T>(columns: Column<T>[], rows: T[], filename = "all-data.csv") {
+  // One header: "RowData"
+  const header = '"RowData"';
+  // Each row: stringified as JSON and escaped for CSV
+  const body = rows
+    .map((row) =>
+      `"${JSON.stringify(row).replace(/"/g, '""')}"`
+    )
+    .join("\n");
+  const csvContent = header + "\n" + body;
+  const blob = new Blob([csvContent], { type: "text/csv" });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  window.URL.revokeObjectURL(url);
+  document.body.removeChild(a);
+}
+
 export function EventTable<T extends object>({
   columns,
   data,
@@ -62,13 +113,24 @@ export function EventTable<T extends object>({
 
   const sortedData = sortData(data, sort);
   const pageCount = Math.ceil(sortedData.length / ROWS_PER_PAGE);
-  const paginatedData = sortedData.slice(
-    page * ROWS_PER_PAGE,
-    (page + 1) * ROWS_PER_PAGE
-  );
+  const paginatedData = sortedData.slice(page * ROWS_PER_PAGE, (page + 1) * ROWS_PER_PAGE);
 
   return (
     <div>
+      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 8 }}>
+        <button
+          className="csv-export-btn"
+          onClick={() => exportCSV(columns, paginatedData)}
+        >
+          Export Table View
+        </button>
+        <button
+          className="csv-export-btn"
+          onClick={() => exportCSVRaw(columns, sortedData)}
+        >
+          Export Raw Data
+        </button>
+      </div>
       <table className="sortable-table">
         <thead>
           <tr>
