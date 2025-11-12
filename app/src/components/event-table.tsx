@@ -35,9 +35,11 @@ function sortData<T>(data: T[], sort: SortState<T>): T[] {
 export function EventTable<T extends object>({
   columns,
   data,
+  setEvent
 }: {
   columns: Column<T>[];
   data: T[];
+  setEvent?: (row: T) => void;
 }) {
   const ROWS_PER_PAGE = 20;
   const [sort, setSort] = useState<SortState<T>>({
@@ -86,7 +88,10 @@ export function EventTable<T extends object>({
         </thead>
         <tbody>
           {paginatedData.map((row, i) => (
-            <tr key={i}>
+            <tr
+              key={i}
+              onClick={setEvent ? ()=>{setEvent(row)} : undefined}
+            >
               {columns.map((col) => (
                 <td key={col.key}>
                   {col.render
