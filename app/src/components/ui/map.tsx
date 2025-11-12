@@ -6,8 +6,8 @@ import type { Event } from '@/providers/EventProvider';
 
 function Pin({event}:{event:Event}){
   const {category, topic, createdAt, data} = event;
-  let latitude = data?.latitude as number || 35.28;
-  let longitude = data?.longitude as number || -79.64;
+  let latitude = data?.LAT as number || 35.7796;
+  let longitude = data?.LON as number || -78.6382;
 
   return (
     <Marker position={[latitude, longitude]}>
