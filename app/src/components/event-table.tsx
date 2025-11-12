@@ -33,15 +33,13 @@ function sortData<T>(data: T[], sort: SortState<T>): T[] {
 }
 
 function exportCSV<T>(columns: Column<T>[], rows: T[], filename = "export.csv") {
-  // Helpers to escape CSV values
   const escape = (val: any) => {
     if (val == null) return "";
     const str = typeof val === "string" ? val : String(val);
     return `"${str.replace(/"/g, '""')}"`;
   };
-  // Get header row
+
   const header = columns.map((col) => escape(col.header)).join(",");
-  // Get body rows
   const body = rows
     .map((row) =>
       columns
@@ -49,7 +47,7 @@ function exportCSV<T>(columns: Column<T>[], rows: T[], filename = "export.csv") 
         .join(",")
     )
     .join("\n");
-  // Compose CSV/output
+
   const csvContent = header + "\n" + body;
   const blob = new Blob([csvContent], { type: "text/csv" });
   const url = window.URL.createObjectURL(blob);
@@ -63,9 +61,7 @@ function exportCSV<T>(columns: Column<T>[], rows: T[], filename = "export.csv") 
 }
 
 function exportCSVRaw<T>(columns: Column<T>[], rows: T[], filename = "all-data.csv") {
-  // One header: "RowData"
   const header = '"RowData"';
-  // Each row: stringified as JSON and escaped for CSV
   const body = rows
     .map((row) =>
       `"${JSON.stringify(row).replace(/"/g, '""')}"`
@@ -120,7 +116,7 @@ export function EventTable<T extends object>({
       <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 8 }}>
         <button
           className="csv-export-btn"
-          onClick={() => exportCSV(columns, paginatedData)}
+          onClick={() => exportCSV(columns, sortedData)}
         >
           Export Table View
         </button>
