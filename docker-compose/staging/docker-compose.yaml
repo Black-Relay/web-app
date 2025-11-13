@@ -80,6 +80,18 @@ services:
       - br-mqtt
       - br-db
 
+  br-osm-tiles:
+    image: overv/openstreetmap-tile-server
+    container_name: br-osm-tiles
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    networks:
+      - br-net
+    volumes:
+      - osm-data:/data/database
+    command: run
+
   caddy:
     image: ghcr.io/caddybuilds/caddy-cloudflare:latest
     container_name: br-caddy
@@ -112,3 +124,4 @@ volumes:
   mosquitto_logs:
   caddy_data:
   caddy_config:
+  osm-data:
