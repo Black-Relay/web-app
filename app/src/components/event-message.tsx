@@ -14,7 +14,7 @@ export function EventMessage({event}:{event: Event}){
   const {_id, active, acknowledged, topic, category, data, createdAt } = event;
   const [isAck, setIsAck] = useState(acknowledged);
 
-    const handleAcknowledge = async () => {
+  const handleAcknowledge = async () => {
     if (!isAck) {
       try {
         const res = await fetch(`${apiUrl}/event/id/${_id}`, {
