@@ -14,10 +14,12 @@ FROM node:24-alpine AS build
 WORKDIR /src/app
 COPY --from=install-deps /src/app/node_modules ./node_modules
 COPY . ./
-ARG VITE_API_URL=http://192.168.49.2:3001
+ARG VITE_API_URL=https://api.local.l8s.dev
 ENV VITE_API_URL=${VITE_API_URL}
 RUN npm run build
 
 FROM nginx:1.29.2 AS runtime
 COPY --from=build /src/app/dist /usr/share/nginx/html
 EXPOSE 80
+
+

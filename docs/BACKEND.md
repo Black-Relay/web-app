@@ -3,12 +3,15 @@
 ![](./img/backend-diag.excalidraw.svg)
 
 ## Generating Swagger Docs
+
 ```
 npx swagger-cli bundle swagger/swagger.yaml --outfile ./swagger.yaml --type yaml
 ```
 
 ## ERD
-> ***NOTE:*** NEEDS UPDATE
+
+> **_NOTE:_** NEEDS UPDATE
+
 ```mermaid
 erDiagram
 direction LR

@@ -33,7 +33,17 @@ services:
     networks:
       - br-net
     healthcheck:
-      test: ["CMD", "mosquitto_pub", "-h", "localhost", "-t", "healthcheck", "-m", "ping"]
+      test:
+        [
+          "CMD",
+          "mosquitto_pub",
+          "-h",
+          "localhost",
+          "-t",
+          "healthcheck",
+          "-m",
+          "ping",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -99,6 +109,18 @@ services:
       - br-db
       - br-dummy-data
 
+  br-osm-tiles:
+    image: overv/openstreetmap-tile-server
+    container_name: br-osm-tiles
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    networks:
+      - br-net
+    volumes:
+      - osm-data:/data/database
+    command: run
+
 networks:
   br-net:
     driver: bridge
@@ -107,3 +129,4 @@ volumes:
   mongodb_data:
   mosquitto_data:
   mosquitto_logs:
+  osm-data:
