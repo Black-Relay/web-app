@@ -36,7 +36,6 @@ export function EventMessage({event}:{event: Event}){
     <VerticalLamps>
       {/* <Lamp state={active ? "active" : ""} /> */}
       <button
-        className="lamp-btn"
         aria-label={isAck ? "Acknowledged" : "Acknowledge event"}
         onClick={handleAcknowledge}
         disabled={isAck}

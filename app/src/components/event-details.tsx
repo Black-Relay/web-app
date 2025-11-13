@@ -1,12 +1,13 @@
 import type { Event } from "@/providers/EventProvider";
-import { HorizontalLamps, LampLabel, Lamp } from "./ui/lamp";
 import "../css/event-message.css";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { NoteList, type NoteData } from "./ui/note";
 import { Check, Notebook, Pin, Search, X } from "lucide-react"
+import { IconButton, InlineIcon } from "./ui/icon-button";
+import config from "../configs/config.json";
+const {apiUrl} = {apiUrl: import.meta.env.VITE_API_URL || config.apiUrl}
 
 import { mockNotes } from "@/mockdata/mock-notes";
-import { IconButton, InlineIcon } from "./ui/icon-button";
 
 interface EventNotes {
   eventID: string;
@@ -15,6 +16,32 @@ interface EventNotes {
 
 function EventMetaSection({event}:{event:Event}) {
   const {_id, category, topic, createdAt, acknowledged, active, __v} = event;
+  const [isAck, setIsAck] = useState(acknowledged);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setIsAck(acknowledged);
+  }, [acknowledged, _id]);
+
+  const handleAcknowledge = async () => {
+    if (!isAck) {
+      setLoading(true);
+      try {
+        const res = await fetch(`${apiUrl}/event/id/${_id}`, {
+          method: "PATCH",
+          credentials: "include",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ acknowledged: true })
+        });
+        if (res.ok) setIsAck(true);
+      } catch (err) {
+        alert(`Unable to acknowledge ${_id}`);
+      }
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="section">
@@ -22,15 +49,17 @@ function EventMetaSection({event}:{event:Event}) {
       <p><span className="bold">Time:</span> &nbsp;{createdAt}</p>
       <p><span className="bold">Type:</span> &nbsp;<span className={category.toLowerCase()}>{category}</span></p>
       <p><span className="bold">Topic:</span> &nbsp;{topic}</p>
-      <p><span className="bold">Acknowledged:</span> {acknowledged ? <InlineIcon Icon={Check} color={"green"} /> : <InlineIcon Icon={X} color={"red"}/>}
-        {/* <HorizontalLamps>
-          <LampLabel label="Ack'd">
-            <Lamp state={acknowledged ? "ack" : "unack"} />
-          </LampLabel>
-          <LampLabel label="Active">
-            <Lamp state={active ? "active" : ""} />
-          </LampLabel>
-        </HorizontalLamps> */}
+      <p><span className="bold">Acknowledged:</span>
+        <button
+          aria-label={isAck ? "Acknowledged" : "Acknowledge event"}
+          onClick={handleAcknowledge}
+          disabled={isAck}
+        >
+          <InlineIcon
+            Icon={isAck ? Check : X}
+            color={isAck ? "green" : "red"}
+          />
+        </button>
       </p>
     </div>
   )
