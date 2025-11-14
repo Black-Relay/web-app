@@ -17,6 +17,7 @@
   width: fit-content;
   display: flex;
   justify-self: center;
+  align-self: center;
   margin: 4px;
 
   font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
