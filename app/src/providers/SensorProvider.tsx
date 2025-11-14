@@ -130,7 +130,7 @@ async function sensorSubscriber(
 
 async function sensorConsumer(){
   try{
-    const response = await fetch(`${apiUrl}/event`, {credentials: "include"})
+    const response = await fetch(`${apiUrl}/event/topic/sensor_status`, {credentials: "include"})
     
     if (response.status !== 200 && response.status !== 201) {
       // Generate alarm event for sensor consumer failure
@@ -154,14 +154,17 @@ async function sensorConsumer(){
     const json = await response.json();
     const allEvents = Array.isArray(json) ? json : [json];
     
-    // Filter to only include sensor_status events from configured sensors
-    return allEvents.filter((event: SensorStatus) => {
-      if (event.topic !== "sensor_status") return false;
-      
+    // Filter to only include events from configured sensors
+    const sensorStatusEvents = allEvents.filter((event: SensorStatus) => {
       // Check if the event is from a configured sensor
       const sensorId = event.data?.sensorId as string || event.data?.sensor_id as string;
-      return configSensors.includes(sensorId);
+      // return configSensors.includes(sensorId);
+      return configSensors;
     });
+    
+    console.log('SensorProvider - sensor_status events returned:', sensorStatusEvents);
+    
+    return sensorStatusEvents;
   }
   catch(error){
     return [{
