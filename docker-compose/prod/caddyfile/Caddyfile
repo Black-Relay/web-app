@@ -9,3 +9,7 @@ app.blackrelay.l8s.dev {
 api.blackrelay.l8s.dev {
   reverse_proxy br-api:3001
 }
+
+osm.blackrelay.l8s.dev {
+  reverse_proxy br-osm-tiles:8081 
+}
