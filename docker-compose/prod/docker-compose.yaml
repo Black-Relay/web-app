@@ -38,6 +38,7 @@ services:
       - br-db
       - br-mqtt
     environment:
+      - NODE_ENV=production
       - API_PORT=3001
       - FRONTEND_URL=https://app.blackrelay.l8s.dev
       - MQTT_URL=mqtt://br-mqtt:1883
