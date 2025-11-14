@@ -26,18 +26,18 @@ services:
     networks:
       - br-net
 
-  br-dummy-data:
-    build:
-      context: ../../api
-      dockerfile: Dockerfile.dummy
-    container_name: br-dummy-data
-    restart: unless-stopped
-    networks:
-      - br-net
-    environment:
-      - MQTT_URL=mqtt://br-mqtt:1883
-    depends_on:
-      - br-mqtt
+  # br-dummy-data:
+  #   build:
+  #     context: ../../api
+  #     dockerfile: Dockerfile.dummy
+  #   container_name: br-dummy-data
+  #   restart: unless-stopped
+  #   networks:
+  #     - br-net
+  #   environment:
+  #     - MQTT_URL=mqtt://br-mqtt:1883
+  #   depends_on:
+  #     - br-mqtt
 
   br-api:
     build:
@@ -126,3 +126,4 @@ volumes:
   caddy_data:
   caddy_config:
   osm-data:
+    external: true
