@@ -48,7 +48,7 @@ services:
       - MONGO_PASSWORD=${MONGO_PASSWORD}
 
   br-app:
-    image: ghcr.io/black-rlay/br-app:latest
+    image: ghcr.io/black-relay/br-app:latest
     container_name: br-app
     restart: unless-stopped
     ports:
