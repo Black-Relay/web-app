@@ -14,19 +14,19 @@ jobs:
     permissions:
       contents: read
       packages: write
-    
+
     strategy:
       matrix:
         include:
           - name: api
             context: ./api
             dockerfile: ./api/Dockerfile
-            image: ghcr.io/black-relay/api
+            image: ghcr.io/black-relay/br-api
             target: runtime
           - name: app
             context: ./app
             dockerfile: ./app/Dockerfile
-            image: ghcr.io/black-relay/app
+            image: ghcr.io/black-relay/br-app
             target: runtime
           - name: dummy-data
             context: ./api
