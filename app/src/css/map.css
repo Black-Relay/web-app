@@ -105,6 +105,29 @@
   max-height: 100px;
   overflow-y: auto;
   margin-top: 5px;
+  /* Custom scrollbar styling to match web app theme */
+  scrollbar-width: thin;
+  scrollbar-color: var(--muted-foreground) var(--muted);
+}
+
+/* WebKit scrollbar styling for Chrome, Safari, Edge */
+.popup-events-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.popup-events-container::-webkit-scrollbar-track {
+  background: var(--muted);
+  border-radius: 3px;
+}
+
+.popup-events-container::-webkit-scrollbar-thumb {
+  background: var(--muted-foreground);
+  border-radius: 3px;
+  border: 1px solid var(--border);
+}
+
+.popup-events-container::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
 }
 
 .popup-event-item {
