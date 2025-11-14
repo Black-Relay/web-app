@@ -18,6 +18,17 @@ const EVENT_PRIORITY: { [key: string]: number } = {
   'DETECT': 4
 };
 
+// Get priority color for display
+function getPriorityColor(category: string): string {
+  switch (category.toUpperCase()) {
+    case 'THREAT': return '#fe9a00'; // Orange
+    case 'ALARM': return '#fe0000';  // Red
+    case 'ALERT': return '#fefa00';  // Yellow
+    case 'DETECT': return '#009dfe'; // Blue
+    default: return '#666666';       // Gray
+  }
+}
+
 // Sort events by priority (THREAT > ALARM > ALERT > DETECT)
 function sortEventsByPriority(events: Event[]): Event[] {
   return events.sort((a, b) => {
@@ -91,6 +102,19 @@ function CombinedPin({ groupedEvents }: { groupedEvents: GroupedEvents }) {
           <strong>
             {eventCount > 1 ? `${eventCount} Events` : 'Event'} at this location
           </strong>
+          {priorityIndicator && (
+            <span style={{ 
+              marginLeft: '8px', 
+              padding: '2px 6px', 
+              borderRadius: '3px', 
+              backgroundColor: getPriorityColor(priorityIndicator),
+              color: 'white',
+              fontSize: '10px',
+              fontWeight: 'bold'
+            }}>
+              {priorityIndicator}
+            </span>
+          )}
           <br />
           <small>Coords: {latitude.toFixed(4)}, {longitude.toFixed(4)}</small>
           <div style={{ maxHeight: '100px', overflowY: 'auto', marginTop: '5px' }}>
