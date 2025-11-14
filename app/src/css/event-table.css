@@ -1,0 +1,102 @@
+.sortable-table {
+  width: 100%;
+  background-color: var(--card);
+  color: var(--foreground);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 2px 8px 0 oklch(0.14 0.005 285.823 / 10%);
+  overflow: hidden;
+}
+
+.sortable-table th,
+.sortable-table td {
+  padding: 12px 16px;
+  text-align: left;
+}
+
+.sortable-table th {
+  background: var(--muted);
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 1.08rem;
+  cursor: pointer;
+  user-select: none;
+  border-bottom: 2px solid var(--border);
+  transition: background 0.22s;
+}
+
+.sortable-table th:hover {
+  background: var(--accent);
+}
+
+.sortable-table tr {
+  border-bottom: 1px solid var(--border);
+  transition: background 0.22s;
+}
+
+.sortable-table tr:last-child {
+  border-bottom: none;
+}
+
+.sortable-table tr:hover {
+  background-color: var(--muted);
+}
+
+.sortable-table td {
+  font-size: 0.8rem;
+}
+
+.sortable-table .sorted {
+  color: var(--chart-1);
+}
+
+.pagination {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.pagination-btn {
+  background: var(--secondary);
+  color: var(--primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 4px 12px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 1rem;
+  transition: background 0.2s, color 0.2s;
+}
+
+.pagination-btn:disabled {
+  background: var(--muted);
+  color: var(--muted-foreground);
+  cursor: not-allowed;
+}
+
+.pagination-btn.active {
+  background: var(--accent);
+  color: var(--accent-foreground);
+  font-weight: bold;
+}
+
+.csv-export-btn {
+  background: var(--muted-foreground);
+  color: var(--primary-foreground);
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 6px 14px;
+  font-family: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-bottom: 4px;
+  margin-right: 8px;
+  transition: background 0.2s;
+  box-shadow: 0 2px 8px 0 oklch(0.14 0.005 285.823 / 5%);
+}
+
+.csv-export-btn:hover {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}

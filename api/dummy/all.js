@@ -1,17 +1,20 @@
-const { sendAccelerometerData } = require('./accelerometer.js')
-const { sendAirQualityData } = require('./airQuality.js')
-const { sendDigitalTempData } = require('./digitalTemp.js')
-const { sendGasData } = require('./gas.js')
-const { sendKismetData } = require('./kismet.js')
-const { sendMotionData } = require('./motion.js')
-const { sendOpticalDistanceData } = require('./opticalDistance.js')
-const { sendProximityLightData } = require('./proximityLight.js')
+const { sendAccelerometerData } = require("./accelerometer.js");
+const { sendAirQualityData } = require("./airQuality.js");
+const { sendDigitalTempData } = require("./digitalTemp.js");
+const { sendGasData } = require("./gas.js");
+const { sendKismetData } = require("./kismet.js");
+const { sendMotionData } = require("./motion.js");
+const { sendOpticalDistanceData } = require("./opticalDistance.js");
+const { sendProximityLightData } = require("./proximityLight.js");
+const { sendSensorStatusData } = require("./sensorStatus.js");
 
-sendAccelerometerData()
-sendAirQualityData()
-sendDigitalTempData()
-sendGasData()
-sendKismetData()
-sendMotionData()
-sendOpticalDistanceData()
-sendProximityLightData()
+sendAccelerometerData();
+sendAirQualityData();
+sendDigitalTempData();
+sendGasData();
+sendKismetData();
+sendMotionData();
+sendOpticalDistanceData();
+sendProximityLightData();
+sendSensorStatusData();
+

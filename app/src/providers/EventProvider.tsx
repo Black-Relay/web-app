@@ -46,10 +46,11 @@ async function eventConsumer(){
   }
   catch{
     return [{
-      _id: "",
+      _id: "0",
       category: "ALARM",
-      topic: "client_connection",
+      topic: "Server Connection",
       data: {
+        "sensorId": "Client",
         "message": "client server connection lost or invalid credentials"
       },
       createdAt: new Date().toISOString(),
@@ -67,7 +68,7 @@ export default function EventProvider({children}:{children: React.ReactNode}){
 
   const consumeData = async () => {
     let eventData = await eventConsumer();
-    setEvents(eventData.reverse().slice(0,100));
+    setEvents(eventData.reverse().slice(0,400));
   }
 
   const value = {

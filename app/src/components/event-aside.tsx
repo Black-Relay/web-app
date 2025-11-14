@@ -7,6 +7,6 @@ export function EventsAside(){
   const { events } = useEventContext();
 
   return (<div className="event-wrapper">
-    {events.map((message, index)=><EventMessage key={index} event={message}/>)}
+    {events.slice(0,100).map((message, index)=><EventMessage key={index} event={message}/>)}
   </div>)
 }
