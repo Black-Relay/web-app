@@ -200,6 +200,11 @@ export default function EventProvider({children}:{children: React.ReactNode}){
   const consumeData = async () => {
     let serverEvents = await eventConsumer();
     
+    // Filter out sensor_status events
+    serverEvents = serverEvents.filter((event: Event) => 
+      event.topic !== "sensor_status"
+    );
+    
     // Check if eventConsumer returned an alarm (connection issue)
     const hasConsumerAlarm = serverEvents.some((event: Event) => 
       event.topic === "Event Consumer Failure" || event.topic === "Network Error"
