@@ -57,7 +57,10 @@ export function EventMessage({event}:{event: Event}){
           },
           body: JSON.stringify({ acknowledged: true })
         });
-        if (res.ok) setIsAck(true);
+        if (res.ok) {
+          setIsAck(true);
+          addToast(`Event ${_id.slice(-6)} acknowledged successfully`, 'success');
+        }
       } catch (err) {
         addToast(`Unable to acknowledge ${_id}`, 'error');
       }
