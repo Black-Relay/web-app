@@ -16,7 +16,7 @@ interface EventNotes {
   notes: NoteData[];
 }
 
-function EventMetaSection({event}:{event:Event}) {
+function EventMetaSection({event, onEventUpdate}:{event:Event, onEventUpdate?: (updatedData: Partial<Event>) => void}) {
   const {_id, category, topic, createdAt, acknowledged, active, __v} = event;
   const [isAck, setIsAck] = useState(acknowledged);
   const [loading, setLoading] = useState(false);
@@ -57,7 +57,18 @@ function EventMetaSection({event}:{event:Event}) {
             }
           })
         });
-        if (res.ok) setIsAck(true);
+        if (res.ok) {
+          setIsAck(true);
+          if (onEventUpdate) {
+            onEventUpdate({
+              acknowledged: true,
+              data: {
+                ...event.data,
+                notes: updatedNotes as any
+              }
+            });
+          }
+        }
       } catch (err) {
         alert(`Unable to acknowledge ${_id}`);
       }
@@ -116,7 +127,7 @@ function EventNoteSection({event}:{event: Event}){
   )
 }
 
-function EventUISection({dialogControl, event}:{dialogControl:React.Dispatch<React.SetStateAction<boolean>>, event: Event}){
+function EventUISection({dialogControl, event, onEventUpdate}:{dialogControl:React.Dispatch<React.SetStateAction<boolean>>, event: Event, onEventUpdate?: (updatedData: Partial<Event>) => void}){
   const [addNoteModalOpen, setAddNoteModalOpen] = useState(false);
   const [noteText, setNoteText] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -161,8 +172,15 @@ function EventUISection({dialogControl, event}:{dialogControl:React.Dispatch<Rea
         if (res.ok) {
           setNoteText("");
           setAddNoteModalOpen(false);
-          // TODO: Refresh event data in parent component
           alert("Note added successfully!");
+          if (onEventUpdate) {
+            onEventUpdate({
+              data: {
+                ...event.data,
+                notes: updatedNotes as any
+              }
+            });
+          }
         } else {
           throw new Error("Failed to add note");
         }
@@ -210,7 +228,16 @@ function EventUISection({dialogControl, event}:{dialogControl:React.Dispatch<Rea
       
       if (res.ok) {
         alert("Event escalated to THREAT status");
-        // TODO: Refresh event data in parent component
+        if (onEventUpdate) {
+          onEventUpdate({
+            category: "THREAT" as any,
+            data: {
+              ...event.data,
+              originalCategory: originalCategory as any,
+              notes: updatedNotes as any
+            }
+          });
+        }
       } else {
         throw new Error("Failed to escalate event");
       }
@@ -257,7 +284,14 @@ function EventUISection({dialogControl, event}:{dialogControl:React.Dispatch<Rea
       
       if (res.ok) {
         alert(`Event reverted to ${originalCategory} status`);
-        // TODO: Refresh event data in parent component
+        if (onEventUpdate) {
+          const updatedData = { ...event.data, notes: updatedNotes as any };
+          delete (updatedData as any).originalCategory;
+          onEventUpdate({
+            category: originalCategory as any,
+            data: updatedData
+          });
+        }
       } else {
         throw new Error("Failed to revert event");
       }
@@ -359,11 +393,22 @@ function EventDetailDialog({data, dialogControl}:{data: Record<string, unknown>,
 
 export function EventDetailsPane({event}:{event:Event}){
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [currentEvent, setCurrentEvent] = useState(event);
+
+  // Update local event when prop changes
+  useEffect(() => {
+    setCurrentEvent(event);
+  }, [event]);
+
+  const updateEventData = (updatedData: Partial<Event>) => {
+    setCurrentEvent(prev => ({ ...prev, ...updatedData }));
+  };
+
   return (<div className="main-subcontent event-detail-wrapper">
     <h2>Event Details</h2>
-    <EventMetaSection event={event} />
-    <EventNoteSection event={event}/>
-    <EventUISection dialogControl={setDialogOpen} event={event}/>
-    {dialogOpen ? <EventDetailDialog data={event.data} dialogControl={setDialogOpen} /> : <></>}
+    <EventMetaSection event={currentEvent} onEventUpdate={updateEventData} />
+    <EventNoteSection event={currentEvent}/>
+    <EventUISection dialogControl={setDialogOpen} event={currentEvent} onEventUpdate={updateEventData}/>
+    {dialogOpen ? <EventDetailDialog data={currentEvent.data} dialogControl={setDialogOpen} /> : <></>}
   </div>)
 }
