@@ -4,10 +4,12 @@ import React, { useState, useEffect } from "react";
 import { NoteList, type NoteData } from "./ui/note";
 import { Check, Notebook, Pin, Search, X } from "lucide-react"
 import { IconButton, InlineIcon } from "./ui/icon-button";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from "./ui/sheet";
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
+import { useUserContext } from "@/providers/UserProvider";
 import config from "../configs/config.json";
 const {apiUrl} = {apiUrl: import.meta.env.VITE_API_URL || config.apiUrl}
-
-import { mockNotes } from "@/mockdata/mock-notes";
 
 interface EventNotes {
   eventID: string;
@@ -65,22 +67,131 @@ function EventMetaSection({event}:{event:Event}) {
   )
 }
 
-function EventNoteSection({eventNotes}:{eventNotes:EventNotes}){
+function EventNoteSection({event}:{event: Event}){
+  const eventNotes = event.data.notes;
+  
+  // Ensure eventNotes is an array and transform notes from event data format to NoteData format
+  const transformedNotes: NoteData[] = Array.isArray(eventNotes) 
+    ? eventNotes.map((note: any) => ({
+        author: note.author,
+        timestamp: new Date(note.timestamp).toLocaleString(),
+        message: note.text
+      }))
+    : [];
+
+  const notesList: EventNotes = {
+    eventID: event._id,
+    notes: transformedNotes
+  };
+
   return (
     <div className="section">
       <h3>Notes</h3>
-      <NoteList notesList={eventNotes} />
+      {transformedNotes.length === 0 ? (
+        <p className="text-muted-foreground">No notes yet</p>
+      ) : (
+        <NoteList notesList={notesList} />
+      )}
     </div>
   )
 }
 
-function EventUISection({dialogControl}:{dialogControl:React.Dispatch<React.SetStateAction<boolean>>}){
+function EventUISection({dialogControl, event}:{dialogControl:React.Dispatch<React.SetStateAction<boolean>>, event: Event}){
+  const [addNoteModalOpen, setAddNoteModalOpen] = useState(false);
+  const [noteText, setNoteText] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const {user} = useUserContext();
+
+  const handleAddNote = async () => {
+    if (noteText.trim() && !isSubmitting) {
+      setIsSubmitting(true);
+      try {
+        // Get existing notes from event data or initialize empty array
+        const existingNotes = Array.isArray(event.data.notes) ? event.data.notes : [];
+        const newNote = {
+          id: Date.now().toString(),
+          text: noteText.trim(),
+          timestamp: new Date().toISOString(),
+          author: user.firstName && user.lastName 
+            ? `${user.firstName} ${user.lastName}` 
+            : user.username || "Unknown User"
+        };
+        
+        const updatedNotes = [...existingNotes, newNote];
+        
+        const res = await fetch(`${apiUrl}/event/id/${event._id}`, {
+          method: "PATCH",
+          credentials: "include",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ 
+            data: {
+              ...event.data,
+              notes: updatedNotes
+            }
+          })
+        });
+        
+        if (res.ok) {
+          setNoteText("");
+          setAddNoteModalOpen(false);
+          // TODO: Refresh event data in parent component
+          alert("Note added successfully!");
+        } else {
+          throw new Error("Failed to add note");
+        }
+      } catch (err) {
+        console.error("Error adding note:", err);
+        alert(`Unable to add note to event ${event._id}`);
+      }
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setNoteText("");
+    setAddNoteModalOpen(false);
+  };
+
   return (
-    <div className="section">
-      <IconButton Icon={Search} label="View Event Data" method={()=>{dialogControl(true)}} />
-      <IconButton Icon={Notebook} label="Add Note" method={()=>{}} />
-      <IconButton Icon={Pin} label="Pin Event" method={()=>{}} />
-    </div>
+    <>
+      <div className="section">
+        <IconButton Icon={Search} label="View Event Data" method={()=>{dialogControl(true)}} />
+        <IconButton Icon={Notebook} label="Add Note" method={()=>{setAddNoteModalOpen(true)}} />
+        <IconButton Icon={Pin} label="Pin Event" method={()=>{}} />
+      </div>
+
+      <Sheet open={addNoteModalOpen} onOpenChange={setAddNoteModalOpen}>
+        <SheetContent>
+          <SheetHeader>
+            <SheetTitle>Add Note</SheetTitle>
+          </SheetHeader>
+          
+          <div className="flex flex-col gap-4 p-4">
+            <label htmlFor="note-input" className="text-sm font-medium">
+              Note Content
+            </label>
+            <Input
+              id="note-input"
+              placeholder="Enter your note here..."
+              value={noteText}
+              onChange={(e) => setNoteText(e.target.value)}
+              className="min-h-[100px]"
+            />
+          </div>
+
+          <SheetFooter>
+            <Button variant="outline" onClick={handleCancel} disabled={isSubmitting}>
+              Cancel
+            </Button>
+            <Button onClick={handleAddNote} disabled={!noteText.trim() || isSubmitting}>
+              {isSubmitting ? "Adding..." : "Add Note"}
+            </Button>
+          </SheetFooter>
+        </SheetContent>
+      </Sheet>
+    </>
   )
 }
 
@@ -118,8 +229,8 @@ export function EventDetailsPane({event}:{event:Event}){
   return (<div className="main-subcontent event-detail-wrapper">
     <h2>Event Details</h2>
     <EventMetaSection event={event} />
-    <EventNoteSection eventNotes={mockNotes[0]}/>
-    <EventUISection dialogControl={setDialogOpen}/>
+    <EventNoteSection event={event}/>
+    <EventUISection dialogControl={setDialogOpen} event={event}/>
     {dialogOpen ? <EventDetailDialog data={event.data} dialogControl={setDialogOpen} /> : <></>}
   </div>)
 }
