@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useUserContext } from "./UserProvider";
+import { useToast } from './ToastProvider';
 import config from "../configs/config.json";
 const { apiUrl, pollingIntervalMs, configSensors } = {
   apiUrl: import.meta.env.VITE_API_URL || config.apiUrl,
@@ -186,6 +187,7 @@ export default function SensorProvider({children}:{children: React.ReactNode}){
   const [subscriptionStatus, setSubscriptionStatus] = useState<{[key: string]: 'connected' | 'failed' | 'pending'}>({});
   const [sensorTimestamps, setSensorTimestamps] = useState<{[key: string]: number}>({});
   const { user } = useUserContext();
+  const { setHasActiveAlarms } = useToast();
   const pollingReference = useRef<NodeJS.Timeout | null>(null);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const timeoutCheckRef = useRef<NodeJS.Timeout | null>(null);
@@ -411,7 +413,16 @@ export default function SensorProvider({children}:{children: React.ReactNode}){
         }
       });
       
-      return Array.from(sensorMap.values()).slice(0, 400);
+      const finalSensors = Array.from(sensorMap.values()).slice(0, 400);
+      
+      // Check for active sensor alarms and update toast system
+      const hasSensorAlarms = finalSensors.some(sensor => 
+        sensor.category === "ALARM" && sensor.active !== false
+      );
+      
+      setHasActiveAlarms(hasSensorAlarms);
+      
+      return finalSensors;
     });
   }
 

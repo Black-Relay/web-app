@@ -4,6 +4,7 @@ import { Lamp, VerticalLamps } from "./ui/lamp";
 import { useState } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
 import { EventDetailsPane } from "./event-details";
+import { useToast } from "@/providers/ToastProvider";
 import config from "../configs/config.json";
 const {apiUrl} = {apiUrl: import.meta.env.VITE_API_URL || config.apiUrl}
 
@@ -42,6 +43,8 @@ export function EventMessage({event}:{event: Event}){
   const [isAck, setIsAck] = useState(acknowledged);
   const [isOpen, setIsOpen] = useState(false);
 
+  const { addToast } = useToast();
+
   const handleAcknowledge = async (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent triggering the sheet open
     if (!isAck) {
@@ -56,7 +59,7 @@ export function EventMessage({event}:{event: Event}){
         });
         if (res.ok) setIsAck(true);
       } catch (err) {
-        alert(`Unable to acknowledge ${_id}`)
+        addToast(`Unable to acknowledge ${_id}`, 'error');
       }
     }
   };

@@ -8,6 +8,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from "./ui/
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { useUserContext } from "@/providers/UserProvider";
+import { useToast } from "@/providers/ToastProvider";
 import config from "../configs/config.json";
 const {apiUrl} = {apiUrl: import.meta.env.VITE_API_URL || config.apiUrl}
 
@@ -21,6 +22,7 @@ function EventMetaSection({event, onEventUpdate}:{event:Event, onEventUpdate?: (
   const [isAck, setIsAck] = useState(acknowledged);
   const [loading, setLoading] = useState(false);
   const {user} = useUserContext();
+  const { addToast } = useToast();
 
   useEffect(() => {
     setIsAck(acknowledged);
@@ -70,7 +72,7 @@ function EventMetaSection({event, onEventUpdate}:{event:Event, onEventUpdate?: (
           }
         }
       } catch (err) {
-        alert(`Unable to acknowledge ${_id}`);
+        addToast(`Unable to acknowledge ${_id}`, 'error');
       }
       setLoading(false);
     }
@@ -133,6 +135,7 @@ function EventUISection({dialogControl, event, onEventUpdate}:{dialogControl:Rea
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUpdatingThreat, setIsUpdatingThreat] = useState(false);
   const {user} = useUserContext();
+  const { addToast } = useToast();
   
   // Store original category in event data if not already stored
   const originalCategory = event.data.originalCategory || event.category;
@@ -172,7 +175,7 @@ function EventUISection({dialogControl, event, onEventUpdate}:{dialogControl:Rea
         if (res.ok) {
           setNoteText("");
           setAddNoteModalOpen(false);
-          alert("Note added successfully!");
+          addToast("Note added successfully!", 'success');
           if (onEventUpdate) {
             onEventUpdate({
               data: {
@@ -186,7 +189,7 @@ function EventUISection({dialogControl, event, onEventUpdate}:{dialogControl:Rea
         }
       } catch (err) {
         console.error("Error adding note:", err);
-        alert(`Unable to add note to event ${event._id}`);
+        addToast(`Unable to add note to event ${event._id}`, 'error');
       }
       setIsSubmitting(false);
     }
@@ -227,7 +230,7 @@ function EventUISection({dialogControl, event, onEventUpdate}:{dialogControl:Rea
       });
       
       if (res.ok) {
-        alert("Event escalated to THREAT status");
+        addToast("Event escalated to THREAT status", 'success');
         if (onEventUpdate) {
           onEventUpdate({
             category: "THREAT" as any,
@@ -243,7 +246,7 @@ function EventUISection({dialogControl, event, onEventUpdate}:{dialogControl:Rea
       }
     } catch (err) {
       console.error("Error escalating event:", err);
-      alert(`Unable to escalate event ${event._id}`);
+      addToast(`Unable to escalate event ${event._id}`, 'error');
     }
     setIsUpdatingThreat(false);
   };
@@ -283,7 +286,7 @@ function EventUISection({dialogControl, event, onEventUpdate}:{dialogControl:Rea
       });
       
       if (res.ok) {
-        alert(`Event reverted to ${originalCategory} status`);
+        addToast(`Event reverted to ${originalCategory} status`, 'success');
         if (onEventUpdate) {
           const updatedData = { ...event.data, notes: updatedNotes as any };
           delete (updatedData as any).originalCategory;
@@ -297,7 +300,7 @@ function EventUISection({dialogControl, event, onEventUpdate}:{dialogControl:Rea
       }
     } catch (err) {
       console.error("Error reverting event:", err);
-      alert(`Unable to revert event ${event._id}`);
+      addToast(`Unable to revert event ${event._id}`, 'error');
     }
     setIsUpdatingThreat(false);
   };

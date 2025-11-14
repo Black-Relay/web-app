@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useUserContext } from "./UserProvider";
+import { useToast } from './ToastProvider';
 import config from "../configs/config.json";
 const { apiUrl, pollingIntervalMs, subscriptions } = {
   apiUrl: import.meta.env.VITE_API_URL || config.apiUrl,
@@ -181,6 +182,7 @@ export default function EventProvider({children}:{children: React.ReactNode}){
   const [localAlarms, setLocalAlarms] = useState<Event[]>([]);
   const [subscriptionStatus, setSubscriptionStatus] = useState<{[key: string]: 'connected' | 'failed' | 'pending'}>({});
   const { user } = useUserContext();
+  const { setHasActiveThreats, setHasActiveAlarms } = useToast();
   const pollingReference = useRef<NodeJS.Timeout | null>(null);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -266,7 +268,20 @@ export default function EventProvider({children}:{children: React.ReactNode}){
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
       });
       
-      return combinedEvents.slice(0, 400);
+      const finalEvents = combinedEvents.slice(0, 400);
+      
+      // Check for active threats and alarms and update toast system
+      const hasActiveThreats = finalEvents.some(event => 
+        event.category === "THREAT" && event.active !== false
+      );
+      const hasActiveAlarms = finalEvents.some(event => 
+        event.category === "ALARM" && event.active !== false
+      );
+      
+      setHasActiveThreats(hasActiveThreats);
+      setHasActiveAlarms(hasActiveAlarms);
+      
+      return finalEvents;
     });
   }
 
