@@ -21,12 +21,12 @@ jobs:
           - name: api
             context: ./api
             dockerfile: ./api/Dockerfile
-            image: ghcr.io/black-relay/br-api
+            image: ghcr.io/black-relay/api
             target: runtime
           - name: app
             context: ./app
             dockerfile: ./app/Dockerfile
-            image: ghcr.io/black-relay/br-app
+            image: ghcr.io/black-relay/app
             target: runtime
           - name: dummy-data
             context: ./api
