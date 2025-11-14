@@ -11,6 +11,6 @@
     "motion",
     "optical_distance",
     "kismet"
-  ]
+  ],
+  "sensors": ["edge_1"]
 }
-

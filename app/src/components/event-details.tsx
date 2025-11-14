@@ -1,6 +1,6 @@
 import type { Event } from "@/providers/EventProvider";
 import "../css/event-message.css";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { NoteList, type NoteData } from "./ui/note";
 import { Check, Notebook, Pin, Search, X, AlertTriangle, Undo2 } from "lucide-react"
 import { IconButton, InlineIcon } from "./ui/icon-button";
@@ -8,6 +8,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from "./ui/
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { useUserContext } from "@/providers/UserProvider";
+import { useToast } from "@/providers/ToastProvider";
 import config from "../configs/config.json";
 const {apiUrl} = {apiUrl: import.meta.env.VITE_API_URL || config.apiUrl}
 
@@ -21,6 +22,7 @@ function EventMetaSection({event, onEventUpdate}:{event:Event, onEventUpdate?: (
   const [isAck, setIsAck] = useState(acknowledged);
   const [loading, setLoading] = useState(false);
   const {user} = useUserContext();
+  const { addToast } = useToast();
 
   useEffect(() => {
     setIsAck(acknowledged);
@@ -70,7 +72,7 @@ function EventMetaSection({event, onEventUpdate}:{event:Event, onEventUpdate?: (
           }
         }
       } catch (err) {
-        alert(`Unable to acknowledge ${_id}`);
+        addToast(`Unable to acknowledge ${_id}`, 'error');
       }
       setLoading(false);
     }
@@ -133,6 +135,7 @@ function EventUISection({dialogControl, event, onEventUpdate}:{dialogControl:Rea
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUpdatingThreat, setIsUpdatingThreat] = useState(false);
   const {user} = useUserContext();
+  const { addToast } = useToast();
   
   // Store original category in event data if not already stored
   const originalCategory = event.data.originalCategory || event.category;
@@ -172,7 +175,7 @@ function EventUISection({dialogControl, event, onEventUpdate}:{dialogControl:Rea
         if (res.ok) {
           setNoteText("");
           setAddNoteModalOpen(false);
-          alert("Note added successfully!");
+          addToast("Note added successfully!", 'success');
           if (onEventUpdate) {
             onEventUpdate({
               data: {
@@ -186,7 +189,7 @@ function EventUISection({dialogControl, event, onEventUpdate}:{dialogControl:Rea
         }
       } catch (err) {
         console.error("Error adding note:", err);
-        alert(`Unable to add note to event ${event._id}`);
+        addToast(`Unable to add note to event ${event._id}`, 'error');
       }
       setIsSubmitting(false);
     }
@@ -227,7 +230,7 @@ function EventUISection({dialogControl, event, onEventUpdate}:{dialogControl:Rea
       });
       
       if (res.ok) {
-        alert("Event escalated to THREAT status");
+        addToast("Event escalated to THREAT status", 'success');
         if (onEventUpdate) {
           onEventUpdate({
             category: "THREAT" as any,
@@ -243,7 +246,7 @@ function EventUISection({dialogControl, event, onEventUpdate}:{dialogControl:Rea
       }
     } catch (err) {
       console.error("Error escalating event:", err);
-      alert(`Unable to escalate event ${event._id}`);
+      addToast(`Unable to escalate event ${event._id}`, 'error');
     }
     setIsUpdatingThreat(false);
   };
@@ -283,7 +286,7 @@ function EventUISection({dialogControl, event, onEventUpdate}:{dialogControl:Rea
       });
       
       if (res.ok) {
-        alert(`Event reverted to ${originalCategory} status`);
+        addToast(`Event reverted to ${originalCategory} status`, 'success');
         if (onEventUpdate) {
           const updatedData = { ...event.data, notes: updatedNotes as any };
           delete (updatedData as any).originalCategory;
@@ -297,7 +300,7 @@ function EventUISection({dialogControl, event, onEventUpdate}:{dialogControl:Rea
       }
     } catch (err) {
       console.error("Error reverting event:", err);
-      alert(`Unable to revert event ${event._id}`);
+      addToast(`Unable to revert event ${event._id}`, 'error');
     }
     setIsUpdatingThreat(false);
   };
@@ -364,9 +367,39 @@ function EventUISection({dialogControl, event, onEventUpdate}:{dialogControl:Rea
 
 function EventDetailDialog({data, dialogControl}:{data: Record<string, unknown>,dialogControl:React.Dispatch<React.SetStateAction<boolean>>}){
   const entries = Object.entries(data);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const [fontSize, setFontSize] = useState(14); // Default font size in pixels
+
+  useEffect(() => {
+    const checkOverflow = () => {
+      if (dialogRef.current) {
+        const container = dialogRef.current;
+        const hasHorizontalOverflow = container.scrollWidth > container.clientWidth;
+        
+        if (hasHorizontalOverflow && fontSize > 8) {
+          // Reduce font size if overflowing and not at minimum
+          setFontSize(prev => Math.max(8, prev - 1));
+        } else if (!hasHorizontalOverflow && fontSize < 14) {
+          // Increase font size if not overflowing and not at maximum
+          setFontSize(prev => Math.min(14, prev + 1));
+        }
+      }
+    };
+
+    // Check overflow after render
+    const timeoutId = setTimeout(checkOverflow, 0);
+    
+    // Also check on window resize
+    window.addEventListener('resize', checkOverflow);
+    
+    return () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener('resize', checkOverflow);
+    };
+  }, [fontSize, entries]);
 
   return (
-    <div className="detail-dialog">
+    <div className="detail-dialog" ref={dialogRef} style={{ fontSize: `${fontSize}px` }}>
       <IconButton Icon={X} label="" method={()=>{dialogControl(false)}} />
       {
         entries.length === 0 ? <div className="bold centered">No Data Present</div> :
@@ -374,7 +407,7 @@ function EventDetailDialog({data, dialogControl}:{data: Record<string, unknown>,
         let normalizedValue:React.ReactNode;
         if ( typeof value === "object" ){
           try{
-            normalizedValue = <pre className="detail-json">{JSON.stringify(value, null, 2)}</pre>;
+            normalizedValue = <pre className="detail-json" style={{ fontSize: 'inherit' }}>{JSON.stringify(value, null, 2)}</pre>;
           } catch {
             normalizedValue = String(value);
           }
@@ -384,14 +417,14 @@ function EventDetailDialog({data, dialogControl}:{data: Record<string, unknown>,
           normalizedValue = String(value);
         }
 
-        return <div key={label}><span className="bold">{label}</span> &nbsp;{normalizedValue}</div>
+        return <div key={label} style={{ fontSize: 'inherit' }}><span className="bold">{label}</span> &nbsp;{normalizedValue}</div>
       })
       }
     </div>
   )
 }
 
-export function EventDetailsPane({event}:{event:Event}){
+export function EventDetailsPane({event, onEventUpdate}:{event:Event, onEventUpdate?: (updatedData: Partial<Event>) => void}){
   const [dialogOpen, setDialogOpen] = useState(false);
   const [currentEvent, setCurrentEvent] = useState(event);
 
@@ -402,6 +435,10 @@ export function EventDetailsPane({event}:{event:Event}){
 
   const updateEventData = (updatedData: Partial<Event>) => {
     setCurrentEvent(prev => ({ ...prev, ...updatedData }));
+    // Also call the parent's update function if provided
+    if (onEventUpdate) {
+      onEventUpdate(updatedData);
+    }
   };
 
   return (<div className="main-subcontent event-detail-wrapper">

@@ -2,6 +2,9 @@ import { type Event } from "@/providers/EventProvider";
 import "../css/event-message.css";
 import { Lamp, VerticalLamps } from "./ui/lamp";
 import { useState } from "react";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
+import { EventDetailsPane } from "./event-details";
+import { useToast } from "@/providers/ToastProvider";
 import config from "../configs/config.json";
 const {apiUrl} = {apiUrl: import.meta.env.VITE_API_URL || config.apiUrl}
 
@@ -38,8 +41,12 @@ function formatEventTimestamp(isoDate: string): string {
 export function EventMessage({event}:{event: Event}){
   const {_id, active, acknowledged, topic, category, data, createdAt } = event;
   const [isAck, setIsAck] = useState(acknowledged);
+  const [isOpen, setIsOpen] = useState(false);
 
-  const handleAcknowledge = async () => {
+  const { addToast } = useToast();
+
+  const handleAcknowledge = async (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent triggering the sheet open
     if (!isAck) {
       try {
         const res = await fetch(`${apiUrl}/event/id/${_id}`, {
@@ -52,28 +59,47 @@ export function EventMessage({event}:{event: Event}){
         });
         if (res.ok) setIsAck(true);
       } catch (err) {
-        alert(`Unable to acknowledge ${_id}`)
+        addToast(`Unable to acknowledge ${_id}`, 'error');
       }
     }
   };
 
-  return (<div className="event-tile">
-    <VerticalLamps>
-      {/* <Lamp state={active ? "active" : ""} /> */}
-      <button
-        aria-label={isAck ? "Acknowledged" : "Acknowledge event"}
-        onClick={handleAcknowledge}
-        disabled={isAck}
-        style={{ background: "none", border: "none", padding: 0, cursor: isAck ? "default" : "pointer" }}
-      >
-        <Lamp state={isAck ? "ack" : "unack"} />
-      </button>
-    </VerticalLamps>
-    <div className="timestamp">{formatEventTimestamp(createdAt)}</div>
-    <div className="event-message">
-      <span className={category.toLowerCase()}>{category}</span>:
-      {` ${data.sensorId ?? "Unnamed Sensor"} - `}
-      {`${topic.replace("_"," ")}`}
-    </div>
-  </div>)
+  const handleEventUpdate = (updatedData: Partial<Event>) => {
+    if (updatedData.acknowledged !== undefined) {
+      setIsAck(updatedData.acknowledged);
+    }
+  };
+
+  return (
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
+      <SheetTrigger asChild>
+        <div className="event-tile" style={{ cursor: "pointer" }}>
+          <VerticalLamps>
+            <button
+              aria-label={isAck ? "Acknowledged" : "Acknowledge event"}
+              onClick={handleAcknowledge}
+              disabled={isAck}
+              style={{ background: "none", border: "none", padding: 0, cursor: isAck ? "default" : "pointer" }}
+            >
+              <Lamp state={isAck ? "ack" : "unack"} />
+            </button>
+          </VerticalLamps>
+          <div className="timestamp">{formatEventTimestamp(createdAt)}</div>
+          <div className="event-message">
+            <span className={category.toLowerCase()}>{category}</span>:
+            {` ${data.sensorId ?? "Unnamed Sensor"} - `}
+            {`${topic.replace("_"," ")}`}
+          </div>
+        </div>
+      </SheetTrigger>
+      <SheetContent className="w-[600px] sm:w-[540px]">
+        <SheetHeader>
+          <SheetTitle>Event Details</SheetTitle>
+        </SheetHeader>
+        <div className="mt-4">
+          <EventDetailsPane event={event} onEventUpdate={handleEventUpdate} />
+        </div>
+      </SheetContent>
+    </Sheet>
+  )
 }
