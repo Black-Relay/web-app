@@ -1,5 +1,16 @@
 {
   "apiUrl": "http://localhost:3001",
+  "osmUrl": "http://localhost:8080",
   "pollingIntervalMs": 1000,
-  "subscriptions": ["gas","accelerometer","proximity_light","digital_light","air_quality","motion","optical_distance","kismet"]
+  "subscriptions": [
+    "gas",
+    "accelerometer",
+    "proximity_light",
+    "digital_light",
+    "air_quality",
+    "motion",
+    "optical_distance",
+    "kismet"
+  ]
 }
+

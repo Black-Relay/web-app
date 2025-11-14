@@ -1,8 +1,9 @@
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "../../css/map.css";
-import { useEventContext, type Event } from '@/providers/EventProvider';
-import { useMemo } from 'react';
+import { useEventContext, type Event } from "@/providers/EventProvider";
+import { useMemo } from "react";
+import { osmUrl } from "../../configs/config.json";
 import L from 'leaflet';
 
 interface GroupedEvents {
@@ -13,10 +14,10 @@ interface GroupedEvents {
 
 // Priority order for event categories
 const EVENT_PRIORITY: { [key: string]: number } = {
-  'THREAT': 1,
-  'ALARM': 2,
-  'ALERT': 3,
-  'DETECT': 4
+  THREAT: 1,
+  ALARM: 2,
+  ALERT: 3,
+  DETECT: 4,
 };
 
 // Get priority color for display
@@ -73,11 +74,11 @@ function sortEventsByPriority(events: Event[]): Event[] {
   return events.sort((a, b) => {
     const priorityA = EVENT_PRIORITY[a.category?.toUpperCase()] || 999;
     const priorityB = EVENT_PRIORITY[b.category?.toUpperCase()] || 999;
-    
+
     if (priorityA !== priorityB) {
       return priorityA - priorityB;
     }
-    
+
     // If same priority, sort by newest first
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   });
@@ -86,57 +87,57 @@ function sortEventsByPriority(events: Event[]): Event[] {
 // Optimized grouping function to prevent call stack overflow
 function groupEventsByLocation(events: Event[]): GroupedEvents[] {
   if (!events || events.length === 0) return [];
-  
+
   const groups: { [key: string]: GroupedEvents } = {};
-  
+
   // Use for loop instead of forEach to avoid potential stack issues
   for (let i = 0; i < events.length; i++) {
     const event = events[i];
     if (!event) continue;
-    
+
     const latitude = (event.data?.LAT as number) || 35.7796;
     const longitude = (event.data?.LON as number) || -78.6382;
-    
+
     // Round to 4 decimal places for reasonable grouping (~11m precision)
     const key = `${latitude.toFixed(4)}_${longitude.toFixed(4)}`;
-    
+
     if (groups[key]) {
       groups[key].events.push(event);
     } else {
       groups[key] = {
         latitude,
         longitude,
-        events: [event]
+        events: [event],
       };
     }
   }
-  
+
   // Sort events within each group by priority
   const groupedArray = Object.values(groups);
   for (let i = 0; i < groupedArray.length; i++) {
     groupedArray[i].events = sortEventsByPriority(groupedArray[i].events);
   }
-  
+
   return groupedArray;
 }
 
 function CombinedPin({ groupedEvents }: { groupedEvents: GroupedEvents }) {
   const { latitude, longitude, events } = groupedEvents;
   const eventCount = events.length;
-  
+
   // Events are already sorted by priority in groupEventsByLocation
   // Limit events shown to prevent DOM overflow
   const maxEventsToShow = 20;
   const eventsToShow = events.slice(0, maxEventsToShow);
   const hasMoreEvents = events.length > maxEventsToShow;
-  
+
   // Get the highest priority category for display
   const highestPriorityEvent = events[0];
   const priorityIndicator = highestPriorityEvent?.category?.toUpperCase();
   
   // Get custom teardrop icon with threat level color
   const tearDropIcon = getTearDropIcon(events);
-  
+
   return (
     <Marker position={[latitude, longitude]} icon={tearDropIcon}>
       <Popup maxWidth={280} maxHeight={180}>
@@ -177,31 +178,31 @@ function CombinedPin({ groupedEvents }: { groupedEvents: GroupedEvents }) {
   );
 }
 
-export function Map(){
+export function Map() {
   const { events } = useEventContext();
-  
+
   // Memoize grouped events to prevent recalculation and stack overflow
   const groupedEvents = useMemo(() => {
     try {
       return groupEventsByLocation(events || []);
     } catch (error) {
-      console.error('Error grouping events:', error);
+      console.error("Error grouping events:", error);
       return [];
     }
   }, [events]);
-  
-  return(
+
+  return (
     <MapContainer center={[35.28, -79.64]} zoom={8} scrollWheelZoom={true}>
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="http://localhost:8080/tile/{z}/{x}/{y}.png"
+        url={`${osmUrl}/tile/{z}/{x}/{y}.png`}
       />
       {groupedEvents.map((group, index) => (
-        <CombinedPin 
-          key={`${group.latitude}-${group.longitude}-${group.events.length}-${index}`} 
-          groupedEvents={group} 
+        <CombinedPin
+          key={`${group.latitude}-${group.longitude}-${group.events.length}-${index}`}
+          groupedEvents={group}
         />
       ))}
     </MapContainer>
-  )
+  );
 }
