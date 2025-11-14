@@ -200,9 +200,9 @@ export default function EventProvider({children}:{children: React.ReactNode}){
   const consumeData = async () => {
     let serverEvents = await eventConsumer();
     
-    // Filter out sensor_status events
+    // Filter out sensor_status events, except for alarms
     serverEvents = serverEvents.filter((event: Event) => 
-      event.topic !== "sensor_status"
+      event.topic !== "sensor_status" || event.category === "ALARM"
     );
     
     // Check if eventConsumer returned an alarm (connection issue)
@@ -248,7 +248,24 @@ export default function EventProvider({children}:{children: React.ReactNode}){
     
     // Combine server events with local alarms
     setEvents(prevEvents => {
-      const combinedEvents = [...localAlarms, ...serverEvents.reverse()];
+      const combinedEvents = [...localAlarms, ...serverEvents];
+      
+      // Sort by threat level first (THREAT > ALARM > ALERT > DETECT), then by recency
+      const threatPriority: { [key: string]: number } = { THREAT: 1, ALARM: 2, ALERT: 3, DETECT: 4 };
+      
+      combinedEvents.sort((a, b) => {
+        // First sort by threat level priority
+        const aPriority = threatPriority[a.category] || 5;
+        const bPriority = threatPriority[b.category] || 5;
+        
+        if (aPriority !== bPriority) {
+          return aPriority - bPriority; // Lower number = higher priority
+        }
+        
+        // If same threat level, sort by recency (most recent first)
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      });
+      
       return combinedEvents.slice(0, 400);
     });
   }
