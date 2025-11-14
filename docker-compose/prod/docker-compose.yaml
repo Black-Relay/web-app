@@ -39,7 +39,7 @@ services:
       - br-mqtt
     environment:
       - API_PORT=3001
-      - FRONTEND_URL=https://app.local.l8s.dev
+      - FRONTEND_URL=https://app.blackrelay.l8s.dev
       - MQTT_URL=mqtt://br-mqtt:1883
       - JWT_SECRET=${JWT_SECRET}
       - COOKIE_SECRET=${COOKIE_SECRET}
