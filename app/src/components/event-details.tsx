@@ -20,6 +20,7 @@ function EventMetaSection({event}:{event:Event}) {
   const {_id, category, topic, createdAt, acknowledged, active, __v} = event;
   const [isAck, setIsAck] = useState(acknowledged);
   const [loading, setLoading] = useState(false);
+  const {user} = useUserContext();
 
   useEffect(() => {
     setIsAck(acknowledged);
@@ -29,13 +30,32 @@ function EventMetaSection({event}:{event:Event}) {
     if (!isAck) {
       setLoading(true);
       try {
+        // Get existing notes and add acknowledgment note
+        const existingNotes = Array.isArray(event.data.notes) ? event.data.notes : [];
+        const acknowledgeNote = {
+          id: Date.now().toString(),
+          text: "Event acknowledged",
+          timestamp: new Date().toISOString(),
+          author: user.firstName && user.lastName 
+            ? `${user.firstName} ${user.lastName}` 
+            : user.username || "System"
+        };
+        
+        const updatedNotes = [...existingNotes, acknowledgeNote];
+        
         const res = await fetch(`${apiUrl}/event/id/${_id}`, {
           method: "PATCH",
           credentials: "include",
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ acknowledged: true })
+          body: JSON.stringify({ 
+            acknowledged: true,
+            data: {
+              ...event.data,
+              notes: updatedNotes
+            }
+          })
         });
         if (res.ok) setIsAck(true);
       } catch (err) {
@@ -159,6 +179,19 @@ function EventUISection({dialogControl, event}:{dialogControl:React.Dispatch<Rea
     
     setIsUpdatingThreat(true);
     try {
+      // Get existing notes and add escalation note
+      const existingNotes = Array.isArray(event.data.notes) ? event.data.notes : [];
+      const escalationNote = {
+        id: Date.now().toString(),
+        text: `Escalated to THREAT from ${originalCategory}`,
+        timestamp: new Date().toISOString(),
+        author: user.firstName && user.lastName 
+          ? `${user.firstName} ${user.lastName}` 
+          : user.username || "System"
+      };
+      
+      const updatedNotes = [...existingNotes, escalationNote];
+      
       const res = await fetch(`${apiUrl}/event/id/${event._id}`, {
         method: "PATCH",
         credentials: "include",
@@ -169,7 +202,8 @@ function EventUISection({dialogControl, event}:{dialogControl:React.Dispatch<Rea
           category: "THREAT",
           data: {
             ...event.data,
-            originalCategory: originalCategory
+            originalCategory: originalCategory,
+            notes: updatedNotes
           }
         })
       });
@@ -192,6 +226,19 @@ function EventUISection({dialogControl, event}:{dialogControl:React.Dispatch<Rea
     
     setIsUpdatingThreat(true);
     try {
+      // Get existing notes and add revert note
+      const existingNotes = Array.isArray(event.data.notes) ? event.data.notes : [];
+      const revertNote = {
+        id: Date.now().toString(),
+        text: `Reverted from THREAT back to ${originalCategory}`,
+        timestamp: new Date().toISOString(),
+        author: user.firstName && user.lastName 
+          ? `${user.firstName} ${user.lastName}` 
+          : user.username || "System"
+      };
+      
+      const updatedNotes = [...existingNotes, revertNote];
+      
       const res = await fetch(`${apiUrl}/event/id/${event._id}`, {
         method: "PATCH",
         credentials: "include",
@@ -202,7 +249,8 @@ function EventUISection({dialogControl, event}:{dialogControl:React.Dispatch<Rea
           category: originalCategory,
           data: {
             ...event.data,
-            originalCategory: undefined // Remove the original category marker
+            originalCategory: undefined, // Remove the original category marker
+            notes: updatedNotes
           }
         })
       });
