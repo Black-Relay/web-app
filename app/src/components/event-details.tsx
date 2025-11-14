@@ -2,7 +2,7 @@ import type { Event } from "@/providers/EventProvider";
 import "../css/event-message.css";
 import React, { useState, useEffect } from "react";
 import { NoteList, type NoteData } from "./ui/note";
-import { Check, Notebook, Pin, Search, X } from "lucide-react"
+import { Check, Notebook, Pin, Search, X, AlertTriangle, Undo2 } from "lucide-react"
 import { IconButton, InlineIcon } from "./ui/icon-button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from "./ui/sheet";
 import { Input } from "./ui/input";
@@ -100,7 +100,12 @@ function EventUISection({dialogControl, event}:{dialogControl:React.Dispatch<Rea
   const [addNoteModalOpen, setAddNoteModalOpen] = useState(false);
   const [noteText, setNoteText] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isUpdatingThreat, setIsUpdatingThreat] = useState(false);
   const {user} = useUserContext();
+  
+  // Store original category in event data if not already stored
+  const originalCategory = event.data.originalCategory || event.category;
+  const isEscalatedToThreat = event.category === "THREAT" && originalCategory !== "THREAT";
 
   const handleAddNote = async () => {
     if (noteText.trim() && !isSubmitting) {
@@ -149,6 +154,72 @@ function EventUISection({dialogControl, event}:{dialogControl:React.Dispatch<Rea
     }
   };
 
+  const handleEscalateToThreat = async () => {
+    if (event.category === "THREAT" || isUpdatingThreat) return;
+    
+    setIsUpdatingThreat(true);
+    try {
+      const res = await fetch(`${apiUrl}/event/id/${event._id}`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+          category: "THREAT",
+          data: {
+            ...event.data,
+            originalCategory: originalCategory
+          }
+        })
+      });
+      
+      if (res.ok) {
+        alert("Event escalated to THREAT status");
+        // TODO: Refresh event data in parent component
+      } else {
+        throw new Error("Failed to escalate event");
+      }
+    } catch (err) {
+      console.error("Error escalating event:", err);
+      alert(`Unable to escalate event ${event._id}`);
+    }
+    setIsUpdatingThreat(false);
+  };
+
+  const handleRevertFromThreat = async () => {
+    if (event.category !== "THREAT" || isUpdatingThreat) return;
+    
+    setIsUpdatingThreat(true);
+    try {
+      const res = await fetch(`${apiUrl}/event/id/${event._id}`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+          category: originalCategory,
+          data: {
+            ...event.data,
+            originalCategory: undefined // Remove the original category marker
+          }
+        })
+      });
+      
+      if (res.ok) {
+        alert(`Event reverted to ${originalCategory} status`);
+        // TODO: Refresh event data in parent component
+      } else {
+        throw new Error("Failed to revert event");
+      }
+    } catch (err) {
+      console.error("Error reverting event:", err);
+      alert(`Unable to revert event ${event._id}`);
+    }
+    setIsUpdatingThreat(false);
+  };
+
   const handleCancel = () => {
     setNoteText("");
     setAddNoteModalOpen(false);
@@ -160,6 +231,20 @@ function EventUISection({dialogControl, event}:{dialogControl:React.Dispatch<Rea
         <IconButton Icon={Search} label="View Event Data" method={()=>{dialogControl(true)}} />
         <IconButton Icon={Notebook} label="Add Note" method={()=>{setAddNoteModalOpen(true)}} />
         <IconButton Icon={Pin} label="Pin Event" method={()=>{}} />
+        {!isEscalatedToThreat && event.category !== "THREAT" && (
+          <IconButton 
+            Icon={AlertTriangle} 
+            label="Escalate to THREAT" 
+            method={handleEscalateToThreat} 
+          />
+        )}
+        {isEscalatedToThreat && (
+          <IconButton 
+            Icon={Undo2} 
+            label={`Revert to ${originalCategory}`} 
+            method={handleRevertFromThreat} 
+          />
+        )}
       </div>
 
       <Sheet open={addNoteModalOpen} onOpenChange={setAddNoteModalOpen}>
