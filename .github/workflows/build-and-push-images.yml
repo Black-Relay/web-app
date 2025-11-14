@@ -5,6 +5,10 @@ on:
     types: [closed]
     branches:
       - main
+    paths:
+      - ".github/workflows/*"
+      - "app/"
+      - "api/"
 
 jobs:
   build-and-push:
@@ -14,7 +18,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-    
+
     strategy:
       matrix:
         include:
