@@ -12,6 +12,10 @@
     "optical_distance",
     "kismet"
   ],
-  "sensors": []
+  "sensors": [
+    "lidar_1",
+    "camera_1",
+    "40a09556-b8a1-487c-a312-9ede15b0fb2e"
+  ]
 }
 
