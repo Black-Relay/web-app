@@ -231,16 +231,63 @@ export default function SensorProvider({children}:{children: React.ReactNode}){
       
       if (lastSeen && (now - lastSeen) > fiveMinutesMs) {
         // Check if we already have an active timeout alarm for this sensor
-        const hasActiveTimeoutAlarm = localAlarms.some(alarm => 
+        const existingAlarm = localAlarms.find(alarm => 
           alarm.topic === "sensor_timeout" && 
           alarm.data.sensorId === sensorId && 
           alarm.active
         );
         
-        if (!hasActiveTimeoutAlarm) {
+        if (existingAlarm) {
+          // Extend existing alarm by 5 more minutes
+          const minutesSinceLastSeen = Math.floor((now - lastSeen) / 60000);
+          const updatedMessage = `No sensor_status received from ${sensorId} for more than ${minutesSinceLastSeen} minutes`;
+          
+          // Update the existing alarm with extended timeout info
+          setLocalAlarms(prevAlarms => 
+            prevAlarms.map(alarm => {
+              if (alarm._id === existingAlarm._id) {
+                return {
+                  ...alarm,
+                  data: {
+                    ...alarm.data,
+                    message: updatedMessage,
+                    timeoutDuration: `${minutesSinceLastSeen} minutes`,
+                    lastExtended: new Date().toISOString()
+                  },
+                  createdAt: new Date().toISOString() // Update timestamp to show latest extension
+                };
+              }
+              return alarm;
+            })
+          );
+          
+          // Post updated alarm to API
+          try {
+            const extendedAlarmData = {
+              category: "ALARM",
+              topic: "sensor_timeout",
+              data: {
+                sensorId: sensorId,
+                message: updatedMessage,
+                timeoutDuration: `${minutesSinceLastSeen} minutes`,
+                lastSeen: new Date(lastSeen).toISOString(),
+                extended: true
+              }
+            };
+
+            await fetch(`${apiUrl}/event`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify(extendedAlarmData)
+            });
+          } catch (error) {
+            console.error(`Error posting extended timeout alarm for sensor ${sensorId}:`, error);
+          }
+        } else {
+          // Create new timeout alarm for first-time timeout
           await postSensorTimeoutAlarm(sensorId);
           
-          // Add a local alarm to prevent duplicate posts
           const timeoutAlarm: SensorStatus = {
             _id: `sensor-timeout-${sensorId}-${Date.now()}`,
             category: "ALARM",
@@ -342,17 +389,19 @@ export default function SensorProvider({children}:{children: React.ReactNode}){
             [sensorId]: new Date(sensor.createdAt).getTime()
           }));
           
-          // Clear any existing timeout alarms for this sensor since it's active
-          setLocalAlarms(prevAlarms => 
-            prevAlarms.map(alarm => {
-              if (alarm.topic === "sensor_timeout" && 
-                  alarm.data.sensorId === sensorId && 
-                  alarm.active) {
-                return { ...alarm, active: false };
-              }
-              return alarm;
-            })
-          );
+          // Only clear timeout alarms if this is actual sensor data (not a timeout alarm)
+          if (sensor.topic === "sensor_status" && sensor.category !== "ALARM") {
+            setLocalAlarms(prevAlarms => 
+              prevAlarms.map(alarm => {
+                if (alarm.topic === "sensor_timeout" && 
+                    alarm.data.sensorId === sensorId && 
+                    alarm.active) {
+                  return { ...alarm, active: false };
+                }
+                return alarm;
+              })
+            );
+          }
         }
         
         // Check if we already have a sensor with this ID
