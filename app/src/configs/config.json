@@ -11,6 +11,7 @@
     "motion",
     "optical_distance",
     "kismet"
-  ]
+  ],
+  "sensors": []
 }
 
