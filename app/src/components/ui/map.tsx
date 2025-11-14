@@ -3,6 +3,7 @@ import "leaflet/dist/leaflet.css";
 import "../../css/map.css";
 import { useEventContext, type Event } from '@/providers/EventProvider';
 import { useMemo } from 'react';
+import L from 'leaflet';
 
 interface GroupedEvents {
   latitude: number;
@@ -27,6 +28,44 @@ function getPriorityColor(category: string): string {
     case 'DETECT': return '#009dfe'; // Blue
     default: return '#666666';       // Gray
   }
+}
+
+// Get CSS class for threat level color
+function getThreatLevelClass(category: string): string {
+  switch (category.toUpperCase()) {
+    case 'THREAT': return 'teardrop-threat';
+    case 'ALARM': return 'teardrop-alarm';
+    case 'ALERT': return 'teardrop-alert';
+    case 'DETECT': return 'teardrop-detect';
+    default: return 'teardrop-default';
+  }
+}
+
+// Create teardrop-shaped pin with threat level color and dark border
+function createTearDropPin(category: string): L.DivIcon {
+  const colorClass = getThreatLevelClass(category);
+  
+  return L.divIcon({
+    html: `
+      <div class="teardrop-container">
+        <div class="teardrop-outer"></div>
+        <div class="teardrop-inner ${colorClass}"></div>
+        <div class="teardrop-center"></div>
+      </div>
+    `,
+    className: 'teardrop-marker',
+    iconSize: [30, 40],
+    iconAnchor: [15, 30],
+    popupAnchor: [0, -30],
+  });
+}
+
+// Get custom teardrop icon based on highest priority event
+function getTearDropIcon(events: Event[]): L.DivIcon {
+  if (!events || events.length === 0) return createTearDropPin('');
+  
+  const highestPriorityEvent = events[0]; // Already sorted by priority
+  return createTearDropPin(highestPriorityEvent.category || '');
 }
 
 // Sort events by priority (THREAT > ALARM > ALERT > DETECT)
@@ -95,42 +134,39 @@ function CombinedPin({ groupedEvents }: { groupedEvents: GroupedEvents }) {
   const highestPriorityEvent = events[0];
   const priorityIndicator = highestPriorityEvent?.category?.toUpperCase();
   
+  // Get custom teardrop icon with threat level color
+  const tearDropIcon = getTearDropIcon(events);
+  
   return (
-    <Marker position={[latitude, longitude]}>
+    <Marker position={[latitude, longitude]} icon={tearDropIcon}>
       <Popup maxWidth={280} maxHeight={180}>
-        <div style={{ fontSize: '12px' }}>
-          <strong>
+        <div className="popup-content">
+          <div className="popup-header">
             {eventCount > 1 ? `${eventCount} Events` : 'Event'} at this location
-          </strong>
+          </div>
           {priorityIndicator && (
-            <span style={{ 
-              marginLeft: '8px', 
-              padding: '2px 6px', 
-              borderRadius: '3px', 
-              backgroundColor: getPriorityColor(priorityIndicator),
-              color: 'white',
-              fontSize: '10px',
-              fontWeight: 'bold'
-            }}>
+            <span 
+              className="popup-priority-badge" 
+              style={{ backgroundColor: getPriorityColor(priorityIndicator) }}
+            >
               {priorityIndicator}
             </span>
           )}
           <br />
-          <small>Coords: {latitude.toFixed(4)}, {longitude.toFixed(4)}</small>
-          <div style={{ maxHeight: '100px', overflowY: 'auto', marginTop: '5px' }}>
+          <div className="popup-coords">Coords: {latitude.toFixed(4)}, {longitude.toFixed(4)}</div>
+          <div className="popup-events-container">
             {eventsToShow.map((event, index) => (
-              <div key={`${event._id || index}`} style={{ 
-                marginBottom: '4px', 
-                paddingBottom: '4px', 
-                borderBottom: index < eventsToShow.length - 1 ? '1px solid #ddd' : 'none' 
-              }}>
+              <div 
+                key={`${event._id || index}`} 
+                className={`popup-event-item ${index < eventsToShow.length - 1 ? 'popup-event-separator' : ''}`}
+              >
                 <span className={event.category?.toLowerCase()}>{event.category}</span> - {event.topic}
                 <br />
                 <small>{new Date(event.createdAt).toLocaleString()}</small>
               </div>
             ))}
             {hasMoreEvents && (
-              <div style={{ fontStyle: 'italic', color: '#666', marginTop: '5px' }}>
+              <div className="popup-more-events">
                 ...and {events.length - maxEventsToShow} more events
               </div>
             )}
