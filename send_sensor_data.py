@@ -25,7 +25,7 @@ except ImportError:
 def generate_sensor_data():
     """Generate randomized sensor data matching the required format."""
     return {
-        "Sensor_ID": "Edge_1",
+        "Sensor_ID": "edge_1",
         "Sensor-type": "Environment",
         "LAT": round(random.uniform(35.7, 35.85), 6),  # Around Raleigh, NC area
         "LON": round(random.uniform(-78.7, -78.6), 6),
