@@ -3,8 +3,12 @@ import "leaflet/dist/leaflet.css";
 import "../../css/map.css";
 import { useEventContext, type Event } from "@/providers/EventProvider";
 import { useMemo } from "react";
-import { osmUrl } from "../../configs/config.json";
-import L from 'leaflet';
+import config from "../../configs/config.json";
+import L from "leaflet";
+
+const { osmUrl } = {
+  osmUrl: import.meta.env.VITE_OSM_URL || config.osmUrl,
+};
 
 interface GroupedEvents {
   latitude: number;
@@ -23,29 +27,39 @@ const EVENT_PRIORITY: { [key: string]: number } = {
 // Get priority color for display
 function getPriorityColor(category: string): string {
   switch (category.toUpperCase()) {
-    case 'THREAT': return '#fe9a00'; // Orange
-    case 'ALARM': return '#fe0000';  // Red
-    case 'ALERT': return '#fefa00';  // Yellow
-    case 'DETECT': return '#009dfe'; // Blue
-    default: return '#666666';       // Gray
+    case "THREAT":
+      return "#fe9a00"; // Orange
+    case "ALARM":
+      return "#fe0000"; // Red
+    case "ALERT":
+      return "#fefa00"; // Yellow
+    case "DETECT":
+      return "#009dfe"; // Blue
+    default:
+      return "#666666"; // Gray
   }
 }
 
 // Get CSS class for threat level color
 function getThreatLevelClass(category: string): string {
   switch (category.toUpperCase()) {
-    case 'THREAT': return 'teardrop-threat';
-    case 'ALARM': return 'teardrop-alarm';
-    case 'ALERT': return 'teardrop-alert';
-    case 'DETECT': return 'teardrop-detect';
-    default: return 'teardrop-default';
+    case "THREAT":
+      return "teardrop-threat";
+    case "ALARM":
+      return "teardrop-alarm";
+    case "ALERT":
+      return "teardrop-alert";
+    case "DETECT":
+      return "teardrop-detect";
+    default:
+      return "teardrop-default";
   }
 }
 
 // Create teardrop-shaped pin with threat level color and dark border
 function createTearDropPin(category: string): L.DivIcon {
   const colorClass = getThreatLevelClass(category);
-  
+
   return L.divIcon({
     html: `
       <div class="teardrop-container">
@@ -54,7 +68,7 @@ function createTearDropPin(category: string): L.DivIcon {
         <div class="teardrop-center"></div>
       </div>
     `,
-    className: 'teardrop-marker',
+    className: "teardrop-marker",
     iconSize: [30, 40],
     iconAnchor: [15, 30],
     popupAnchor: [0, -30],
@@ -63,10 +77,10 @@ function createTearDropPin(category: string): L.DivIcon {
 
 // Get custom teardrop icon based on highest priority event
 function getTearDropIcon(events: Event[]): L.DivIcon {
-  if (!events || events.length === 0) return createTearDropPin('');
-  
+  if (!events || events.length === 0) return createTearDropPin("");
+
   const highestPriorityEvent = events[0]; // Already sorted by priority
-  return createTearDropPin(highestPriorityEvent.category || '');
+  return createTearDropPin(highestPriorityEvent.category || "");
 }
 
 // Sort events by priority (THREAT > ALARM > ALERT > DETECT)
@@ -134,7 +148,7 @@ function CombinedPin({ groupedEvents }: { groupedEvents: GroupedEvents }) {
   // Get the highest priority category for display
   const highestPriorityEvent = events[0];
   const priorityIndicator = highestPriorityEvent?.category?.toUpperCase();
-  
+
   // Get custom teardrop icon with threat level color
   const tearDropIcon = getTearDropIcon(events);
 
@@ -143,25 +157,30 @@ function CombinedPin({ groupedEvents }: { groupedEvents: GroupedEvents }) {
       <Popup maxWidth={280} maxHeight={180}>
         <div className="popup-content">
           <div className="popup-header">
-            {eventCount > 1 ? `${eventCount} Events` : 'Event'} at this location
+            {eventCount > 1 ? `${eventCount} Events` : "Event"} at this location
           </div>
           {priorityIndicator && (
-            <span 
-              className="popup-priority-badge" 
+            <span
+              className="popup-priority-badge"
               style={{ backgroundColor: getPriorityColor(priorityIndicator) }}
             >
               {priorityIndicator}
             </span>
           )}
           <br />
-          <div className="popup-coords">Coords: {latitude.toFixed(4)}, {longitude.toFixed(4)}</div>
+          <div className="popup-coords">
+            Coords: {latitude.toFixed(4)}, {longitude.toFixed(4)}
+          </div>
           <div className="popup-events-container">
             {eventsToShow.map((event, index) => (
-              <div 
-                key={`${event._id || index}`} 
-                className={`popup-event-item ${index < eventsToShow.length - 1 ? 'popup-event-separator' : ''}`}
+              <div
+                key={`${event._id || index}`}
+                className={`popup-event-item ${index < eventsToShow.length - 1 ? "popup-event-separator" : ""}`}
               >
-                <span className={event.category?.toLowerCase()}>{event.category}</span> - {event.topic}
+                <span className={event.category?.toLowerCase()}>
+                  {event.category}
+                </span>{" "}
+                - {event.topic}
                 <br />
                 <small>{new Date(event.createdAt).toLocaleString()}</small>
               </div>
