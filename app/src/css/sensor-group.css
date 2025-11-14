@@ -1,16 +1,33 @@
 .sensor-wrapper{
-  overflow-y: scroll;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-
+  overflow-y: auto;
   box-sizing: content-box;
   padding-bottom: -20px;
   max-height: calc(100% - 60px);
   border-radius: var(--radius);
+
+  /* Custom scrollbar styling to match web app theme */
+  scrollbar-width: thin;
+  scrollbar-color: var(--muted-foreground) var(--muted);
 }
 
-.sensor-wrapper::-webkit-scrollbar{
-  display: none;
+/* WebKit scrollbar styling for Chrome, Safari, Edge */
+.sensor-wrapper::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sensor-wrapper::-webkit-scrollbar-track {
+  background: var(--muted);
+  border-radius: 3px;
+}
+
+.sensor-wrapper::-webkit-scrollbar-thumb {
+  background: var(--muted-foreground);
+  border-radius: 3px;
+  border: 1px solid var(--border);
+}
+
+.sensor-wrapper::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
 }
 
 .sensor-group{

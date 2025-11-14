@@ -1,12 +1,14 @@
 .event-wrapper{
   overflow-y: auto;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
   box-sizing: border-box;
   padding: 4px;
-  height: 100%;
+  height: 92%;
   flex: 1;
   border-radius: var(--radius);
+
+  /* Custom scrollbar styling to match web app theme */
+  scrollbar-width: thin;
+  scrollbar-color: var(--muted-foreground) var(--muted);
 }
 
 @media (max-width: 768px) {
@@ -15,8 +17,24 @@
   }
 }
 
-.event-wrapper::-webkit-scrollbar{
-  display: none;
+/* WebKit scrollbar styling for Chrome, Safari, Edge */
+.event-wrapper::-webkit-scrollbar {
+  width: 6px;
+}
+
+.event-wrapper::-webkit-scrollbar-track {
+  background: var(--muted);
+  border-radius: 3px;
+}
+
+.event-wrapper::-webkit-scrollbar-thumb {
+  background: var(--muted-foreground);
+  border-radius: 3px;
+  border: 1px solid var(--border);
+}
+
+.event-wrapper::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
 }
 
 .event-tile{
