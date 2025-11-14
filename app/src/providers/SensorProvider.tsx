@@ -373,6 +373,7 @@ export default function SensorProvider({children}:{children: React.ReactNode}){
       
       // Group sensors by sensorId, keeping only the most recent for each
       const sensorMap = new Map<string, SensorStatus>();
+      const realSensorIds = new Set<string>(); // Track sensors with real data
       
       allSensors.forEach(sensor => {
         const sensorId = sensor.data?.sensorId as string || sensor.data?.sensor_id as string;
@@ -382,6 +383,12 @@ export default function SensorProvider({children}:{children: React.ReactNode}){
           // Always include alarms and other events without sensorId
           sensorMap.set(sensor._id, sensor);
           return;
+        }
+        
+        // Track if this is real sensor data (not a default entry)
+        const isRealSensorData = sensor.topic === "sensor_status" && !sensor._id.startsWith('default_');
+        if (isRealSensorData) {
+          realSensorIds.add(sensorId);
         }
         
         // Update sensor timestamp for timeout tracking
@@ -408,25 +415,29 @@ export default function SensorProvider({children}:{children: React.ReactNode}){
         
         // Check if we already have a sensor with this ID
         const existingSensor = sensorMap.get(sensorId);
-        if (!existingSensor || new Date(sensor.createdAt) > new Date(existingSensor.createdAt)) {
+        if (!existingSensor) {
           sensorMap.set(sensorId, sensor);
+        } else {
+          // Replace default entries with real data, or keep most recent real data
+          const isExistingDefault = existingSensor._id.startsWith('default_');
+          const isCurrentReal = !sensor._id.startsWith('default_');
+          
+          if (isExistingDefault && isCurrentReal) {
+            // Replace default with real data
+            sensorMap.set(sensorId, sensor);
+          } else if (!isExistingDefault && !isCurrentReal && 
+                     new Date(sensor.createdAt) > new Date(existingSensor.createdAt)) {
+            // Keep most recent real data
+            sensorMap.set(sensorId, sensor);
+          }
         }
       });
       
       const finalSensors = Array.from(sensorMap.values()).slice(0, 400);
       
-      // Add default sensor objects for configured sensors with no data
-      const sensorsWithData = new Set<string>();
-      finalSensors.forEach(sensor => {
-        const sensorId = sensor.data?.sensorId as string || sensor.data?.sensor_id as string;
-        if (sensorId && sensor.topic === "sensor_status") {
-          sensorsWithData.add(sensorId);
-        }
-      });
-      
-      // Create default sensor status objects for configured sensors without data
+      // Create default sensor status objects only for configured sensors without any real data
       const missingSensors = configSensors
-        .filter(sensorId => !sensorsWithData.has(sensorId))
+        .filter(sensorId => !realSensorIds.has(sensorId))
         .map(sensorId => ({
           _id: `default_${sensorId}`,
           category: "DETECT" as const,
