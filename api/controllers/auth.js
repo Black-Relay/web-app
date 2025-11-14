@@ -47,7 +47,7 @@ exports.userLogin = (req, res) => {
                   signed: true,
                   domain:
                     process.env.NODE_ENV === "production"
-                      ? process.env.FRONTEND_URL
+                      ? process.env.DOMAIN
                       : "localhost",
                 });
                 res.status(200).send(userData);

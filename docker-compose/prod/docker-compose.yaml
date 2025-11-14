@@ -40,6 +40,7 @@ services:
     environment:
       - NODE_ENV=production
       - API_PORT=3001
+      - DOMAIN=l8s.dev
       - FRONTEND_URL=https://app.blackrelay.l8s.dev
       - MQTT_URL=mqtt://br-mqtt:1883
       - JWT_SECRET=${JWT_SECRET}
