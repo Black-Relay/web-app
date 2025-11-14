@@ -27,7 +27,7 @@ services:
       - br-net
 
   br-api:
-    image: ghcr.io/black-relay/br-api:latest
+    image: ghcr.io/black-relay/api:latest
     container_name: br-api
     restart: unless-stopped
     ports:
@@ -48,7 +48,7 @@ services:
       - MONGO_PASSWORD=${MONGO_PASSWORD}
 
   br-app:
-    image: ghcr.io/black-relay/br-app:latest
+    image: ghcr.io/black-relay/app:latest
     container_name: br-app
     restart: unless-stopped
     ports:
