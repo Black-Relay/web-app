@@ -126,3 +126,4 @@ volumes:
   caddy_data:
   caddy_config:
   osm-data:
+    external: true
