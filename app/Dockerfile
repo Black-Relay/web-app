@@ -14,8 +14,10 @@ FROM node:24-alpine AS build
 WORKDIR /src/app
 COPY --from=install-deps /src/app/node_modules ./node_modules
 COPY . ./
-ARG VITE_API_URL=https://api.local.l8s.dev
+ARG VITE_API_URL=http://localhost:3001
+ARG VITE_OSM_URL=http://localhost:8080
 ENV VITE_API_URL=${VITE_API_URL}
+ENV VITE_OSM_URL=${VITE_OSM_URL}
 RUN npm run build
 
 FROM nginx:1.29.2 AS runtime
