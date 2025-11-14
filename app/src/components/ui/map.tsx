@@ -203,7 +203,9 @@ export function Map() {
   // Memoize grouped events to prevent recalculation and stack overflow
   const groupedEvents = useMemo(() => {
     try {
-      return groupEventsByLocation(events || []);
+      // Filter out inactive events before grouping
+      const activeEvents = (events || []).filter(event => event.active !== false);
+      return groupEventsByLocation(activeEvents);
     } catch (error) {
       console.error("Error grouping events:", error);
       return [];
