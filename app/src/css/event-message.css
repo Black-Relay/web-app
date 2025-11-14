@@ -1,12 +1,18 @@
 .event-wrapper{
-  overflow-y: scroll;
+  overflow-y: auto;
   -ms-overflow-style: none;
   scrollbar-width: none;
-
-  box-sizing: content-box;
-  padding-bottom: -20px;
-  max-height: calc(100% - 60px);
+  box-sizing: border-box;
+  padding: 4px;
+  height: 100%;
+  flex: 1;
   border-radius: var(--radius);
+}
+
+@media (max-width: 768px) {
+  .event-wrapper {
+    padding: 2px;
+  }
 }
 
 .event-wrapper::-webkit-scrollbar{
@@ -21,9 +27,37 @@
   margin-block: 4px;
   border-radius: var(--radius);
   border: 2px solid var(--border);
+  min-height: 40px;
 
   .timestamp, .event-message{
     padding: 4px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .event-tile {
+    margin-block: 2px;
+    border: 1px solid var(--border);
+    min-height: 35px;
+    
+    .timestamp, .event-message{
+      padding: 3px;
+      font-size: 0.75rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .event-tile {
+    grid-template-columns: 10% 25% 65%;
+    min-height: 30px;
+    
+    .timestamp, .event-message{
+      padding: 2px;
+      font-size: 0.7rem;
+      line-height: 1.2;
+    }
   }
 }
 
@@ -61,11 +95,15 @@
 
 .event-detail-wrapper{
   position: relative;
+  padding: 8px;
+  box-sizing: border-box;
 
   h2{
     text-align: center;
     font-size: revert;
     border-bottom: 1px solid var(--border);
+    padding: 8px;
+    margin: 0 0 16px 0;
   }
 
   .bold {
@@ -81,6 +119,8 @@
     margin-block: min(4px, 4%);
     padding: min(8px, 8%);
     border-radius: var(--radius);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
 
   .detail-dialog{
@@ -91,9 +131,75 @@
     right: 0.5rem;
     background-color: var(--card);
     border-radius: var(--radius);
+    box-sizing: border-box;
+    overflow-y: auto;
 
     p{
       margin-inline: min(8px, 8%);
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+  }
+}
+
+/* Responsive adjustments for event details */
+@media (max-width: 768px) {
+  .event-detail-wrapper {
+    padding: 6px;
+
+    h2 {
+      font-size: 1.3rem;
+      padding: 6px;
+      margin: 0 0 12px 0;
+    }
+
+    .section {
+      margin-block: 6px;
+      padding: 8px;
+      font-size: 0.9rem;
+    }
+
+    .detail-dialog {
+      top: 2.5rem;
+      left: 0.3rem;
+      bottom: 2.5rem;
+      right: 0.3rem;
+      
+      p {
+        margin-inline: 6px;
+        font-size: 0.9rem;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .event-detail-wrapper {
+    padding: 4px;
+
+    h2 {
+      font-size: 1.1rem;
+      padding: 4px;
+      margin: 0 0 8px 0;
+    }
+
+    .section {
+      margin-block: 4px;
+      padding: 6px;
+      font-size: 0.8rem;
+    }
+
+    .detail-dialog {
+      top: 2rem;
+      left: 0.2rem;
+      bottom: 2rem;
+      right: 0.2rem;
+      
+      p {
+        margin-inline: 4px;
+        font-size: 0.8rem;
+        line-height: 1.4;
+      }
     }
   }
 }
