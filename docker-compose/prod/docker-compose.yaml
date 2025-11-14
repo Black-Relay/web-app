@@ -40,10 +40,7 @@ services:
   #     - br-mqtt
 
   br-api:
-    build:
-      context: ../../api
-      dockerfile: Dockerfile
-      target: runtime
+    image: ghcr.io/black-relay/br-api:latest
     container_name: br-api
     restart: unless-stopped
     ports:
@@ -64,12 +61,7 @@ services:
       - MONGO_PASSWORD=${MONGO_PASSWORD}
 
   br-app:
-    build:
-      context: ../../app
-      dockerfile: Dockerfile
-      target: runtime
-      args:
-        - VITE_API_URL=https://api.local.l8s.dev
+    image: ghcr.io/black-rlay/br-app:latest
     container_name: br-app
     restart: unless-stopped
     ports:
