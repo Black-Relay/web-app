@@ -27,7 +27,7 @@ interface SensorContextType {
 
 const SensorContext = createContext<SensorContextType|null>(null);
 
-function useSensorContext():SensorContextType{
+export function useSensorContext():SensorContextType{
   const value:SensorContextType|null = useContext(SensorContext);
   if (!value) throw new Error('useSensorContext hook used without SensorContext');
   return value;
@@ -415,14 +415,45 @@ export default function SensorProvider({children}:{children: React.ReactNode}){
       
       const finalSensors = Array.from(sensorMap.values()).slice(0, 400);
       
+      // Add default sensor objects for configured sensors with no data
+      const sensorsWithData = new Set<string>();
+      finalSensors.forEach(sensor => {
+        const sensorId = sensor.data?.sensorId as string || sensor.data?.sensor_id as string;
+        if (sensorId && sensor.topic === "sensor_status") {
+          sensorsWithData.add(sensorId);
+        }
+      });
+      
+      // Create default sensor status objects for configured sensors without data
+      const missingSensors = configSensors
+        .filter(sensorId => !sensorsWithData.has(sensorId))
+        .map(sensorId => ({
+          _id: `default_${sensorId}`,
+          category: "DETECT" as const,
+          topic: "sensor_status",
+          data: {
+            sensorId: sensorId,
+            sensorType: "Unknown",
+            status: "No data available",
+            lat: 0,
+            lon: 0
+          },
+          createdAt: new Date().toISOString(),
+          acknowledged: false,
+          active: false,
+          __v: 0
+        } as SensorStatus));
+      
+      const allSensorsWithDefaults = [...finalSensors, ...missingSensors];
+      
       // Check for active sensor alarms and update toast system
-      const hasSensorAlarms = finalSensors.some(sensor => 
+      const hasSensorAlarms = allSensorsWithDefaults.some(sensor => 
         sensor.category === "ALARM" && sensor.active !== false
       );
       
       setHasActiveAlarms(hasSensorAlarms);
       
-      return finalSensors;
+      return allSensorsWithDefaults;
     });
   }
 
@@ -481,5 +512,5 @@ export default function SensorProvider({children}:{children: React.ReactNode}){
   );
 };
 
-export { SensorContext, useSensorContext};
+export { SensorContext };
 export type { SensorStatus, SensorContextType };
