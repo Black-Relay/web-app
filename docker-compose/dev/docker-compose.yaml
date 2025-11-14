@@ -118,7 +118,7 @@ services:
     networks:
       - br-net
     volumes:
-      - osm-data:/data/database
+      - dev-osm-data:/data/database
     command: run
 
 networks:
@@ -129,4 +129,5 @@ volumes:
   mongodb_data:
   mosquitto_data:
   mosquitto_logs:
-  osm-data:
+  dev-osm-data:
+    external: true
