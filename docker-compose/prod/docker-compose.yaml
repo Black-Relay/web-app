@@ -26,19 +26,6 @@ services:
     networks:
       - br-net
 
-  # br-dummy-data:
-  #   build:
-  #     context: ../../api
-  #     dockerfile: Dockerfile.dummy
-  #   container_name: br-dummy-data
-  #   restart: unless-stopped
-  #   networks:
-  #     - br-net
-  #   environment:
-  #     - MQTT_URL=mqtt://br-mqtt:1883
-  #   depends_on:
-  #     - br-mqtt
-
   br-api:
     image: ghcr.io/black-relay/br-api:latest
     container_name: br-api
@@ -85,27 +72,27 @@ services:
       - osm-data:/data/database
     command: run
 
-  # caddy:
-  #   image: ghcr.io/caddybuilds/caddy-cloudflare:latest
-  #   container_name: br-caddy
-  #   restart: unless-stopped
-  #   ports:
-  #     - "80:80"
-  #     - "443:443"
-  #     - "443:443/udp"
-  #   volumes:
-  #     - ./caddyfile:/etc/caddy
-  #     - caddy_data:/data
-  #     - caddy_config:/config
-  #   environment:
-  #     - CLOUDFLARE_API_TOKEN=${CLOUDFLARE_API_TOKEN}
-  #   networks:
-  #     - br-net
-  #   depends_on:
-  #     - br-app
-  #     - br-api
-  #     - br-mqtt
-  #     - br-db
+  caddy:
+    image: ghcr.io/caddybuilds/caddy-cloudflare:latest
+    container_name: br-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./caddyfile:/etc/caddy
+      - caddy_data:/data
+      - caddy_config:/config
+    environment:
+      - CLOUDFLARE_API_TOKEN=${CLOUDFLARE_API_TOKEN}
+    networks:
+      - br-net
+    depends_on:
+      - br-app
+      - br-api
+      - br-mqtt
+      - br-db
 
 networks:
   br-net:
