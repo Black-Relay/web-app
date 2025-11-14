@@ -1,16 +1,6 @@
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "../../css/map.css";
-<<<<<<< HEAD
-import { useEventContext, type Event } from "@/providers/EventProvider";
-import config from "../../configs/config.json";
-const { osmUrl } = { osmUrl: import.meta.env.VITE_OSM_URL || config.osmUrl };
-
-function Pin({ event }: { event: Event }) {
-  const { category, topic, createdAt, data } = event;
-  let latitude = (data?.LAT as number) || 35.7796;
-  let longitude = (data?.LON as number) || -78.6382;
-=======
 import { useEventContext, type Event } from '@/providers/EventProvider';
 import { useMemo } from 'react';
 
@@ -19,7 +9,6 @@ interface GroupedEvents {
   longitude: number;
   events: Event[];
 }
->>>>>>> b5e236d66a234fa06547af4dd34c82d1ea13ad70
 
 // Priority order for event categories
 const EVENT_PRIORITY: { [key: string]: number } = {
