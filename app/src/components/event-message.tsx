@@ -5,9 +5,34 @@ import { useState } from "react";
 import config from "../configs/config.json";
 const {apiUrl} = {apiUrl: import.meta.env.VITE_API_URL || config.apiUrl}
 
-function convertISODateString(isoDate:string){
-  const date = new Date(isoDate);
-  return date.toLocaleTimeString('en-gb');
+function formatEventTimestamp(isoDate: string): string {
+  const eventDate = new Date(isoDate);
+  const now = new Date();
+  const diffInMs = now.getTime() - eventDate.getTime();
+  const diffInHours = diffInMs / (1000 * 60 * 60);
+  
+  // If less than 24 hours, show time
+  if (diffInHours < 24) {
+    return eventDate.toLocaleTimeString('en-gb');
+  }
+  
+  // If more than 24 hours, show relative days
+  const diffInDays = Math.floor(diffInHours / 24);
+  
+  if (diffInDays === 1) {
+    return "1 day ago";
+  } else if (diffInDays < 7) {
+    return `${diffInDays} days ago`;
+  } else if (diffInDays < 30) {
+    const weeks = Math.floor(diffInDays / 7);
+    return weeks === 1 ? "1 week ago" : `${weeks} weeks ago`;
+  } else if (diffInDays < 365) {
+    const months = Math.floor(diffInDays / 30);
+    return months === 1 ? "1 month ago" : `${months} months ago`;
+  } else {
+    const years = Math.floor(diffInDays / 365);
+    return years === 1 ? "1 year ago" : `${years} years ago`;
+  }
 }
 
 export function EventMessage({event}:{event: Event}){
@@ -44,7 +69,7 @@ export function EventMessage({event}:{event: Event}){
         <Lamp state={isAck ? "ack" : "unack"} />
       </button>
     </VerticalLamps>
-    <div className="timestamp">{convertISODateString(createdAt)}</div>
+    <div className="timestamp">{formatEventTimestamp(createdAt)}</div>
     <div className="event-message">
       <span className={category.toLowerCase()}>{category}</span>:
       {` ${data.sensorId ?? "Unnamed Sensor"} - `}
