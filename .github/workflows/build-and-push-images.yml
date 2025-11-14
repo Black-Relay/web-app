@@ -8,8 +8,8 @@ on:
       - main
     paths:
       - ".github/workflows/*"
-      - "app/"
-      - "api/"
+      - "app/*"
+      - "api/*"
 
 jobs:
   build-and-push:
