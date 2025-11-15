@@ -68,6 +68,16 @@
     background-color: rgba(0, 220, 0, 0.3);
   }
 
+  .collapsible.unknown {
+    background-color: rgba(120, 120, 120, 0.2);
+    border-color: rgb(120, 120, 120);
+  }
+
+  .collapsible.unknown:hover,
+  .collapsible.active.unknown {
+    background-color: rgba(120, 120, 120, 0.3);
+  }
+
   .collapsible:before {
     content: '\002B';
     float: left;
@@ -184,5 +194,243 @@
 
   .sensor-id-with-lamp .active:before {
     content: none;
+  }
+
+  /* Sensor Sheet Styles */
+  .sensor-sheet-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    justify-content: flex-end;
+    align-items: stretch;
+  }
+
+  .sensor-sheet {
+    background-color: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius) 0 0 var(--radius);
+    box-shadow: -10px 0 15px -3px rgba(0, 0, 0, 0.1), -4px 0 6px -2px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    max-width: 500px;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    animation: slideInFromRight 0.3s ease-out;
+  }
+
+  @keyframes slideInFromRight {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  .sensor-sheet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    background-color: var(--muted);
+    position: relative;
+  }
+
+  .sheet-handle {
+    position: absolute;
+    top: 50%;
+    left: 8px;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 40px;
+    background-color: var(--muted-foreground);
+    border-radius: 2px;
+    opacity: 0.6;
+  }
+
+  .sensor-sheet-header h3 {
+    margin: 0;
+    color: var(--foreground);
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+
+  .close-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--muted-foreground);
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius);
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .close-button:hover {
+    background-color: var(--accent);
+    color: var(--accent-foreground);
+  }
+
+  .sensor-sheet-content {
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1;
+    
+    /* Custom scrollbar styling to match web app theme */
+    scrollbar-width: thin;
+    scrollbar-color: var(--muted-foreground) var(--muted);
+  }
+
+  /* WebKit scrollbar styling for Chrome, Safari, Edge */
+  .sensor-sheet-content::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .sensor-sheet-content::-webkit-scrollbar-track {
+    background: var(--muted);
+    border-radius: 3px;
+  }
+
+  .sensor-sheet-content::-webkit-scrollbar-thumb {
+    background: var(--muted-foreground);
+    border-radius: 3px;
+    border: 1px solid var(--border);
+  }
+
+  .sensor-sheet-content::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
+  }
+
+  /* Sensor Data Only Component Styles */
+  .sensor-data-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .sensor-info-section {
+    background-color: var(--muted);
+    padding: 20px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+  }
+
+  .sensor-header {
+    margin-bottom: 16px;
+  }
+
+  .sensor-title-with-lamp {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .sensor-title-with-lamp h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--foreground);
+  }
+
+  .sensor-title-with-lamp .lamp {
+    width: 20px;
+    height: 20px;
+    border-width: 2px;
+  }
+
+  .sensor-details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 12px;
+  }
+
+  .detail-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .detail-label {
+    font-weight: 500;
+    color: var(--muted-foreground);
+  }
+
+  .detail-value {
+    color: var(--foreground);
+    font-weight: 500;
+  }
+
+  .detail-value.status-normal {
+    color: var(--success);
+  }
+
+  .detail-value.status-alarm {
+    color: var(--destructive);
+  }
+
+  .detail-value.status-unknown {
+    color: var(--muted-foreground);
+  }
+
+  .sensor-values-section {
+    background-color: var(--card);
+    padding: 20px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+  }
+
+  .sensor-values-section h3 {
+    margin: 0 0 16px 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--foreground);
+  }
+
+  .values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+  }
+
+  .value-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background-color: var(--muted);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+  }
+
+  .value-label {
+    font-weight: 500;
+    color: var(--muted-foreground);
+  }
+
+  .value-data {
+    color: var(--foreground);
+    font-weight: 500;
+    font-family: monospace;
+  }
+
+  .no-data-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    color: var(--muted-foreground);
+    font-style: italic;
   }
 }
