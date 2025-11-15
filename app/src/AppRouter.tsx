@@ -15,7 +15,21 @@ import { Events } from "./pages/Events";
 import { useUserContext } from "./providers/UserProvider";
 
 export function AppRouter() {
-  const {user} = useUserContext();
+  const {user, isLoading} = useUserContext();
+
+  // Show loading state while checking session
+  if (isLoading) {
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        height: '100vh' 
+      }}>
+        <div>Loading...</div>
+      </div>
+    );
+  }
 
   const UserRoute = () => {
     return /* Logged in user */ user.role == "user" ? <Outlet /> : <NoAccess />;

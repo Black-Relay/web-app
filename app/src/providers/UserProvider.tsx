@@ -1,4 +1,5 @@
-import React, { useContext, createContext, useState } from "react";
+import React, { useContext, createContext, useState, useEffect } from "react";
+import { validateSession } from "@/utils/fetch-requests";
 
 type User = {
   username: string;
@@ -12,6 +13,7 @@ type User = {
 interface UserContextType {
   user: User;
   setUser: React.Dispatch<React.SetStateAction<User>>;
+  isLoading: boolean;
 };
 
 const UserContext = createContext<UserContextType|null>(null)
@@ -24,9 +26,35 @@ function useUserContext():UserContextType{
 
 export default function UserProvider({children}:{children: React.ReactNode}){
   const [user, setUser] = useState({username: "", role: ""});
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Check for existing session on mount
+  useEffect(() => {
+    const checkSession = async () => {
+      const sessionData = await validateSession();
+      
+      if (sessionData && sessionData.username) {
+        // Session is valid, restore user state
+        setUser({
+          username: sessionData.username,
+          firstName: sessionData.firstName,
+          lastName: sessionData.lastName,
+          groups: sessionData.groups,
+          user_id: sessionData.user_id,
+          role: "user" // Default to user role, could be determined from groups
+        });
+      }
+      
+      setIsLoading(false);
+    };
+
+    checkSession();
+  }, []);
+
   const value = {
     user: user,
-    setUser: setUser
+    setUser: setUser,
+    isLoading: isLoading
   };
 
   return(
