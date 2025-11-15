@@ -44,8 +44,28 @@
     cursor: pointer;
   }
 
-  .active, .collapsible:hover{
+  .collapsible.active, .collapsible:hover{
     background-color: var(--muted)
+  }
+
+  .collapsible.alarm {
+    background-color: rgba(220, 0, 0, 0.2);
+    border-color: rgb(220, 0, 0);
+  }
+
+  .collapsible.alarm:hover,
+  .collapsible.active.alarm {
+    background-color: rgba(220, 0, 0, 0.3);
+  }
+
+  .collapsible.good {
+    background-color: rgba(0, 220, 0, 0.2);
+    border-color: rgb(0, 220, 0);
+  }
+
+  .collapsible.good:hover,
+  .collapsible.active.good {
+    background-color: rgba(0, 220, 0, 0.3);
   }
 
   .collapsible:before {
@@ -54,7 +74,7 @@
     margin-inline: 8px;
   }
 
-  .active:before {
+  .collapsible.active:before {
     content: '\2212';
     float: left;
     margin-inline: 8px;
@@ -77,5 +97,83 @@
     margin-block: 4px;
     padding: 4px;
     padding-left: 16px;
+  }
+
+  .sensor-item {
+    background-color: var(--card);
+    border-radius: var(--radius);
+    margin-block: 4px;
+    padding: 8px;
+    border-left: 3px solid var(--border);
+  }
+
+  .sensor-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+  }
+
+  .sensor-id-with-lamp {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .sensor-id-with-lamp .lamp {
+    height: 16px;
+    width: 16px;
+    border-width: 2px;
+    margin: 0;
+  }
+
+  .sensor-id {
+    font-weight: 500;
+    color: var(--foreground);
+  }
+
+  .sensor-status {
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+
+  .sensor-status.active {
+    background-color: var(--success);
+    color: var(--success-foreground);
+  }
+
+  .sensor-status.inactive {
+    background-color: var(--muted);
+    color: var(--muted-foreground);
+  }
+
+  .sensor-timestamp {
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+    margin-top: 4px;
+  }
+
+  .sensor-item.active {
+    border-left-color: var(--success);
+  }
+
+  .sensor-item.inactive {
+    border-left-color: var(--muted-foreground);
+  }
+
+  /* Remove ::before content for sensor items and lamps within sensor groups */
+  .sensor-item.active:before {
+    content: none;
+  }
+
+  .sensor-item .lamp.active:before {
+    content: none;
+  }
+
+  .sensor-id-with-lamp .active:before {
+    content: none;
   }
 }

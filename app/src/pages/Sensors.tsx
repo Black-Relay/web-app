@@ -1,4 +1,5 @@
 import { MissionClock } from "@/components/mission-clock"
+import { SensorList } from "@/components/SensorList"
 
 export function Sensors(){
   return <div className="layout-main-content no-footer">
@@ -8,6 +9,8 @@ export function Sensors(){
     <MissionClock />
     <main>
     </main>
-    <aside></aside>
+    <aside>
+      <SensorList />
+    </aside>
   </div>
 }

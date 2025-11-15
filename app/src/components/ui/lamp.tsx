@@ -1,7 +1,7 @@
 import type React from "react";
 import "../../css/lamp.css";
 
-type LampState = ""|"active"|"unack"|"ack";
+type LampState = ""|"active"|"unack"|"ack"|"alarm"|"active-alarm";
 
 export function Lamp({state = ""}:{state?: LampState}){
   return <div className={`lamp ${state}`}></div>
