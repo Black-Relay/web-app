@@ -50,7 +50,6 @@ async function sensorSubscriber(
     setSubscriptionStatus(prev => ({ ...prev, [subscription]: 'pending' }));
     
     const response = await fetch(`${apiUrl}/topic/${subscription}/subscribe`, {credentials: "include"});
-    console.log('Sensor subscription response:', response);
     
     if (response.status !== 200 && response.status !== 201) {
       // Set status to failed
@@ -200,7 +199,6 @@ async function sensorConsumer(): Promise<{ sensors: SensorStatus[], alarm?: Even
     });
     
     const sensorStatusEvents = Array.from(sensorMap.values());
-    console.log('SensorProvider - deduplicated sensor_status events returned:', sensorStatusEvents);
     
     return { sensors: sensorStatusEvents };
   }
@@ -245,7 +243,7 @@ export default function SensorProvider({children}:{children: React.ReactNode}){
       });
 
       if (response.ok) {
-        console.log(`Posted timeout alarm for sensor ${sensorId}`);
+        // Timeout alarm posted successfully
       } else {
         console.error(`Failed to post timeout alarm for sensor ${sensorId}:`, response.status);
       }
@@ -349,7 +347,6 @@ export default function SensorProvider({children}:{children: React.ReactNode}){
     );
     
     if (failedSubscriptions.length > 0) {
-      console.log('Attempting to reconnect failed sensor subscriptions:', failedSubscriptions);
       await sensorSubscriber(setAlarms, setSubscriptionStatus);
     }
   };

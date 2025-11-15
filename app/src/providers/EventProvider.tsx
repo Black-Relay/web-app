@@ -43,7 +43,6 @@ async function eventSubscriber(
     setSubscriptionStatus(prev => ({ ...prev, [subscription]: 'pending' }));
     
     const response = await fetch(`${apiUrl}/topic/${subscription}/subscribe`, {credentials: "include"});
-    console.log(response);
     
     if (response.status !== 200 && response.status !== 201) {
       // Set status to failed
@@ -192,7 +191,6 @@ export default function EventProvider({children}:{children: React.ReactNode}){
     );
     
     if (failedSubscriptions.length > 0) {
-      console.log('Attempting to reconnect failed subscriptions:', failedSubscriptions);
       for (const sub of failedSubscriptions) {
         await eventSubscriber(sub, setLocalAlarms, setSubscriptionStatus);
       }

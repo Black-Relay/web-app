@@ -1,14 +1,14 @@
 import { EventDetailsPane } from "@/components/event-details";
 import { MissionClock } from "@/components/mission-clock"
 import { Switch } from "@/components/ui/switch"
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { EventTable } from "@/components/event-table";
 import { useEventContext } from "@/providers/EventProvider";
 
 export function Events(){
   const [table, setTable] = useState<string>("");
   const { events } = useEventContext();
-  const [ selectedEvent, setSelectedEvent ] = useState<any>(events[0]);
+  const [ selectedEvent, setSelectedEvent ] = useState<any>(events.length > 0 ? events[0] : null);
   const columnNames = [
     { key: "_id", header: "ID", sortable: true },
     { key: "acknowledged", header: "ACKNOWLEDGED", sortable: true},
@@ -31,6 +31,13 @@ export function Events(){
   const filteredEvents = getCategoryFromSwitch(table) === "" ? events
       : events.filter(ev => (ev.category || "") === getCategoryFromSwitch(table));
 
+  // Update selectedEvent when events become available
+  useEffect(() => {
+    if (!selectedEvent && events.length > 0) {
+      setSelectedEvent(events[0]);
+    }
+  }, [events, selectedEvent]);
+
   return <div className="layout-main-content no-footer">
     <header>
       <h1>Events</h1>
@@ -40,6 +47,13 @@ export function Events(){
       <Switch labels={["All","Detects","Alerts","Threats","Alarms"]} setSwitch={setTable}/>
       <EventTable columns={columnNames} data={filteredEvents} setEvent={setSelectedEvent} />
     </main>
-    <EventDetailsPane event={selectedEvent}/>
+    {selectedEvent ? (
+      <EventDetailsPane event={selectedEvent}/>
+    ) : (
+      <div className="main-subcontent event-detail-wrapper">
+        <h2>Event Details</h2>
+        <p>No event selected</p>
+      </div>
+    )}
   </div>
 }

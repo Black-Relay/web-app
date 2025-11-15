@@ -3,9 +3,10 @@ import { useSensorContext, type Sensor } from "@/providers/SensorProvider";
 
 function groupSensorsByTopic(sensors:Sensor[]){
   const sensorGroups: {[key:string]: Sensor[]} = {};
-  sensors.forEach((sensor)=>{
-    if( !Object.keys(sensorGroups).includes(sensor["Sensor-type"]) ) sensorGroups[sensor["Sensor-type"]] = [];
-    sensorGroups[sensor["Sensor-type"]].push(sensor);
+  sensors.filter(sensor => sensor && sensor["Sensor-type"]).forEach((sensor)=>{
+    const sensorType = sensor["Sensor-type"];
+    if( !Object.keys(sensorGroups).includes(sensorType) ) sensorGroups[sensorType] = [];
+    sensorGroups[sensorType].push(sensor);
   })
   return sensorGroups;
 }
@@ -13,7 +14,7 @@ function groupSensorsByTopic(sensors:Sensor[]){
 
 export function SensorsAside(){
   const { sensors } = useSensorContext();
-  let sensorData = sensors.map(sensor => sensor.data)
+  let sensorData = sensors.map(sensor => sensor.data).filter(data => data != null)
   
   const sensorTopics = groupSensorsByTopic(sensorData);
 
