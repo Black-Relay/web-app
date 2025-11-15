@@ -9,6 +9,7 @@ import { NoPage } from "./pages/NoPage";
 import { NoAccess } from "./pages/NoAccess";
 import { Login } from "./pages/Login";
 import { SignUp } from "./pages/SignUp";
+import { Landing } from "./pages/Landing";
 import { Layout } from "./layouts/Layout";
 import { Dashboard } from "./pages/Dashboard";
 import { Events } from "./pages/Events";
@@ -52,8 +53,12 @@ export function AppRouter() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
-          {/* Anyone can access */}
+          {/* Landing page at root */}
+          <Route index element={<Landing />} />
+          
+          {/* 404 for unmatched routes */}
           <Route path="*" element={<NoPage />} />
+          
           {/* Private Routes = Must be authenticated */}
           <Route path="app" element={<UserRoute />}>
             <Route path="dashboard" element={<Dashboard />} />
@@ -71,7 +76,6 @@ export function AppRouter() {
           {/* Anonymous Routes = Must be unathenticated to access */}
           <Route element={<AnonymousRoute />}>
             <Route path="login" element={<Login />} />
-            {/* <Route index element={<Login />} /> */}
             <Route path="register" element={<SignUp />} />
           </Route>
         </Route>
