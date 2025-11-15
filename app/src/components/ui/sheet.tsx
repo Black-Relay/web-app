@@ -25,6 +25,16 @@ function SheetClose({
 function SheetPortal({
   ...props
 }: React.ComponentProps<typeof SheetPrimitive.Portal>) {
+  const [mounted, setMounted] = React.useState(false)
+  
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
+  
+  if (!mounted) {
+    return null
+  }
+  
   return <SheetPrimitive.Portal data-slot="sheet-portal" {...props} />
 }
 
