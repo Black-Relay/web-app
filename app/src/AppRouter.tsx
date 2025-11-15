@@ -12,6 +12,7 @@ import { SignUp } from "./pages/SignUp";
 import { Layout } from "./layouts/Layout";
 import { Dashboard } from "./pages/Dashboard";
 import { Events } from "./pages/Events";
+import { Sensors } from "./pages/Sensors";
 import { useUserContext } from "./providers/UserProvider";
 
 export function AppRouter() {
@@ -58,6 +59,7 @@ export function AppRouter() {
             <Route path="dashboard" element={<Dashboard />} />
             <Route index element={<Dashboard />} />
             <Route path="events" element={<Events />} />
+            <Route path="sensors" element={<Sensors />} />
           </Route>
 
           {/* Admin Routes = Must be authenticated and admin */}

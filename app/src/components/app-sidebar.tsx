@@ -1,4 +1,4 @@
-import { BadgeInfoIcon, Home, LogInIcon, LogOut, Settings } from "lucide-react"
+import { BadgeInfoIcon, Home, LogInIcon, LogOut, Radio, Settings } from "lucide-react"
 import { Sidebar, SidebarHeader, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
 import { Link, useNavigate } from "react-router"
 import { useUserContext } from "@/providers/UserProvider"
@@ -15,6 +15,12 @@ const sidebarLinks = [
     title: "Events",
     url: "app/events",
     icon: BadgeInfoIcon,
+    role: "user"
+  },
+  {
+    title: "Sensors",
+    url: "app/sensors",
+    icon: Radio,
     role: "user"
   },
   {
