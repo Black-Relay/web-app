@@ -8,7 +8,7 @@ import { useEventContext } from "@/providers/EventProvider";
 
 export function Dashboard() {
   const [aside, setAside] = useState("Sensor");
-  const [mission, setMission] = useState("Test Operation"); // convert to context
+  const [mission, setMission] = useState("Black Dragon"); // convert to context
   const { events } = useEventContext();
 
   // Calculate event counts
