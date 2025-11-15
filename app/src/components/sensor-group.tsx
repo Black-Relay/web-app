@@ -1,13 +1,6 @@
 import { useState } from "react";
 import "../css/sensor-group.css";
-
-export type Sensor = {
-  "Sensor_ID": string;
-  "Sensor-type": string;
-  "LAT": number;
-  "LON": number;
-  [key:string]: number|string|boolean;
-}
+import type { Sensor } from "@/providers/SensorProvider";
 
 export default function SensorGroup({name, sensors}:{name: string, sensors:Sensor[]}){
   const [toggleOn, setToggleOn] = useState<boolean>(false)
