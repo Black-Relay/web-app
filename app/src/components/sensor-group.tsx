@@ -11,7 +11,7 @@ export default function SensorGroup({name, sensors}:{name: string, sensors:Senso
   const { sensors: sensorStatuses } = useSensorContext();
 
   // Convert sensors to match SensorList format and determine lamp states
-  const sensorItems = sensors.map(sensor => {
+  const sensorItems = (sensors || []).map(sensor => {
     const sensorStatus = sensorStatuses.find(status => status.data?.Sensor_ID === sensor.Sensor_ID);
     
     let lampState: "" | "active" | "active-alarm" = "";

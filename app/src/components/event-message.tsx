@@ -9,7 +9,11 @@ import config from "../configs/config.json";
 const {apiUrl} = {apiUrl: import.meta.env.VITE_API_URL || config.apiUrl}
 
 function formatEventTimestamp(isoDate: string): string {
+  if (!isoDate) return 'Unknown time';
+  
   const eventDate = new Date(isoDate);
+  if (isNaN(eventDate.getTime())) return 'Invalid time';
+  
   const now = new Date();
   const diffInMs = now.getTime() - eventDate.getTime();
   const diffInHours = diffInMs / (1000 * 60 * 60);
@@ -39,8 +43,13 @@ function formatEventTimestamp(isoDate: string): string {
 }
 
 export function EventMessage({event}:{event: Event}){
+  // Safety check for event validity
+  if (!event || !event._id) {
+    return null;
+  }
+  
   const {_id, active, acknowledged, topic, category, data, createdAt } = event;
-  const [isAck, setIsAck] = useState(acknowledged);
+  const [isAck, setIsAck] = useState(acknowledged || false);
   const [isOpen, setIsOpen] = useState(false);
 
   const { addToast } = useToast();
@@ -87,11 +96,11 @@ export function EventMessage({event}:{event: Event}){
               <Lamp state={isAck ? "ack" : "unack"} />
             </button>
           </VerticalLamps>
-          <div className="timestamp">{formatEventTimestamp(createdAt)}</div>
+          <div className="timestamp">{createdAt ? formatEventTimestamp(createdAt) : 'Unknown time'}</div>
           <div className="event-message">
-            <span className={category.toLowerCase()}>{category}</span>:
-            {` ${data.sensorId ?? "Unnamed Sensor"} - `}
-            {`${topic.replace("_"," ")}`}
+            <span className={(category || '').toLowerCase()}>{category || 'Unknown'}</span>:
+            {` ${data?.sensorId ?? "Unnamed Sensor"} - `}
+            {`${(topic || '').replace("_"," ")}`}
           </div>
         </div>
       </SheetTrigger>
