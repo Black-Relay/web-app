@@ -47,7 +47,7 @@ export function Landing() {
           textAlign: "center",
         }}
       >
-        Welcome to Black Relay
+        Black Relay
       </h1>
       <p
         style={{
@@ -56,7 +56,7 @@ export function Landing() {
           opacity: 0.8,
         }}
       >
-        First Responder Crisis Management Platform
+        Open source COP software built by voluteers from Arrowhead Research
       </p>
       <Button onClick={() => navigate("/login")}>Get Started</Button>
     </div>
