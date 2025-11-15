@@ -4,7 +4,7 @@ const { sendDummyData } = require("./sendDummyData.js");
 exports.sendSensorStatusData = () => {
   const sensorStatusData = () => {
     return {
-      Sensor_ID: `Edge_${faker.number.int()}`,
+      Sensor_ID: `Edge_1`,
       "Sensor-type": "Environment",
       LAT: faker.location.latitude({ origin: [35.7796, 78.6382] }),
       LON: faker.location.longitude({ origin: [35.7796, 78.6382] }),

@@ -157,9 +157,10 @@ async function sensorConsumer(){
     // Filter to only include events from configured sensors
     const sensorStatusEvents = allEvents.filter((event: SensorStatus) => {
       // Check if the event is from a configured sensor
-      const sensorId = event.data?.sensorId as string || event.data?.sensor_id as string;
-      // return configSensors.includes(sensorId);
-      return configSensors;
+      const sensorId = event.data?.sensorId as string || event.data?.Sensor_ID as string;
+      console.log(sensorId);
+      return configSensors.includes(sensorId);
+      // return configSensors;
     });
     
     console.log('SensorProvider - sensor_status events returned:', sensorStatusEvents);

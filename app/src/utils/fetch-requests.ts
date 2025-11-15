@@ -9,3 +9,21 @@ export async function postLogin(payload:{username: string, password: string}){
     return response;
   }
 }
+
+export async function validateSession(){
+  try {
+    const response = await fetch(`${url}auth/session`, {
+      method: "GET",
+      credentials: "include"
+    });
+    
+    if (response.status === 200) {
+      return await response.json();
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error("Session validation error:", error);
+    return null;
+  }
+}

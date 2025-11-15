@@ -33,7 +33,7 @@ function convertSensorStatusToSensor(sensorStatus: any): Sensor | null {
   
   return {
     "Sensor_ID": sensorId,
-    "Sensor-type": sensorStatus.data?.sensorType || sensorStatus.data?.sensor_type || "Unknown",
+    "Sensor-type": sensorStatus.data?.sensorType || sensorStatus.data?.sensor_type || sensorStatus.data?.["Sensor_type"] || "Unknown",
     "LAT": sensorStatus.data?.lat || sensorStatus.data?.latitude || 0,
     "LON": sensorStatus.data?.lon || sensorStatus.data?.longitude || sensorStatus.data?.lng || 0,
     ...sensorStatus.data // Include any additional sensor data

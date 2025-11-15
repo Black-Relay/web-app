@@ -77,3 +77,49 @@ exports.userLogout = (req, res) => {
   }
 };
 
+exports.validateSession = (req, res) => {
+  // Check if authToken cookie exists
+  if (!req.signedCookies.authToken) {
+    return res.status(401).json({ error: "No active session" });
+  }
+
+  try {
+    // Verify and decode JWT
+    const decoded = jwt.verify(req.signedCookies.authToken, jwtSecret);
+    
+    // Fetch fresh user data from database
+    usersModel
+      .findById(decoded.user_id)
+      .populate('groups')
+      .then((user) => {
+        if (!user) {
+          return res.status(401).json({ error: "User not found" });
+        }
+
+        // Return user data (same format as login)
+        const userData = {
+          username: user.username,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          groups: user.groups,
+          user_id: user._id,
+        };
+
+        res.status(200).json(userData);
+      })
+      .catch((err) => {
+        console.error("Error fetching user:", err);
+        res.status(500).json({ error: "Error validating session" });
+      });
+  } catch (err) {
+    if (err.name === "TokenExpiredError") {
+      return res.status(401).json({ error: "Session expired" });
+    } else if (err.name === "JsonWebTokenError") {
+      return res.status(401).json({ error: "Invalid session" });
+    } else {
+      console.error("Session validation error:", err);
+      return res.status(500).json({ error: "Session validation failed" });
+    }
+  }
+};
+
