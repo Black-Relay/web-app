@@ -4,7 +4,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { NoteList, type NoteData } from "./ui/note";
 import { Check, Notebook, Pin, Search, X, AlertTriangle, Undo2 } from "lucide-react"
 import { IconButton, InlineIcon } from "./ui/icon-button";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from "./ui/sheet";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { useUserContext } from "@/providers/UserProvider";
@@ -332,35 +331,52 @@ function EventUISection({dialogControl, event, onEventUpdate}:{dialogControl:Rea
         )}
       </div>
 
-      <Sheet open={addNoteModalOpen} onOpenChange={setAddNoteModalOpen}>
-        <SheetContent>
-          <SheetHeader>
-            <SheetTitle>Add Note</SheetTitle>
-          </SheetHeader>
-          
-          <div className="flex flex-col gap-4 p-4">
-            <label htmlFor="note-input" className="text-sm font-medium">
-              Note Content
-            </label>
-            <Input
-              id="note-input"
-              placeholder="Enter your note here..."
-              value={noteText}
-              onChange={(e) => setNoteText(e.target.value)}
-              className="min-h-[100px]"
-            />
-          </div>
+{addNoteModalOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[9999]"
+          onClick={() => setAddNoteModalOpen(false)}
+        >
+          <div 
+            className="bg-background border border-border rounded-lg shadow-lg max-w-md w-full max-h-[90vh] overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-6 border-b border-border">
+              <h2 className="text-lg font-semibold text-foreground">Add Note</h2>
+            </div>
+            
+            <div className="p-6">
+              <label htmlFor="note-input" className="block text-sm font-medium text-foreground mb-2">
+                Note Content
+              </label>
+              <textarea
+                id="note-input"
+                placeholder="Enter your note here..."
+                value={noteText}
+                onChange={(e) => setNoteText(e.target.value)}
+                className="w-full min-h-[100px] px-3 py-2 border border-input bg-background text-foreground placeholder:text-muted-foreground rounded-md resize-none transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50"
+                rows={4}
+              />
+            </div>
 
-          <SheetFooter>
-            <Button variant="outline" onClick={handleCancel} disabled={isSubmitting}>
-              Cancel
-            </Button>
-            <Button onClick={handleAddNote} disabled={!noteText.trim() || isSubmitting}>
-              {isSubmitting ? "Adding..." : "Add Note"}
-            </Button>
-          </SheetFooter>
-        </SheetContent>
-      </Sheet>
+            <div className="p-6 border-t border-border flex justify-end gap-3">
+              <button
+                onClick={handleCancel}
+                disabled={isSubmitting}
+                className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 h-9 px-4 py-2 border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAddNote}
+                disabled={!noteText.trim() || isSubmitting}
+                className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 h-9 px-4 py-2 bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]"
+              >
+                {isSubmitting ? "Adding..." : "Add Note"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   )
 }
