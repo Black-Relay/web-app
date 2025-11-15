@@ -518,10 +518,16 @@ export function EventDetailsPane({event, onEventUpdate}:{event:Event, onEventUpd
   const [dialogOpen, setDialogOpen] = useState(false);
   const [currentEvent, setCurrentEvent] = useState(event);
 
-  // Update local event when prop changes
+  // Update local event when prop changes, but preserve the same event if IDs match
   useEffect(() => {
-    setCurrentEvent(event);
-  }, [event]);
+    if (!currentEvent || currentEvent._id !== event._id) {
+      // Different event or no current event, switch to the new one
+      setCurrentEvent(event);
+    } else {
+      // Same event, update with latest data while preserving the event
+      setCurrentEvent(prev => ({ ...prev, ...event }));
+    }
+  }, [event, currentEvent]);
 
   const updateEventData = (updatedData: Partial<Event>) => {
     setCurrentEvent(prev => ({ ...prev, ...updatedData }));
