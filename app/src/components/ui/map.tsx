@@ -109,8 +109,8 @@ function groupEventsByLocation(events: Event[]): GroupedEvents[] {
     const event = events[i];
     if (!event) continue;
 
-    const latitude = (event.data?.LAT as number) || 35.7796;
-    const longitude = (event.data?.LON as number) || -78.6382;
+    const latitude = (event.data?.LAT as number) || 35.16863;
+    const longitude = (event.data?.LON as number) || -79.398915;
 
     // Round to 4 decimal places for reasonable grouping (~11m precision)
     const key = `${latitude.toFixed(4)}_${longitude.toFixed(4)}`;
