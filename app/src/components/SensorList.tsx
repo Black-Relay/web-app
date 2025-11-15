@@ -6,9 +6,10 @@ import "../css/sensor-group.css";
 
 interface SensorListProps {
   title?: string;
+  onSensorSelect?: (sensorId: string) => void;
 }
 
-export function SensorList({ title = "Sensors by Type" }: SensorListProps) {
+export function SensorList({ title = "Sensors by Type", onSensorSelect }: SensorListProps) {
   const [expandedGroups, setExpandedGroups] = useState<{[key: string]: boolean}>({});
   const { sensors } = useSensorContext();
   
@@ -80,7 +81,11 @@ export function SensorList({ title = "Sensors by Type" }: SensorListProps) {
             </button>
           <div className="content">
             {sensorsInGroup.map((sensor, index) => (
-              <div key={`sensor-${sensor.id}-${index}`} className={`sensor-item ${sensor.status}`}>
+              <div 
+                key={`sensor-${sensor.id}-${index}`} 
+                className={`sensor-item ${sensor.status} ${onSensorSelect ? 'clickable' : ''}`}
+                onClick={() => onSensorSelect?.(sensor.id)}
+              >
                 <div className="sensor-info">
                   <div className="sensor-id-with-lamp">
                     <Lamp state={sensor.lampState} />

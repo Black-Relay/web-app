@@ -164,6 +164,15 @@
     border-left-color: var(--muted-foreground);
   }
 
+  .sensor-item.clickable {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .sensor-item.clickable:hover {
+    background-color: var(--muted);
+  }
+
   /* Remove ::before content for sensor items and lamps within sensor groups */
   .sensor-item.active:before {
     content: none;
