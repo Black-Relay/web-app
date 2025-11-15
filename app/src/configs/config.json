@@ -12,5 +12,5 @@
     "optical_distance",
     "kismet"
   ],
-  "sensors": ["Edge_1", "Baby_Cam"]
+  "sensors": ["Edge_1", "Baby_Cam", "Mega_Cam"]
 }
