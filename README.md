@@ -3,8 +3,6 @@
 <div align="center">
   <img src="docs/img/ahrbrlogo.png" width="350" alt="Black Relay Logo"/>
 
-**First Responder Crisis Management Platform**
-
 _Creating a common operating picture through real-time sensor intelligence_
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
