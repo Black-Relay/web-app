@@ -50,6 +50,7 @@ export function Events(){
         setSelectedEvent(events[0]);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [events]);
 
   return <div className="layout-main-content no-footer">
