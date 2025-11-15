@@ -543,7 +543,8 @@ export function EventDetailsPane({event, onEventUpdate}:{event:Event, onEventUpd
       // Same event, update with latest data while preserving the event
       setCurrentEvent(prev => ({ ...prev, ...event }));
     }
-  }, [event, currentEvent]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [event]);
 
   const updateEventData = (updatedData: Partial<Event>) => {
     setCurrentEvent(prev => ({ ...prev, ...updatedData }));
