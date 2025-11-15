@@ -2,6 +2,7 @@
 name: Build and Push Container Images
 
 on:
+  workflow_dispatch:
   pull_request:
     types: [closed]
     branches:
