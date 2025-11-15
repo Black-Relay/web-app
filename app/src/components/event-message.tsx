@@ -101,7 +101,7 @@ export function EventMessage({event}:{event: Event}){
         <div className="timestamp">{createdAt ? formatEventTimestamp(createdAt) : 'Unknown time'}</div>
         <div className="event-message">
           <span className={(category || '').toLowerCase()}>{category || 'Unknown'}</span>:
-          {` ${data?.sensorId ?? "Unnamed Sensor"} - `}
+          {` ${data?.Sensor_ID ?? "Unnamed Sensor"} - `}
           {`${(topic || '').replace("_"," ")}`}
         </div>
       </div>
