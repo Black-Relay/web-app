@@ -1,6 +1,6 @@
 import { BadgeInfoIcon, Home, LogInIcon, LogOut, Radio, Settings } from "lucide-react"
 import { Sidebar, SidebarHeader, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
-import { Link, useNavigate } from "react-router"
+import { useNavigate } from "react-router"
 import { useUserContext } from "@/providers/UserProvider"
 import config from "@/configs/config.json"
 
@@ -74,11 +74,9 @@ export default function AppSidebar() {
               {sidebarLinks.map((item) => {
                 if(user.role == item.role) return (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <Link to={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
+                  <SidebarMenuButton onClick={() => navigate(`/${item.url}`)}>
+                    <item.icon />
+                    <span>{item.title}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               )})}
