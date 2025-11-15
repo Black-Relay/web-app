@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Lamp } from "@/components/ui/lamp";
+import { SensorDataOnly } from "@/components/sensor-data-only";
 import "../css/sensor-group.css";
 import type { Sensor } from "@/providers/SensorProvider";
 import { useSensorContext } from "@/providers/SensorProvider";
 
 export default function SensorGroup({name, sensors}:{name: string, sensors:Sensor[]}){
   const [toggleOn, setToggleOn] = useState<boolean>(false);
+  const [selectedSensor, setSelectedSensor] = useState<string | null>(null);
   const { sensors: sensorStatuses } = useSensorContext();
 
   // Convert sensors to match SensorList format and determine lamp states
@@ -55,8 +57,11 @@ export default function SensorGroup({name, sensors}:{name: string, sensors:Senso
     </button>
     <div className="content">
       {sensorItems.map((sensor, index) => (
-        <div key={`sensor-${name}-${index}`} className={`sensor-item ${sensor.lampState ? 'active' : 'inactive'}`}>
-          <div className="sensor-info">
+        <div key={`sensor-${name}-${index}`} className={`sensor-item ${sensor.lampState ? 'active' : 'inactive'} clickable`}>
+          <div 
+            className="sensor-info"
+            onClick={() => setSelectedSensor(sensor.id)}
+          >
             <div className="sensor-id-with-lamp">
               <Lamp state={sensor.lampState} />
               <span className="sensor-id">{sensor.id}</span>
@@ -70,5 +75,26 @@ export default function SensorGroup({name, sensors}:{name: string, sensors:Senso
         </div>
       ))}
     </div>
+    
+    {/* Sensor Sheet */}
+    {selectedSensor && (
+      <div className="sensor-sheet-overlay" onClick={() => setSelectedSensor(null)}>
+        <div className="sensor-sheet" onClick={(e) => e.stopPropagation()}>
+          <div className="sensor-sheet-header">
+            <div className="sheet-handle"></div>
+            <h3>Sensor Details</h3>
+            <button 
+              className="close-button" 
+              onClick={() => setSelectedSensor(null)}
+            >
+              ×
+            </button>
+          </div>
+          <div className="sensor-sheet-content">
+            <SensorDataOnly sensorId={selectedSensor} />
+          </div>
+        </div>
+      </div>
+    )}
   </div>)
 }
