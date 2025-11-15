@@ -31,12 +31,26 @@ export function Events(){
   const filteredEvents = getCategoryFromSwitch(table) === "" ? events
       : events.filter(ev => (ev.category || "") === getCategoryFromSwitch(table));
 
-  // Update selectedEvent when events become available
+  // Update selectedEvent when events become available, but preserve selection if possible
   useEffect(() => {
-    if (!selectedEvent && events.length > 0) {
+    if (events.length === 0) {
+      // No events available, clear selection
+      setSelectedEvent(null);
+    } else if (!selectedEvent) {
+      // No event currently selected, select the first one
       setSelectedEvent(events[0]);
+    } else {
+      // Try to find the currently selected event in the updated events array
+      const updatedSelectedEvent = events.find(event => event._id === selectedEvent._id);
+      if (updatedSelectedEvent) {
+        // Update with the latest data for the same event
+        setSelectedEvent(updatedSelectedEvent);
+      } else {
+        // Selected event no longer exists, fall back to first event
+        setSelectedEvent(events[0]);
+      }
     }
-  }, [events, selectedEvent]);
+  }, [events]);
 
   return <div className="layout-main-content no-footer">
     <header>
