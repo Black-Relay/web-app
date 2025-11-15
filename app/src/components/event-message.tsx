@@ -2,7 +2,6 @@ import { type Event } from "@/providers/EventProvider";
 import "../css/event-message.css";
 import { Lamp, VerticalLamps } from "./ui/lamp";
 import { useState } from "react";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
 import { EventDetailsPane } from "./event-details";
 import { useToast } from "@/providers/ToastProvider";
 import config from "../configs/config.json";
@@ -83,35 +82,50 @@ export function EventMessage({event}:{event: Event}){
   };
 
   return (
-    <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetTrigger asChild>
-        <div className="event-tile" style={{ cursor: "pointer" }}>
-          <VerticalLamps>
-            <button
-              aria-label={isAck ? "Acknowledged" : "Acknowledge event"}
-              onClick={handleAcknowledge}
-              disabled={isAck}
-              style={{ background: "none", border: "none", padding: 0, cursor: isAck ? "default" : "pointer" }}
-            >
-              <Lamp state={isAck ? "ack" : "unack"} />
-            </button>
-          </VerticalLamps>
-          <div className="timestamp">{createdAt ? formatEventTimestamp(createdAt) : 'Unknown time'}</div>
-          <div className="event-message">
-            <span className={(category || '').toLowerCase()}>{category || 'Unknown'}</span>:
-            {` ${data?.sensorId ?? "Unnamed Sensor"} - `}
-            {`${(topic || '').replace("_"," ")}`}
+    <>
+      <div 
+        className="event-tile" 
+        style={{ cursor: "pointer" }}
+        onClick={() => setIsOpen(true)}
+      >
+        <VerticalLamps>
+          <button
+            aria-label={isAck ? "Acknowledged" : "Acknowledge event"}
+            onClick={handleAcknowledge}
+            disabled={isAck}
+            style={{ background: "none", border: "none", padding: 0, cursor: isAck ? "default" : "pointer" }}
+          >
+            <Lamp state={isAck ? "ack" : "unack"} />
+          </button>
+        </VerticalLamps>
+        <div className="timestamp">{createdAt ? formatEventTimestamp(createdAt) : 'Unknown time'}</div>
+        <div className="event-message">
+          <span className={(category || '').toLowerCase()}>{category || 'Unknown'}</span>:
+          {` ${data?.sensorId ?? "Unnamed Sensor"} - `}
+          {`${(topic || '').replace("_"," ")}`}
+        </div>
+      </div>
+
+      {/* Event Sheet */}
+      {isOpen && (
+        <div className="event-sheet-overlay" onClick={() => setIsOpen(false)}>
+          <div className="event-sheet" onClick={(e) => e.stopPropagation()}>
+            <div className="event-sheet-header">
+              <div className="sheet-handle"></div>
+              <h3>Event Details</h3>
+              <button 
+                className="close-button" 
+                onClick={() => setIsOpen(false)}
+              >
+                ×
+              </button>
+            </div>
+            <div className="event-sheet-content">
+              <EventDetailsPane event={event} onEventUpdate={handleEventUpdate} />
+            </div>
           </div>
         </div>
-      </SheetTrigger>
-      <SheetContent className="w-[600px] sm:w-[540px]">
-        <SheetHeader>
-          <SheetTitle>Event Details</SheetTitle>
-        </SheetHeader>
-        <div className="mt-4">
-          <EventDetailsPane event={event} onEventUpdate={handleEventUpdate} />
-        </div>
-      </SheetContent>
-    </Sheet>
+      )}
+    </>
   )
 }
