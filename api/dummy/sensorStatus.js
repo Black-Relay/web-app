@@ -16,4 +16,18 @@ exports.sendSensorStatusData = () => {
   };
 
   sendDummyData("sensor_status", sensorStatusData, 300000); // 5 minutes
+
+  const cameraStatusData = () => {
+    return {
+      Sensor_ID: `Baby_Cam`,
+      "Sensor-type": "Camera",
+      LAT: faker.location.latitude({ origin: [35.7796, 78.6382] }),
+      LON: faker.location.longitude({ origin: [35.7796, 78.6382] }),
+      Status: faker.helpers.arrayElement(["Active", "Inactive", "Error"]),
+      Battery: faker.number.int({ min: 0, max: 100 }),
+      Signal_Strength: faker.number.int({ min: 0, max: 5 }),
+    };
+  };
+
+  sendDummyData("sensor_status", cameraStatusData, 300000); // 5 minutes
 };
