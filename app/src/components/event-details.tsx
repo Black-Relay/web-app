@@ -33,7 +33,7 @@ function EventMetaSection({event, onEventUpdate}:{event:Event, onEventUpdate?: (
       setLoading(true);
       try {
         // Get existing notes and add acknowledgment note
-        const existingNotes = Array.isArray(event.data.notes) ? event.data.notes : [];
+        const existingNotes = Array.isArray(event.data?.notes) ? event.data.notes : [];
         const acknowledgeNote = {
           id: Date.now().toString(),
           text: "Event acknowledged",
@@ -101,7 +101,7 @@ function EventMetaSection({event, onEventUpdate}:{event:Event, onEventUpdate?: (
 }
 
 function EventNoteSection({event}:{event: Event}){
-  const eventNotes = event.data.notes;
+  const eventNotes = event.data?.notes;
   
   // Ensure eventNotes is an array and transform notes from event data format to NoteData format
   const transformedNotes: NoteData[] = Array.isArray(eventNotes) 
@@ -146,7 +146,7 @@ function EventUISection({dialogControl, event, onEventUpdate}:{dialogControl:Rea
       setIsSubmitting(true);
       try {
         // Get existing notes from event data or initialize empty array
-        const existingNotes = Array.isArray(event.data.notes) ? event.data.notes : [];
+        const existingNotes = Array.isArray(event.data?.notes) ? event.data.notes : [];
         const newNote = {
           id: Date.now().toString(),
           text: noteText.trim(),
@@ -201,7 +201,7 @@ function EventUISection({dialogControl, event, onEventUpdate}:{dialogControl:Rea
     setIsUpdatingThreat(true);
     try {
       // Get existing notes and add escalation note
-      const existingNotes = Array.isArray(event.data.notes) ? event.data.notes : [];
+      const existingNotes = Array.isArray(event.data?.notes) ? event.data.notes : [];
       const escalationNote = {
         id: Date.now().toString(),
         text: `Escalated to THREAT from ${originalCategory}`,
@@ -257,7 +257,7 @@ function EventUISection({dialogControl, event, onEventUpdate}:{dialogControl:Rea
     setIsUpdatingThreat(true);
     try {
       // Get existing notes and add revert note
-      const existingNotes = Array.isArray(event.data.notes) ? event.data.notes : [];
+      const existingNotes = Array.isArray(event.data?.notes) ? event.data.notes : [];
       const revertNote = {
         id: Date.now().toString(),
         text: `Reverted from THREAT back to ${originalCategory}`,
