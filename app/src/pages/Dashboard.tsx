@@ -11,10 +11,10 @@ export function Dashboard() {
   const [mission, setMission] = useState("Black Dragon"); // convert to context
   const { events } = useEventContext();
 
-  // Calculate event counts
-  const threatCount = events.filter(event => event.category === "THREAT").length;
-  const alarmCount = events.filter(event => event.category === "ALARM").length;
-  const alertCount = events.filter(event => event.category === "ALERT").length;
+  // Calculate event counts (only count inactive events for threats, alarms, alerts)
+  const threatCount = events.filter(event => event.category === "THREAT" && event.active !== true).length;
+  const alarmCount = events.filter(event => event.category === "ALARM" && event.active !== true).length;
+  const alertCount = events.filter(event => event.category === "ALERT" && event.active !== true).length;
   const unacknowledgedCount = events.filter(event => !event.acknowledged).length;
 
   return (<div className="layout-main-content">
