@@ -14,6 +14,7 @@ interface UserContextType {
   user: User;
   setUser: React.Dispatch<React.SetStateAction<User>>;
   isLoading: boolean;
+  logout: () => void;
 };
 
 const UserContext = createContext<UserContextType|null>(null)
@@ -51,10 +52,15 @@ export default function UserProvider({children}:{children: React.ReactNode}){
     checkSession();
   }, []);
 
+  const logout = () => {
+    setUser({username: "", role: ""});
+  };
+
   const value = {
     user: user,
     setUser: setUser,
-    isLoading: isLoading
+    isLoading: isLoading,
+    logout: logout
   };
 
   return(
