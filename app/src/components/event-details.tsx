@@ -365,61 +365,151 @@ function EventUISection({dialogControl, event, onEventUpdate}:{dialogControl:Rea
   )
 }
 
+// Helper function to render nested data structures (for dialog only)
+const renderDataValue = (key: string, value: any, level: number = 0) => {
+  const indent = level * 20;
+  
+  if (value === null || value === undefined) {
+    return (
+      <div key={key} className="event-data-item" style={{ marginLeft: `${indent}px` }}>
+        <span className="data-label">{key}:</span>
+        <span className="data-value">null</span>
+      </div>
+    );
+  }
+  
+  if (typeof value === 'object' && !Array.isArray(value)) {
+    return (
+      <div key={key} className="event-data-group" style={{ marginLeft: `${indent}px` }}>
+        <div className="data-group-header">{key}:</div>
+        <div className="data-group-content">
+          {Object.entries(value).map(([subKey, subValue]) => 
+            renderDataValue(subKey, subValue, level + 1)
+          )}
+        </div>
+      </div>
+    );
+  }
+  
+  if (Array.isArray(value)) {
+    return (
+      <div key={key} className="event-data-group" style={{ marginLeft: `${indent}px` }}>
+        <div className="data-group-header">{key}:</div>
+        <div className="data-group-content">
+          {value.map((item, index) => 
+            renderDataValue(`[${index}]`, item, level + 1)
+          )}
+        </div>
+      </div>
+    );
+  }
+  
+  // Handle timestamp fields
+  let displayValue = String(value);
+  if (key === 'timestamp' || key.toLowerCase().includes('time')) {
+    try {
+      const date = new Date(value);
+      if (!isNaN(date.getTime())) {
+        displayValue = date.toLocaleString();
+      }
+    } catch {
+      // Keep original value if parsing fails
+    }
+  }
+  
+  return (
+    <div key={key} className="event-data-item" style={{ marginLeft: `${indent}px` }}>
+      <span className="data-label">{key}:</span>
+      <span className="data-value">{displayValue}</span>
+    </div>
+  );
+};
+
 function EventDetailDialog({data, dialogControl}:{data: Record<string, unknown>,dialogControl:React.Dispatch<React.SetStateAction<boolean>>}){
-  const entries = Object.entries(data);
+  // Filter out notes from the data
+  const filteredData = Object.fromEntries(
+    Object.entries(data).filter(([key]) => key !== 'notes')
+  );
+  const entries = Object.entries(filteredData);
   const dialogRef = useRef<HTMLDivElement>(null);
   const [fontSize, setFontSize] = useState(14); // Default font size in pixels
+  const fontSizeRef = useRef(14); // Track current font size to avoid useEffect dependency
 
   useEffect(() => {
+    fontSizeRef.current = fontSize;
+  }, [fontSize]);
+
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+    let isChecking = false;
+
     const checkOverflow = () => {
-      if (dialogRef.current) {
-        const container = dialogRef.current;
-        const hasHorizontalOverflow = container.scrollWidth > container.clientWidth;
-        
-        if (hasHorizontalOverflow && fontSize > 8) {
-          // Reduce font size if overflowing and not at minimum
-          setFontSize(prev => Math.max(8, prev - 1));
-        } else if (!hasHorizontalOverflow && fontSize < 14) {
-          // Increase font size if not overflowing and not at maximum
-          setFontSize(prev => Math.min(14, prev + 1));
+      if (isChecking || !dialogRef.current) return;
+      
+      isChecking = true;
+      const container = dialogRef.current;
+      const hasHorizontalOverflow = container.scrollWidth > container.clientWidth;
+      const currentFontSize = fontSizeRef.current;
+      
+      // Only adjust if there's a significant overflow (more than 5px buffer)
+      const overflowBuffer = 5;
+      const significantOverflow = (container.scrollWidth - container.clientWidth) > overflowBuffer;
+      
+      if (significantOverflow && currentFontSize > 8) {
+        // Reduce font size if overflowing significantly and not at minimum
+        const newSize = Math.max(8, currentFontSize - 1);
+        setFontSize(newSize);
+        fontSizeRef.current = newSize;
+      } else if (!hasHorizontalOverflow && currentFontSize < 14) {
+        // Only increase if there's plenty of space (at least 50px buffer)
+        const availableSpace = container.clientWidth - container.scrollWidth;
+        if (availableSpace > 50) {
+          const newSize = Math.min(14, currentFontSize + 1);
+          setFontSize(newSize);
+          fontSizeRef.current = newSize;
         }
       }
+      
+      setTimeout(() => { isChecking = false; }, 50);
     };
 
-    // Check overflow after render
-    const timeoutId = setTimeout(checkOverflow, 0);
+    const debouncedCheckOverflow = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(checkOverflow, 150);
+    };
+
+    // Initial check after render
+    debouncedCheckOverflow();
     
-    // Also check on window resize
-    window.addEventListener('resize', checkOverflow);
+    // Check on window resize
+    window.addEventListener('resize', debouncedCheckOverflow);
     
     return () => {
       clearTimeout(timeoutId);
-      window.removeEventListener('resize', checkOverflow);
+      window.removeEventListener('resize', debouncedCheckOverflow);
     };
-  }, [fontSize, entries]);
+  }, [entries]);
+
+  const handleDialogClick = (e: React.MouseEvent) => {
+    // Close dialog if clicking outside the content area (on the backdrop)
+    if (e.target === e.currentTarget) {
+      dialogControl(false);
+    }
+  };
 
   return (
-    <div className="detail-dialog" ref={dialogRef} style={{ fontSize: `${fontSize}px` }}>
-      <IconButton Icon={X} label="" method={()=>{dialogControl(false)}} />
-      {
-        entries.length === 0 ? <div className="bold centered">No Data Present</div> :
-        entries.map(([label, value]) => {
-        let normalizedValue:React.ReactNode;
-        if ( typeof value === "object" ){
-          try{
-            normalizedValue = <pre className="detail-json" style={{ fontSize: 'inherit' }}>{JSON.stringify(value, null, 2)}</pre>;
-          } catch {
-            normalizedValue = String(value);
-          }
-        } else if ( label === "timestamp"){
-          normalizedValue = new Date(value as number).toLocaleString();
-        } else {
-          normalizedValue = String(value);
-        }
-
-        return <div key={label} style={{ fontSize: 'inherit' }}><span className="bold">{label}</span> &nbsp;{normalizedValue}</div>
-      })
-      }
+    <div className="detail-dialog" ref={dialogRef} style={{ fontSize: `${fontSize}px` }} onClick={handleDialogClick}>
+      <div className="detail-dialog-header">
+        <h3>Event Data</h3>
+        <IconButton Icon={X} label="" method={()=>{dialogControl(false)}} />
+      </div>
+      <div className="event-data-content" style={{ fontSize: 'inherit' }}>
+        {entries.length === 0 ? (
+          <div className="bold centered">No Data Present</div>
+        ) : (
+          entries.map(([key, value]) => renderDataValue(key, value))
+        )}
+      </div>
     </div>
   )
 }
