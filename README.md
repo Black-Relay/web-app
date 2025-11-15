@@ -3,14 +3,15 @@
 <div align="center">
   <img src="docs/img/ahrbrlogo.png" width="350" alt="Black Relay Logo"/>
 
-  **First Responder Crisis Management Platform**
+**First Responder Crisis Management Platform**
 
-  *Creating a common operating picture through real-time sensor intelligence*
+_Creating a common operating picture through real-time sensor intelligence_
 
-  [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-  [![Node.js](https://img.shields.io/badge/node.js-20+-green.svg)](https://nodejs.org/)
-  [![React](https://img.shields.io/badge/react-19-61dafb.svg)](https://react.dev/)
-  [![MongoDB](https://img.shields.io/badge/mongodb-8.2-47A248.svg)](https://www.mongodb.com/)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Node.js](https://img.shields.io/badge/node.js-20+-green.svg)](https://nodejs.org/)
+[![React](https://img.shields.io/badge/react-19-61dafb.svg)](https://react.dev/)
+[![MongoDB](https://img.shields.io/badge/mongodb-8.2-47A248.svg)](https://www.mongodb.com/)
+
 </div>
 
 ---
@@ -250,6 +251,10 @@ docker compose down --rmi local && docker volume rm api_mongodb_data
 
 ---
 
+## 🖼️ Screenshots
+
+[Click here for screenshots](SCREENSHOTS.md)
+
 ## 🤝 Contributing
 
 Black Relay was created during an Arrowhead Research hackathon and is actively being developed. Contributions are welcome!
@@ -279,5 +284,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 <div align="center">
   <strong>🎖️ Built for those who run toward danger 🎖️</strong>
 
-  <sub>When crisis strikes, every second counts. Black Relay delivers the intelligence you need, when you need it.</sub>
+<sub>When crisis strikes, every second counts. Black Relay delivers the intelligence you need, when you need it.</sub>
+
 </div>
