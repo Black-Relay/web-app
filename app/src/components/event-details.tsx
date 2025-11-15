@@ -315,7 +315,7 @@ function EventUISection({dialogControl, event, onEventUpdate}:{dialogControl:Rea
       <div className="section">
         <IconButton Icon={Search} label="View Event Data" method={()=>{dialogControl(true)}} />
         <IconButton Icon={Notebook} label="Add Note" method={()=>{setAddNoteModalOpen(true)}} />
-        <IconButton Icon={Pin} label="Pin Event" method={()=>{}} />
+        {/* <IconButton Icon={Pin} label="Pin Event" method={()=>{}} /> */}
         {!isEscalatedToThreat && event.category !== "THREAT" && (
           <IconButton 
             Icon={AlertTriangle} 
