@@ -4,6 +4,32 @@
   background: var(--background);
   border-radius: 0.5rem;
   border: 1px solid var(--border);
+  height: 100%;
+  overflow-y: auto;
+  
+  /* Custom scrollbar styling to match web app theme */
+  scrollbar-width: thin;
+  scrollbar-color: var(--muted-foreground) var(--muted);
+}
+
+/* WebKit scrollbar styling for Chrome, Safari, Edge */
+.sensor-detail::-webkit-scrollbar {
+  width: 8px;
+}
+
+.sensor-detail::-webkit-scrollbar-track {
+  background: var(--muted);
+  border-radius: 4px;
+}
+
+.sensor-detail::-webkit-scrollbar-thumb {
+  background: var(--muted-foreground);
+  border-radius: 4px;
+  border: 1px solid var(--border);
+}
+
+.sensor-detail::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
 }
 
 .sensor-detail-header {
@@ -99,37 +125,89 @@
   color: var(--muted-foreground);
 }
 
-.sensor-detail-todo {
+.sensor-detail-data {
   margin-top: 2rem;
   padding-top: 1rem;
   border-top: 1px solid var(--border);
 }
 
-.sensor-detail-todo h3 {
+.sensor-detail-data h3 {
   margin: 0 0 1rem 0;
   font-size: 1.125rem;
   font-weight: 600;
   color: var(--foreground);
 }
 
-.sensor-detail-todo ul {
-  margin: 0;
-  padding-left: 1.5rem;
+.sensor-data-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.sensor-detail-todo li {
-  margin-bottom: 0.5rem;
+.sensor-data-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--muted);
+}
+
+.sensor-data-item:last-child {
+  border-bottom: none;
+}
+
+.sensor-data-item .data-label {
+  font-weight: 600;
+  color: var(--foreground);
+  flex-shrink: 0;
+}
+
+.sensor-data-item .data-value {
   color: var(--muted-foreground);
+  text-align: right;
+  word-break: break-word;
+  margin-left: 1rem;
 }
 
-.sensor-detail-todo li:last-child {
-  margin-bottom: 0;
+.sensor-data-group {
+  margin-bottom: 1rem;
 }
 
-.sensor-detail-todo p {
-  margin: 0;
+.data-group-header {
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid var(--muted);
+}
+
+.data-group-content {
+  padding-left: 1rem;
+}
+
+.no-data {
   color: var(--muted-foreground);
   font-style: italic;
+  margin: 0;
+}
+
+.sensor-detail-history {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.sensor-detail-history h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.history-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 /* Responsive adjustments */

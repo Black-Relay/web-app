@@ -1,9 +1,89 @@
+import React from "react";
 import { useSensorContext } from "@/providers/SensorProvider";
 import type { SensorStatus } from "@/providers/SensorProvider";
+import { HistoricalDataView } from "./historical-data-view";
 
 interface SensorDetailProps {
   sensorId: string;
 }
+
+// Helper function to render nested data structures
+const renderDataValue = (key: string, value: any, level: number = 0) => {
+  const indent = level * 20;
+  
+  if (value === null || value === undefined) {
+    return (
+      <div key={key} className="sensor-data-item" style={{ marginLeft: `${indent}px` }}>
+        <span className="data-label">{key}:</span>
+        <span className="data-value">null</span>
+      </div>
+    );
+  }
+  
+  if (typeof value === 'object' && !Array.isArray(value)) {
+    return (
+      <div key={key} className="sensor-data-group" style={{ marginLeft: `${indent}px` }}>
+        <div className="data-group-header">{key}:</div>
+        <div className="data-group-content">
+          {Object.entries(value).map(([subKey, subValue]) => 
+            renderDataValue(subKey, subValue, level + 1)
+          )}
+        </div>
+      </div>
+    );
+  }
+  
+  if (Array.isArray(value)) {
+    return (
+      <div key={key} className="sensor-data-group" style={{ marginLeft: `${indent}px` }}>
+        <div className="data-group-header">{key}:</div>
+        <div className="data-group-content">
+          {value.map((item, index) => 
+            renderDataValue(`[${index}]`, item, level + 1)
+          )}
+        </div>
+      </div>
+    );
+  }
+  
+  return (
+    <div key={key} className="sensor-data-item" style={{ marginLeft: `${indent}px` }}>
+      <span className="data-label">{key}:</span>
+      <span className="data-value">{String(value)}</span>
+    </div>
+  );
+};
+
+// Helper function to render all sensor data excluding already displayed fields
+const renderSensorData = (sensorData: any) => {
+  if (!sensorData || !sensorData.data) return <p className="no-data">No additional data available</p>;
+  
+  // Fields already displayed in the core section
+  const excludedFields = new Set(['Sensor_ID', 'Sensor-type', 'LAT', 'LON']);
+  
+  // Get all data from the sensor data object (only from sensorData.data)
+  const additionalData: {[key: string]: any} = {};
+  
+  // Add fields from sensorData.data (excluding already shown ones)
+  Object.entries(sensorData.data).forEach(([key, value]) => {
+    if (!excludedFields.has(key)) {
+      additionalData[key] = value;
+    }
+  });
+  
+  if (Object.keys(additionalData).length === 0) {
+    return <p className="no-data">No additional data</p>;
+  }
+  
+  return Object.entries(additionalData).map(([key, value]) => 
+    renderDataValue(key, value)
+  );
+};
+
+// Helper function to render historical data
+const renderHistoricalData = (sensorId: string) => {
+  return <HistoricalDataView sensorId={sensorId} />;
+};
 
 export function SensorDetail({ sensorId }: SensorDetailProps) {
   const { sensors } = useSensorContext();
@@ -43,9 +123,19 @@ export function SensorDetail({ sensorId }: SensorDetailProps) {
             </div>
           </div>
         </div>
-        <div className="sensor-detail-todo">
-          <h3>TODO</h3>
-          <p>No sensor data available</p>
+        
+        <div className="sensor-detail-data">
+          <h3>Additional Data</h3>
+          <div className="sensor-data-content">
+            <p className="no-data">No additional data</p>
+          </div>
+        </div>
+        
+        <div className="sensor-detail-history">
+          <h3>Historical Data</h3>
+          <div className="history-content">
+            <p className="no-data">No sensor selected</p>
+          </div>
         </div>
       </div>
     );
@@ -109,14 +199,18 @@ export function SensorDetail({ sensorId }: SensorDetailProps) {
         </div>
       </div>
       
-      <div className="sensor-detail-todo">
-        <h3>TODO</h3>
-        <ul>
-          <li>Add sensor configuration options</li>
-          <li>Implement sensor control commands</li>
-          <li>Add historical data view</li>
-          <li>Setup sensor alerts and notifications</li>
-        </ul>
+      <div className="sensor-detail-data">
+        <h3>Additional Data</h3>
+        <div className="sensor-data-content">
+          {renderSensorData(sensorData)}
+        </div>
+      </div>
+      
+      <div className="sensor-detail-history">
+        <h3>Historical Data</h3>
+        <div className="history-content">
+          {renderHistoricalData(sensorId)}
+        </div>
       </div>
     </div>
   );
