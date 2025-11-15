@@ -8,6 +8,7 @@
 _Creating a common operating picture through real-time sensor intelligence_
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Build](https://img.shields.io/github/actions/workflow/status/Black-Relay/web-app/build-and-push-images.yml)](BUILD)
 [![Node.js](https://img.shields.io/badge/node.js-20+-green.svg)](https://nodejs.org/)
 [![React](https://img.shields.io/badge/react-19-61dafb.svg)](https://react.dev/)
 [![MongoDB](https://img.shields.io/badge/mongodb-8.2-47A248.svg)](https://www.mongodb.com/)
