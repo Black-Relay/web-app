@@ -145,20 +145,28 @@ export function EventTable<T extends object>({
           </tr>
         </thead>
         <tbody>
-          {paginatedData.map((row, i) => (
-            <tr
-              key={i}
-              onClick={setEvent ? ()=>{setEvent(row)} : undefined}
-            >
-              {columns.map((col) => (
-                <td key={col.key}>
-                  {col.render
-                    ? col.render(getValueByPath(row, col.key), row)
-                    : String(getValueByPath(row, col.key))}
-                </td>
-              ))}
+          {paginatedData.length === 0 ? (
+            <tr>
+              <td colSpan={columns.length} style={{ textAlign: 'center', padding: '40px', color: 'var(--muted-foreground)', fontStyle: 'italic' }}>
+                No current events
+              </td>
             </tr>
-          ))}
+          ) : (
+            paginatedData.map((row, i) => (
+              <tr
+                key={i}
+                onClick={setEvent ? ()=>{setEvent(row)} : undefined}
+              >
+                {columns.map((col) => (
+                  <td key={col.key}>
+                    {col.render
+                      ? col.render(getValueByPath(row, col.key), row)
+                      : String(getValueByPath(row, col.key))}
+                  </td>
+                ))}
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
       <div className="pagination" style={{ marginTop: "12px", textAlign: "center" }}>

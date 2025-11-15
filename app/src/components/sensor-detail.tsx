@@ -141,8 +141,13 @@ export function SensorDetail({ sensorId }: SensorDetailProps) {
     );
   }
 
-  // Determine status based on sensor category
-  const getStatusInfo = (category: string) => {
+  // Determine status based on sensor category and type
+  const getStatusInfo = (category: string, sensorType?: string) => {
+    // Check if sensor type is Unknown first
+    if (sensorType === "Unknown") {
+      return { text: "Unknown", className: "no-status" };
+    }
+    
     switch (category) {
       case "DETECT":
         return { text: "Healthy", className: "healthy" };
@@ -155,7 +160,7 @@ export function SensorDetail({ sensorId }: SensorDetailProps) {
     }
   };
 
-  const statusInfo = getStatusInfo(sensorData.category);
+  const statusInfo = getStatusInfo(sensorData.category, sensorData.data?.["Sensor-type"]);
   
   // Format location
   const location = `${sensorData.data.LAT}, ${sensorData.data.LON}`;

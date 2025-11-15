@@ -37,6 +37,20 @@
   background: var(--accent);
 }
 
+.no-events-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  color: var(--muted-foreground);
+  font-style: italic;
+  font-size: 1rem;
+}
+
+.no-events-message p {
+  margin: 0;
+}
+
 .event-tile{
   display: grid;
   grid-template-columns: 7% 20% 73%;
