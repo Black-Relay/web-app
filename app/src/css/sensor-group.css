@@ -68,6 +68,16 @@
     background-color: rgba(0, 220, 0, 0.3);
   }
 
+  .collapsible.unknown {
+    background-color: rgba(120, 120, 120, 0.2);
+    border-color: rgb(120, 120, 120);
+  }
+
+  .collapsible.unknown:hover,
+  .collapsible.active.unknown {
+    background-color: rgba(120, 120, 120, 0.3);
+  }
+
   .collapsible:before {
     content: '\002B';
     float: left;

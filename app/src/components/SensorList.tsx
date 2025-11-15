@@ -22,7 +22,10 @@ export function SensorList({ title = "Sensors by Type", onSensorSelect }: Sensor
     
     let lampState: "" | "active" | "active-alarm" = ""; // Default: not lit
     if (sensorData) {
-      if (sensorData.category === 'ALARM') {
+      // Check if sensor type is "Unknown" for grey state
+      if (sensorData.data?.["Sensor-type"] === "Unknown") {
+        lampState = ""; // Grey for unknown sensor type
+      } else if (sensorData.category === 'ALARM') {
         lampState = "active-alarm"; // Red for alarm
       } else if (sensorData.category === 'DETECT') {
         lampState = "active"; // Green for detect (normal operation)
@@ -59,11 +62,13 @@ export function SensorList({ title = "Sensors by Type", onSensorSelect }: Sensor
 
   // Determine the highest alarm state for a group
   const getGroupAlarmState = (sensorsInGroup: typeof sensorStatuses) => {
-    const hasAlarm = sensorsInGroup.some(sensor => sensor.category === 'ALARM');
-    const hasActiveSensors = sensorsInGroup.some(sensor => sensor.status === 'active');
+    const hasAlarm = sensorsInGroup.some(sensor => sensor.lampState === 'active-alarm');
+    const hasActive = sensorsInGroup.some(sensor => sensor.lampState === 'active');
+    const hasUnknownType = sensorsInGroup.some(sensor => sensor.sensorType === 'Unknown');
     
     if (hasAlarm) return 'alarm';
-    if (hasActiveSensors) return 'good';
+    if (hasActive) return 'good';
+    if (hasUnknownType) return 'unknown';
     return 'default';
   };
 
