@@ -25,7 +25,7 @@ function useUserContext():UserContextType{
 };
 
 export default function UserProvider({children}:{children: React.ReactNode}){
-  const [user, setUser] = useState({username: "", role: ""});
+  const [user, setUser] = useState<User>({username: "", role: ""});
   const [isLoading, setIsLoading] = useState(true);
 
   // Check for existing session on mount
